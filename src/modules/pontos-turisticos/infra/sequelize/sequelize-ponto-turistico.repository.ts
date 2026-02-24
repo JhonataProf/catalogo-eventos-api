@@ -10,7 +10,7 @@ import {
   ListPontosTuristicosRepository,
 } from "../../domain/repositories";
 import PontoTuristicoModel from "../model/ponto-turistico-model";
-import { Specification } from "@/core/domain/specification/specification";
+import { QuerySpecification } from "../../domain/specifications/query-specification";
 
 export class SequelizePontoTuristicoRepository
   implements
@@ -23,44 +23,18 @@ export class SequelizePontoTuristicoRepository
     ListPontosTuristicosRepository
 {
   constructor() {}
-  async listSpec(params: {
-    page: number;
-    limit: number;
-    spec?: Specification;
-  }): Promise<{ items: PontoTuristicoEntity[]; total: number }> {
-    const where = params.spec?.toSequelizeWhere() ?? {};
 
-    const offset = (params.page - 1) * params.limit;
+  listSpec(params: { spec?: QuerySpecification | null; limit: number; offset: number; order: [string, "ASC" | "DESC"][]; }): Promise<{ rows: any[]; count: number; }> {
+    const where = params.spec?.toWhere?.() ?? {};
 
-    const { rows, count } = await PontoTuristicoModel.findAndCountAll({
+    return PontoTuristicoModel.findAndCountAll({
       where,
       limit: params.limit,
-      offset,
-      order: [["nome", "ASC"]],
+      offset: params.offset,
+      order: params.order,
     });
-
-    const items = rows.map(
-      (p) =>
-        new PontoTuristicoEntity({
-          id: p.id,
-          nome: p.nome,
-          tipo: p.tipo,
-          horario: p.horario,
-          img: p.img,
-          desc: p.desc,
-        }),
-
-
-
-
-        
-    );
-
-    return {
-      items,
-      total: count
-    };
   }
+
   async create(
     data: PontoTuristicoEntity,
     t?: Transaction,

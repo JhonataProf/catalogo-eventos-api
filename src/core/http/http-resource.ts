@@ -9,7 +9,7 @@ export interface Link {
 }
 
 export interface Links {
-  [rel: string]: Link;
+  [rel: string]: Link | undefined;
 }
 
 export interface Resource<T> {
