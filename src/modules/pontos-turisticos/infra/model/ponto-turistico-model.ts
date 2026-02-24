@@ -54,5 +54,8 @@ PontoTuristicoModel.init(
     modelName: "pontos-turisticos",
   },
 );
+
 PontoTuristicoModel.hasOne(CidadeModel, { foreignKey: "cidadeId", as: "cidades" });
+PontoTuristicoModel.belongsTo(CidadeModel, { foreignKey: "cidadeId", as: "cidade" });
+
 export default PontoTuristicoModel;
