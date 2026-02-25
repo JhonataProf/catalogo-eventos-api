@@ -4,7 +4,7 @@ import { SequelizePontoTuristicoRepository } from "../../infra/sequelize/sequeli
 export class FindPontoTuristicoByCidadeIdUseCase {
   constructor(private readonly repository: SequelizePontoTuristicoRepository) {}
 
-  async execute(cidadeId: number): Promise<PontoTuristicoEntity> {
+  async execute(cidadeId: number): Promise<PontoTuristicoEntity[]|null> {
     return await this.repository.findByCidadeId(cidadeId);
   }
 }

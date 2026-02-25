@@ -33,11 +33,9 @@ export class CreatePontoTuristicoController implements Controller {
       const data = {
         id: createdEntity.id,
         nome: createdEntity.nome,
-        cidade: createdEntity.cidade,
-        estado: createdEntity.estado,
-        ativo: createdEntity.ativo,
-        createdAt: createdEntity.createdAt,
-        updatedAt: createdEntity.updatedAt,
+        cidadeId: createdEntity.cidadeId,
+        desc: createdEntity.desc,
+        horario: createdEntity.horario
       };
 
       return created(

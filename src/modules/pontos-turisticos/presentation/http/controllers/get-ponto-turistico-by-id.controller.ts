@@ -15,7 +15,7 @@ export class GetPontoTuristicoByIdController implements Controller {
       const id = Number(req.params?.id);
       const entity = await this.useCase.execute(id);
 
-      if (!entity) {
+      if (!entity || !entity.id) {
         logger.warn("Ponto turístico não encontrado", {
           correlationId,
           route: "GetPontoTuristicoByIdController",
@@ -30,11 +30,9 @@ export class GetPontoTuristicoByIdController implements Controller {
       const data = {
         id: entity.id,
         nome: entity.nome,
-        cidade: entity.cidade,
-        estado: entity.estado,
-        ativo: entity.ativo,
-        createdAt: entity.createdAt,
-        updatedAt: entity.updatedAt,
+        cidadeId: entity.cidadeId,
+        desc: entity.desc,
+        horario: entity.horario,
       };
 
       return ok(resource(data, pontoTuristicoLinks(entity.id)));

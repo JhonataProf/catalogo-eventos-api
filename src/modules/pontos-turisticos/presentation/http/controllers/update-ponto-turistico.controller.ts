@@ -30,13 +30,12 @@ export class UpdatePontoTuristicoController implements Controller {
       }
 
       const data = {
-        id: updated.id,
         nome: updated.nome,
-        cidade: updated.cidade,
-        estado: updated.estado,
-        ativo: updated.ativo,
-        createdAt: updated.createdAt,
-        updatedAt: updated.updatedAt,
+        tipo: updated.tipo,
+        horario: updated.horario,
+        img: updated.img,
+        desc: updated.desc,
+        cidadeId: updated.cidadeId,
       };
 
       return ok(resource(data, pontoTuristicoLinks(updated.id)));
