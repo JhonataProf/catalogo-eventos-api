@@ -1,13 +1,13 @@
-import { Controller } from "@/core/protocols";
+import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 
 export class UpdateCidadeController implements Controller {
   constructor() {}
 
-  async handle(request: any): Promise<any> {
-    try {
-        
-    } catch (error) {
-        
+  async handle(request: HttpRequest): Promise<HttpResponse> {
+      try {
+          
+      } catch (error) {
+          
+      }
     }
-  }
 }

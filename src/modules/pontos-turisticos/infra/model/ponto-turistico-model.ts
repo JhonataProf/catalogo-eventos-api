@@ -3,7 +3,7 @@ import CidadeModel from "@/modules/cidades/infra/models/cidade-model";
 import { DataTypes, Model } from "sequelize";
 
 export class PontoTuristicoModel extends Model {
-  id!: string;
+  id!: number;
   nome!: string;
   tipo!: string;
   horario!: string;

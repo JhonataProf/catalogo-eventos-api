@@ -1,6 +1,6 @@
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 
-export class ListCidadeController implements Controller {
+export class FindPontoTuristicoByCidadeIdController implements Controller {
   constructor() {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {

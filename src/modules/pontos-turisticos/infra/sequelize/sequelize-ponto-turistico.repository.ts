@@ -5,7 +5,6 @@ import {
   DeletePontoTuristicoRepository,
   FindPontoTuristicoByCidadeRepository,
   FindPontoTuristicoByIdRepository,
-  ListPontoTuristicoRespository,
   UpdatePontoTuristicoRepository,
   ListPontosTuristicosRepository,
 } from "../../domain/repositories";
@@ -18,7 +17,6 @@ export class SequelizePontoTuristicoRepository
     DeletePontoTuristicoRepository,
     FindPontoTuristicoByCidadeRepository,
     FindPontoTuristicoByIdRepository,
-    ListPontoTuristicoRespository,
     UpdatePontoTuristicoRepository,
     ListPontosTuristicosRepository
 {
@@ -35,22 +33,19 @@ export class SequelizePontoTuristicoRepository
     });
   }
 
-  async create(
-    data: PontoTuristicoEntity,
-    t?: Transaction,
-  ): Promise<PontoTuristicoEntity> {
+  async create(data: PontoTuristicoEntity, t?: Transaction): Promise<PontoTuristicoEntity> {
     const created = await PontoTuristicoModel.create(
       {
-        id: 0, // Substitua pelo ID gerado pelo banco de dados
         nome: data.nome,
-        tipo: data.tipo,
-        horario: data.horario,
+        tipo: data.tipo ?? null,
+        horario: data.horario ?? null,
         img: data.img,
-        desc: data.desc,
+        desc: data.desc ?? null,
+        cidadeId: data.cidadeId, // ✅ obrigatório pela model
       },
-      { transaction: t },
+      { transaction: t }
     );
-    await PontoTuristicoModel.sync();
+
     return new PontoTuristicoEntity({
       id: created.id,
       nome: created.nome,
@@ -58,41 +53,11 @@ export class SequelizePontoTuristicoRepository
       horario: created.horario,
       img: created.img,
       desc: created.desc,
+      cidadeId: created.cidadeId, // ✅
     });
   }
-  async delete(id: number, t?: Transaction): Promise<boolean> {
-    const deleted = await PontoTuristicoModel.destroy({
-      where: { id },
-      transaction: t,
-    });
-    await PontoTuristicoModel.sync();
-    return deleted > 0;
-  }
-  async findByCidadeId(
-    cidadeId: number,
-    t?: Transaction,
-  ): Promise<PontoTuristicoEntity[] | null> {
-    const pontos = await PontoTuristicoModel.findAll({
-      where: { cidadeId: cidadeId },
-    });
 
-    const pontoTuristicos = pontos.map(
-      (p) =>
-        new PontoTuristicoEntity({
-          id: p.id,
-          nome: p.nome,
-          tipo: p.tipo,
-          horario: p.horario,
-          img: p.img,
-          desc: p.desc,
-        }),
-    );
-    return pontoTuristicos;
-  }
-  async findById(
-    id: number,
-    t?: Transaction,
-  ): Promise<PontoTuristicoEntity | null> {
+  async findById(id: number): Promise<PontoTuristicoEntity | null> {
     const ponto = await PontoTuristicoModel.findByPk(id);
     if (!ponto) return null;
 
@@ -103,10 +68,13 @@ export class SequelizePontoTuristicoRepository
       horario: ponto.horario,
       img: ponto.img,
       desc: ponto.desc,
+      cidadeId: ponto.cidadeId, // ✅
     });
   }
-  async list(): Promise<PontoTuristicoEntity[] | null> {
-    const pontos = await PontoTuristicoModel.findAll();
+
+  async findByCidadeId(cidadeId: number): Promise<PontoTuristicoEntity[] | null> {
+    const pontos = await PontoTuristicoModel.findAll({ where: { cidadeId } });
+
     return pontos.map(
       (p) =>
         new PontoTuristicoEntity({
@@ -116,20 +84,34 @@ export class SequelizePontoTuristicoRepository
           horario: p.horario,
           img: p.img,
           desc: p.desc,
-        }),
+          cidadeId: p.cidadeId, // ✅
+        })
     );
   }
+
   async update(
     id: number,
     data: Partial<PontoTuristicoEntity>,
-    t?: Transaction,
+    t?: Transaction
   ): Promise<PontoTuristicoEntity | null> {
-    const pontoUpdated = await PontoTuristicoModel.update(data, {
-      where: { id },
-      transaction: t,
-    });
-    await PontoTuristicoModel.sync();
-    if (pontoUpdated[0] === 0) return null;
+    const [affected] = await PontoTuristicoModel.update(
+      {
+        nome: data.nome,
+        tipo: data.tipo,
+        horario: data.horario,
+        img: data.img,
+        desc: data.desc,
+        cidadeId: data.cidadeId,
+      },
+      { where: { id }, transaction: t }
+    );
+
+    if (affected === 0) return null;
     return this.findById(id);
+  }
+
+  async delete(id: number, t?: Transaction): Promise<boolean> {
+    const deleted = await PontoTuristicoModel.destroy({ where: { id }, transaction: t });
+    return deleted > 0;
   }
 }

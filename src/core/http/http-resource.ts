@@ -1,5 +1,6 @@
 // src/shared/http/http-resource.ts
 import { HttpResponse } from "@/core/protocols/http";
+import { LinksPagination } from "./hateoas/pagination-links";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -9,24 +10,24 @@ export interface Link {
 }
 
 export interface Links {
-  [rel: string]: Link | undefined;
+  [rel: string]: Link;
 }
 
 export interface Resource<T> {
   data: T;
-  links: Links;
+  links: Links|LinksPagination;
   meta?: Record<string, any>;
 }
 
 export interface CollectionResource<T> {
   data: Array<T>;
-  links: Links;
+  links: Links|LinksPagination;
   meta?: Record<string, any>;
 }
 
 export const resource = <T>(
   data: T,
-  links: Links,
+  links: Links|LinksPagination,
   meta?: Record<string, any>
 ): Resource<T> => ({
   data,
@@ -36,7 +37,7 @@ export const resource = <T>(
 
 export const collection = <T>(
   data: Array<T>,
-  links: Links,
+  links: Links|LinksPagination,
   meta?: Record<string, any>
 ): CollectionResource<T> => ({
   data,

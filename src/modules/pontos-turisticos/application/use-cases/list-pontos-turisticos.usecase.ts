@@ -2,11 +2,11 @@
 import { normalizePagination } from "@/core/http/pagination";
 import { normalizeSort } from "@/core/http/sorting";
 import { ListPontosTuristicosRepository } from "../../domain/repositories/list-pontos-turisticos.repository";
-import { PontoTuristicoSpecificationBuilder } from "../specifications/ponto-turistico-spec.builder";
 import {
   PONTO_TURISTICO_SORT_FIELDS,
   PontoTuristicoSortField,
 } from "../sorting/ponto-turistico.sort";
+import { PontoTuristicoSpecificationBuilder } from "../specifications/ponto-turistico-spec.builder";
 
 type Input = {
   page?: number;
@@ -27,12 +27,14 @@ export class ListPontosTuristicosUseCase {
   constructor(private readonly repo: ListPontosTuristicosRepository) {}
 
   async execute(params: Input) {
-    const { page, limit, offset } = normalizePagination(params, { maxLimit: 50 });
+    const { page, limit, offset } = normalizePagination(params, {
+      maxLimit: 50,
+    });
 
     const { sortBy, sortDir } = normalizeSort<PontoTuristicoSortField>(
       { sortBy: params.sortBy, sortDir: params.sortDir },
       PONTO_TURISTICO_SORT_FIELDS,
-      { sortBy: "nome", sortDir: "ASC" }
+      { sortBy: "nome", sortDir: "ASC" },
     );
 
     const spec = new PontoTuristicoSpecificationBuilder()
@@ -44,7 +46,12 @@ export class ListPontosTuristicosUseCase {
 
     const order: [string, "ASC" | "DESC"][] = [[sortBy, sortDir]];
 
-    const { rows, count } = await this.repo.listSpec({ spec, limit, offset, order });
+    const { rows, count } = await this.repo.listSpec({
+      spec,
+      limit,
+      offset,
+      order,
+    });
 
     return {
       items: rows,

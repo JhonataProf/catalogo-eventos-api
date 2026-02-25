@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { id } from "zod/locales";
 
 export const createPontoTuristicoSchema = z.object({
+  id: z.number().optional(),
   nome: z
     .string({
       error: (issue) => {
@@ -87,6 +89,7 @@ export const createPontoTuristicoSchema = z.object({
 });
 
 export const updatePontoTuristicoSchema = z.object({
+  id: z.number().optional(),
   nome: z
     .string({
       error: (issue) => {

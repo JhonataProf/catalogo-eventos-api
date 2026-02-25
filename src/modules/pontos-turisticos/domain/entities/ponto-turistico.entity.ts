@@ -1,10 +1,11 @@
 export interface PontoTuristicoProps {
-  id?: string;
+  id?: number;
   nome: string;
   tipo: string;
   horario: string;
   img: string;
   desc: string;
+  cidadeId: number;
 }
 
 export class PontoTuristicoEntity {
@@ -35,6 +36,10 @@ export class PontoTuristicoEntity {
 
     get desc() {
         return this.props.desc
+    }
+
+    get cidadeId() {
+        return this.props.cidadeId
     }
 
     toJSON() {
