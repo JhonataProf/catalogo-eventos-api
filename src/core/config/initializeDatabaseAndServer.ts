@@ -119,6 +119,7 @@ export async function initializeDatabaseAndServer(
     const db: Record<string, any> = { sequelize, Sequelize };
 
     for (const fullPath of modelFullPaths) {
+      log.info(`Importing model from ${fullPath}`);
       const mod = await importer(fullPath);
       const model = mod.default ?? mod;
 

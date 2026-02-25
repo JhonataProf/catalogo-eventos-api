@@ -7,7 +7,7 @@
     "dev": "nodemon",
     "build:clean": "npm run clear:packages && npm run build",
     "clear:packages": "rimraf package-lock.json && rimraf dist && rimraf tsconfig.tsbuildinfo && rimraf node_modules &&npm install",
-    "build": "NODE_ENV=production tsc -p tsconfig.json && tsc-alias -p tsconfig.json && npm run copy:swagger",
+    "build": "NODE_ENV=production tsc -p tsconfig.json && tsc-alias -p tsconfig.json && npm run copy:src/core/docs",
     "start": "node dist/server.js",
     "start:debug": "node --inspect dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -44,6 +44,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.995.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",

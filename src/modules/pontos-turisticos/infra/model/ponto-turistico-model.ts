@@ -3,7 +3,7 @@ import CidadeModel from "@/modules/cidades/infra/models/cidade-model";
 import { DataTypes, Model } from "sequelize";
 
 export class PontoTuristicoModel extends Model {
-  id!: string;
+  id!: number;
   nome!: string;
   tipo!: string;
   horario!: string;
@@ -54,5 +54,8 @@ PontoTuristicoModel.init(
     modelName: "pontos-turisticos",
   },
 );
+
 PontoTuristicoModel.hasOne(CidadeModel, { foreignKey: "cidadeId", as: "cidades" });
+PontoTuristicoModel.belongsTo(CidadeModel, { foreignKey: "cidadeId", as: "cidade" });
+
 export default PontoTuristicoModel;

@@ -4,6 +4,7 @@ import { FindPontoTuristicoByCidadeRepository } from "./find-ponto-turistico-by-
 import { FindPontoTuristicoByIdRepository } from "./find-ponto-turistico-by-id.repository";
 import { ListPontoTuristicoRespository } from "./list-ponto-turistico.repository";
 import { UpdatePontoTuristicoRepository } from "./update-ponto-turistico.repository";
+import { ListPontosTuristicosRepository } from "./list-pontos-turisticos.repository";   
 
 export {
     CreatePontoTuristicoRepository,
@@ -11,5 +12,6 @@ export {
     FindPontoTuristicoByCidadeRepository,
     FindPontoTuristicoByIdRepository,
     ListPontoTuristicoRespository,
-    UpdatePontoTuristicoRepository
+    UpdatePontoTuristicoRepository,
+    ListPontosTuristicosRepository
 }

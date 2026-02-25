@@ -1,6 +1,6 @@
 import { created, mapErrorToHttpResponse, resource } from "@/core/http";
 import { logger } from "@/core/logger";
-import { Controller } from "@/core/protocols";
+import { Controller, HttpRequest } from "@/core/protocols";
 import { CreateCidadeDTO } from "@/modules/cidades/application/dto";
 import { CreateCidadeUseCase } from "@/modules/cidades/application/use-cases/create-cidade.usecase";
 import { cidadeLinks } from "../cidade-hateoas";
@@ -8,11 +8,11 @@ import { cidadeLinks } from "../cidade-hateoas";
 export class CreateCidadeController implements Controller {
   constructor(private readonly createCidadeUseCase: CreateCidadeUseCase) {}
 
-  async handle(httpRequest: any): Promise<any> {
+  async handle(httpRequest: HttpRequest): Promise<any> {
     const correlationId = httpRequest.correlationId;
-    logger.info("Iniciando criação de usuário", {
+    logger.info("Iniciando criação de cidade", {
       correlationId,
-      route: "CreateUserController",
+      route: "CreateCidadeController",
       body: httpRequest.body,
     });
     try {
