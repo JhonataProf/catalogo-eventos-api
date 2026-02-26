@@ -51,16 +51,16 @@ const EnvSchema = z.object({
   DB_USERNAME: z.string().default("user_app"),
   DB_PASSWORD: z.string().default(""),
   MEDIA_STORAGE: z.enum(["local", "s3"]).default("local"),
-  S3_BUCKET: z.string(),
-  AWS_REGION: z.string(),
-  S3_PUBLIC_BASE_URL: z.string(),
+  S3_BUCKET: z.string().optional(),
+  AWS_REGION: z.string().optional(),
+  S3_PUBLIC_BASE_URL: z.string().optional(),
 });
 
 const parsed = EnvSchema.safeParse(process.env);
 if (!parsed.success) {
   console.error(
     "Falha ao validar variáveis de ambiente:",
-    parsed.error.flatten().fieldErrors
+    parsed.error.flatten().fieldErrors,
   );
   process.exit(1);
 }
