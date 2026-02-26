@@ -1,0 +1,83 @@
+tags:
+  - name: Media
+    description: Upload de mídias (base64)
+
+paths:
+  /media:
+    post:
+      tags: [Media]
+      summary: Upload de mídias (base64)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadMediaInput"
+      responses:
+        "200":
+          description: OK (CollectionResource)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadMediaResponse"
+        "400":
+          description: Validation error
+        "401":
+          description: Unauthorized
+
+components:
+  schemas:
+    UploadMediaFileInput:
+      type: object
+      required: [base64, filename, mimeType]
+      properties:
+        base64:
+          type: string
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+        filename:
+          type: string
+          example: "foto.png"
+        mimeType:
+          type: string
+          example: "image/png"
+
+    UploadMediaInput:
+      type: object
+      required: [files]
+      properties:
+        files:
+          type: array
+          items:
+            $ref: "#/components/schemas/UploadMediaFileInput"
+        folder:
+          type: string
+          example: "users/10"
+        visibility:
+          type: string
+          enum: [private, public]
+          example: public
+
+    UploadMediaItem:
+      type: object
+      properties:
+        filename: { type: string, example: "foto.png" }
+        mimeType: { type: string, example: "image/png" }
+        size: { type: integer, example: 12345 }
+        path: { type: string, example: "s3://bucket/users/10/uuid.png" }
+        url:
+          {
+            type: string,
+            example: "https://bucket.s3.amazonaws.com/users/10/uuid.png",
+          }
+
+    UploadMediaResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/UploadMediaItem"
+        links:
+          type: object
+        meta:
+          type: object

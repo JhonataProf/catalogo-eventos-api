@@ -12,20 +12,10 @@ export function loadSwaggerDocument() {
   const users = YAML.load(swaggerPath("users.yaml"));
   const pontoTuristico = YAML.load(swaggerPath("ponto-turistico.yaml"));
   const cidades = YAML.load(swaggerPath("cidades.yaml"));
-  // futuramente:
-  // const pratos = YAML.load(swaggerPath("pratos.yaml"));
-  // const pedidos = YAML.load(swaggerPath("pedidos.yaml"));
+  const media = YAML.load(swaggerPath("media.yaml"));
 
   // merge profundo, respeitando paths e components
-  const doc = merge.all([
-    base,
-    auth,
-    users,
-    pontoTuristico,
-    cidades,
-    // pratos,
-    // pedidos,
-  ]);
+  const doc = merge.all([base, auth, users, pontoTuristico, cidades, media]);
 
   return doc;
 }

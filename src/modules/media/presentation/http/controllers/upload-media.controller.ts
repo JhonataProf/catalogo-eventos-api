@@ -1,28 +1,43 @@
-// modules/media/presentation/http/controllers/upload-media.controller.ts
-import { Request, Response } from "express";
+// src/modules/media/presentation/http/controllers/upload-media.controller.ts
+import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
+import { ok, resource } from "@/core/http/http-resource";
+import { mapErrorToHttpResponse } from "@/core/http/http-error-response";
+import { logger } from "@/core/config/logger";
 import { UploadMediaUseCase } from "../../../application/use-cases/upload-media.usecase";
+import { mediaLinks } from "../media-hateoas";
 
-export class UploadMediaController {
+export class UploadMediaController implements Controller {
   constructor(private readonly useCase: UploadMediaUseCase) {}
 
-  async handle(req: Request, res: Response) {
+  async handle(req: HttpRequest): Promise<HttpResponse> {
+    const correlationId = req.correlationId;
+
+    logger.info("UploadMediaController: start", {
+      correlationId,
+      route: "UploadMediaController",
+    });
+
     try {
-      const { files, folder, public: isPublic, contentTypeHint } = req.body;
+      const result = await this.useCase.execute(req.body as any);
 
-      const result = await this.useCase.execute({
-        files,
-        folder,
-        public: isPublic,
-        contentTypeHint,
-      });
+      // CollectionResource: data é array
+      const resp = resource(
+        result.items,
+        mediaLinks(),
+        {
+          correlationId,
+          count: result.items.length,
+        }
+      );
 
-      return res.status(201).json({
-        data: { paths: result.paths },
+      return ok(resp);
+    } catch (err) {
+      logger.error("UploadMediaController: error", {
+        correlationId,
+        route: "UploadMediaController",
+        err,
       });
-    } catch (err: any) {
-      return res.status(400).json({
-        error: { message: err?.message ?? "Invalid upload" },
-      });
+      return mapErrorToHttpResponse(err, correlationId);
     }
   }
 }

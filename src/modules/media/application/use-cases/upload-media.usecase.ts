@@ -1,45 +1,76 @@
-// modules/media/application/use-cases/upload-media.usecase.ts
+// src/modules/media/application/use-cases/upload-media.usecase.ts
+import { AppError } from "@/core/errors-app-error";
+import { DomainLogger, NoopDomainLogger } from "@/core/logger/domain-logger";
 import { MediaStorageService } from "../../domain/services/media-storage.service";
 import { UploadMediaDTO } from "../dto/upload-media.dto";
-import { normalizeToArray, parseBase64 } from "../helpers/base64";
 
-export class UploadMediaUseCase {
-  constructor(private readonly storage: MediaStorageService) {}
-
-  async execute(dto: UploadMediaDTO): Promise<{ paths: string[] }> {
-    const folder = (dto.folder ?? "uploads").replace(/^\/+|\/+$/g, "");
-    const files = normalizeToArray(dto.files);
-
-    const results: string[] = [];
-
-    for (const file of files) {
-      const { buffer, contentType, hash } = parseBase64(file);
-
-      // nome determinístico (bom p/ dedup), mas você pode usar uuid também
-      const ext = guessExtension(dto.contentTypeHint ?? contentType);
-      const filename = `${hash}${ext ? `.${ext}` : ""}`;
-
-      const saved = await this.storage.save({
-        buffer,
-        folder,
-        filename,
-        contentType: dto.contentTypeHint ?? contentType,
-        public: dto.public ?? false,
-      });
-
-      results.push(saved.path);
-    }
-
-    return { paths: results };
-  }
+function stripDataUrl(b64: string) {
+  // aceita "data:...;base64,XXXXX"
+  const idx = b64.indexOf("base64,");
+  return idx >= 0 ? b64.slice(idx + "base64,".length) : b64;
 }
 
-function guessExtension(contentType?: string) {
-  switch (contentType) {
-    case "image/png": return "png";
-    case "image/jpeg": return "jpg";
-    case "image/webp": return "webp";
-    case "video/mp4": return "mp4";
-    default: return "";
+export interface UploadMediaResult {
+  items: Array<{
+    filename: string;
+    mimeType: string;
+    size: number;
+    path: string;
+    url?: string;
+  }>;
+}
+
+export class UploadMediaUseCase {
+  constructor(
+    private readonly storage: MediaStorageService,
+    private readonly logger: DomainLogger = new NoopDomainLogger()
+  ) {}
+
+  async execute(dto: UploadMediaDTO): Promise<UploadMediaResult> {
+    this.logger.info("UploadMediaUseCase: start", {
+      files: dto.files?.length ?? 0,
+      folder: dto.folder,
+      visibility: dto.visibility,
+    });
+
+    if (!dto.files?.length) {
+      throw new AppError({
+        code: "MEDIA_EMPTY",
+        message: "Nenhum arquivo enviado",
+        statusCode: 400,
+      });
+    }
+
+    const items = [];
+    for (const f of dto.files) {
+      const raw = stripDataUrl(f.base64);
+      const buffer = Buffer.from(raw, "base64");
+      if (!buffer.length) {
+        throw new AppError({
+          code: "MEDIA_INVALID_BASE64",
+          message: `Arquivo ${f.filename} está vazio ou inválido`,
+          statusCode: 400,
+        });
+      }
+
+      const saved = await this.storage.save({
+        filename: f.filename,
+        mimeType: f.mimeType,
+        buffer,
+        folder: dto.folder,
+        visibility: dto.visibility,
+      });
+
+      items.push({
+        filename: f.filename,
+        mimeType: saved.mimeType,
+        size: saved.size,
+        path: saved.path,
+        url: saved.url,
+      });
+    }
+
+    this.logger.info("UploadMediaUseCase: done", { count: items.length });
+    return { items };
   }
 }

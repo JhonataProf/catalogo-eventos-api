@@ -50,6 +50,10 @@ const EnvSchema = z.object({
   DB_DATABASE: z.string().default("db_app"),
   DB_USERNAME: z.string().default("user_app"),
   DB_PASSWORD: z.string().default(""),
+  MEDIA_STORAGE: z.enum(["local", "s3"]).default("local"),
+  S3_BUCKET: z.string(),
+  AWS_REGION: z.string(),
+  S3_PUBLIC_BASE_URL: z.string(),
 });
 
 const parsed = EnvSchema.safeParse(process.env);
