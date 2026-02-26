@@ -30,7 +30,7 @@ describe("core/config/env", () => {
       .mockImplementation((() => undefined) as never);
     const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
-    await import("@/core/config/env");
+    await import("../../../../src/core/config/env");
 
     expect(exitSpy).toHaveBeenCalledWith(1);
 
@@ -43,19 +43,42 @@ describe("core/config/env", () => {
 
     process.env = {
       NODE_ENV: "test",
-      // obrigatórios min 16 chars
-      JWT_SECRET: "1234567890abcdef",
-      JWT_ACCESS_SECRET: "1234567890abcdef",
-      JWT_REFRESH_SECRET: "1234567890abcdef",
-      // opcionais com default, mas podemos setar PORT por clareza
       PORT: "3000",
+      API_VERSION: "v1",
+      SWAGGER_ENABLED: "true",
+
+      // SECURITY
+      JWT_SECRET:
+        "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
+      JWT_ACCESS_SECRET:
+        "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
+      JWT_EXPIRES_IN: "15m",
+      JWT_REFRESH_SECRET: "sua_chave_secreta_para_refresh_token",
+      JWT_REFRESH_EXPIRES_IN: "7d",
+      SALT: "10",
+      UPDATE_MODEL: "true",
+
+      // DB
+      DB_DIALECT: "mysql",
+      DB_HOST: "0.0.0.0",
+      DB_PORT: "3306",
+      DB_DATABASE: "db_app",
+      DB_USERNAME: "user_app",
+      DB_PASSWORD: "Senha@123",
+      DB_NAME: "projeto_basico_com_crud_usuario",
+
+      // AWS
+      MEDIA_STORAGE: "local",
+      S3_BUCKET: "your-s3-bucket-name",
+      AWS_REGION: "your-aws-region",
+      S3_PUBLIC_BASE_URL: "https://your-s3-bucket-name.s3.amazonaws.com/",
     };
 
     const exitSpy = jest
       .spyOn(process, "exit")
       .mockImplementation((() => undefined) as never);
 
-    const { ENV } = await import("@/core/config/env");
+    const { ENV } = await import("../../../../src/core/config/env");
 
     expect(exitSpy).not.toHaveBeenCalled();
     expect(ENV.NODE_ENV).toBe("test");

@@ -5,19 +5,16 @@ import { MediaStorageService } from "../../domain/services/media-storage.service
 import { UploadMediaDTO } from "../dto/upload-media.dto";
 
 function stripDataUrl(b64: string) {
-  // aceita "data:...;base64,XXXXX"
   const idx = b64.indexOf("base64,");
   return idx >= 0 ? b64.slice(idx + "base64,".length) : b64;
 }
 
 export interface UploadMediaResult {
-  items: Array<{
-    filename: string;
-    mimeType: string;
-    size: number;
-    path: string;
-    url?: string;
-  }>;
+  filename: string;
+  mimeType: string;
+  size: number;
+  path: string;
+  url?: string;
 }
 
 export class UploadMediaUseCase {
@@ -28,12 +25,12 @@ export class UploadMediaUseCase {
 
   async execute(dto: UploadMediaDTO): Promise<UploadMediaResult> {
     this.logger.info("UploadMediaUseCase: start", {
-      files: dto.files?.length ?? 0,
       folder: dto.folder,
       visibility: dto.visibility,
+      filename: dto.file?.filename,
     });
 
-    if (!dto.files?.length) {
+    if (!dto.file) {
       throw new AppError({
         code: "MEDIA_EMPTY",
         message: "Nenhum arquivo enviado",
@@ -41,36 +38,36 @@ export class UploadMediaUseCase {
       });
     }
 
-    const items = [];
-    for (const f of dto.files) {
-      const raw = stripDataUrl(f.base64);
-      const buffer = Buffer.from(raw, "base64");
-      if (!buffer.length) {
-        throw new AppError({
-          code: "MEDIA_INVALID_BASE64",
-          message: `Arquivo ${f.filename} está vazio ou inválido`,
-          statusCode: 400,
-        });
-      }
+    const raw = stripDataUrl(dto.file.base64);
+    const buffer = Buffer.from(raw, "base64");
 
-      const saved = await this.storage.save({
-        filename: f.filename,
-        mimeType: f.mimeType,
-        buffer,
-        folder: dto.folder,
-        visibility: dto.visibility,
-      });
-
-      items.push({
-        filename: f.filename,
-        mimeType: saved.mimeType,
-        size: saved.size,
-        path: saved.path,
-        url: saved.url,
+    if (!buffer.length) {
+      throw new AppError({
+        code: "MEDIA_INVALID_BASE64",
+        message: "Arquivo vazio ou base64 inválido",
+        statusCode: 400,
       });
     }
 
-    this.logger.info("UploadMediaUseCase: done", { count: items.length });
-    return { items };
+    const saved = await this.storage.save({
+      filename: dto.file.filename,
+      mimeType: dto.file.mimeType,
+      buffer,
+      folder: dto.folder,
+      visibility: dto.visibility,
+    });
+
+    this.logger.info("UploadMediaUseCase: done", {
+      path: saved.path,
+      size: saved.size,
+    });
+
+    return {
+      filename: dto.file.filename,
+      mimeType: saved.mimeType,
+      size: saved.size,
+      path: saved.path,
+      url: saved.url,
+    };
   }
 }

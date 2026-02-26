@@ -20,14 +20,16 @@ export class UploadMediaController implements Controller {
     try {
       const result = await this.useCase.execute(req.body as any);
 
-      // CollectionResource: data é array
       const resp = resource(
-        result.items,
-        mediaLinks(),
         {
-          correlationId,
-          count: result.items.length,
-        }
+          filename: result.filename,
+          mimeType: result.mimeType,
+          size: result.size,
+          path: result.path,
+          url: result.url,
+        },
+        mediaLinks(),
+        { correlationId }
       );
 
       return ok(resp);
@@ -37,6 +39,7 @@ export class UploadMediaController implements Controller {
         route: "UploadMediaController",
         err,
       });
+
       return mapErrorToHttpResponse(err, correlationId);
     }
   }

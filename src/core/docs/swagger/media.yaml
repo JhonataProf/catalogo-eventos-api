@@ -1,12 +1,12 @@
 tags:
   - name: Media
-    description: Upload de mídias (base64)
+    description: Upload de mídia (base64)
 
 paths:
-  /media:
+  /api/media:
     post:
       tags: [Media]
-      summary: Upload de mídias (base64)
+      summary: Upload de uma mídia (base64)
       requestBody:
         required: true
         content:
@@ -15,7 +15,7 @@ paths:
               $ref: "#/components/schemas/UploadMediaInput"
       responses:
         "200":
-          description: OK (CollectionResource)
+          description: OK (Resource)
           content:
             application/json:
               schema:
@@ -43,12 +43,10 @@ components:
 
     UploadMediaInput:
       type: object
-      required: [files]
+      required: [file]
       properties:
-        files:
-          type: array
-          items:
-            $ref: "#/components/schemas/UploadMediaFileInput"
+        file:
+          $ref: "#/components/schemas/UploadMediaFileInput"
         folder:
           type: string
           example: "users/10"
@@ -57,26 +55,20 @@ components:
           enum: [private, public]
           example: public
 
-    UploadMediaItem:
+    UploadMediaData:
       type: object
       properties:
         filename: { type: string, example: "foto.png" }
         mimeType: { type: string, example: "image/png" }
         size: { type: integer, example: 12345 }
         path: { type: string, example: "s3://bucket/users/10/uuid.png" }
-        url:
-          {
-            type: string,
-            example: "https://bucket.s3.amazonaws.com/users/10/uuid.png",
-          }
+        url: { type: string, example: "https://bucket.s3.amazonaws.com/users/10/uuid.png" }
 
     UploadMediaResponse:
       type: object
       properties:
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/UploadMediaItem"
+          $ref: "#/components/schemas/UploadMediaData"
         links:
           type: object
         meta:

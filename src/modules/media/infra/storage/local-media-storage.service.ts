@@ -1,12 +1,22 @@
 // src/modules/media/infra/storage/local-media-storage.service.ts
-import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
-import { MediaStorageService, SaveMediaInput, SaveMediaOutput } from "../../domain/services/media-storage.service";
+import {
+  ensureDir,
+  joinFs,
+  joinPublicPath,
+  normalizeFolder,
+  writeBufferFile,
+} from "@/core/config/paths";
+import {
+  MediaStorageService,
+  SaveMediaInput,
+  SaveMediaOutput,
+} from "../../domain/services/media-storage.service";
 
 export interface LocalMediaStorageConfig {
-  rootDir: string;    // ex: path.resolve(process.cwd(), "uploads")
-  publicBasePath?: string; // ex: "/uploads" se você expor estaticamente
+  rootDir: string; // ex: path.resolve(process.cwd(), "uploads")
+  publicBasePath?: string; // ex: "/uploads"
 }
 
 export class LocalMediaStorageService implements MediaStorageService {
@@ -16,16 +26,16 @@ export class LocalMediaStorageService implements MediaStorageService {
     const ext = path.extname(input.filename) || "";
     const safeName = crypto.randomUUID() + ext;
 
-    const folder = input.folder ? input.folder.replace(/^\//, "") : "";
-    const dir = path.join(this.cfg.rootDir, folder);
+    const folder = normalizeFolder(input.folder);
+    const dir = joinFs(this.cfg.rootDir, folder);
 
-    await fs.mkdir(dir, { recursive: true });
+    await ensureDir(dir);
 
     const filePath = path.join(dir, safeName);
-    await fs.writeFile(filePath, input.buffer);
+    await writeBufferFile(filePath, input.buffer);
 
     const logicalPath = this.cfg.publicBasePath
-      ? path.posix.join(this.cfg.publicBasePath, folder.split(path.sep).join("/"), safeName)
+      ? joinPublicPath(this.cfg.publicBasePath, folder, safeName)
       : filePath;
 
     return {

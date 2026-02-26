@@ -4,7 +4,7 @@ import adaptRoute from "@/core/adapters/express-route-adapter";
 
 import authMiddleware from "@/core/http/middlewares/auth-middleware";
 import authorizeRoles from "@/core/http/middlewares/authorize-roles";
-import { validateBody } from "@/core/http/middlewares/validate-body";
+import {validateBody} from "@/core/http/middlewares/validate-body";
 
 import { uploadMediaSchema } from "../validators/media-schemas";
 import { UploadMediaControllerFactory } from "../controllers/factories/upload-media.controller.factory";
@@ -13,8 +13,8 @@ export function registerMediaRoutes(router: Router) {
   router.post(
     "/media",
     authMiddleware,
-    authorizeRoles(["Gerente", "Funcionario"]), // ajuste
+    authorizeRoles(["Gerente", "Funcionario"]), // ajuste se necessário
     validateBody(uploadMediaSchema),
-    adaptRoute(UploadMediaControllerFactory()),
+    adaptRoute(UploadMediaControllerFactory())
   );
 }

@@ -1,8 +1,12 @@
 // src/modules/media/infra/storage/s3-media-storage.service.ts
+import { PutObjectCommand, PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3";
 import crypto from "crypto";
 import path from "path";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { MediaStorageService, SaveMediaInput, SaveMediaOutput } from "../../domain/services/media-storage.service";
+import {
+  MediaStorageService,
+  SaveMediaInput,
+  SaveMediaOutput,
+} from "../../domain/services/media-storage.service";
 
 export interface S3MediaStorageConfig {
   bucket: string;
@@ -26,15 +30,18 @@ export class S3MediaStorageService implements MediaStorageService {
 
     const isPublic = input.visibility === "public";
 
-    await this.client.send(
-      new PutObjectCommand({
-        Bucket: this.cfg.bucket,
-        Key: key,
-        Body: input.buffer,
-        ContentType: input.mimeType,
-        ACL: isPublic ? "public-read" : undefined, // se sua policy não usar ACL, remova e use policy/bucket settings
-      })
-    );
+    const objCommand: PutObjectCommandInput = {
+      Bucket: this.cfg.bucket,
+      Key: key,
+      Body: input.buffer,
+      ContentType: input.mimeType
+    }
+    if(isPublic) {
+      objCommand.ACL = "public-read";
+    }
+
+    const cmd = new PutObjectCommand(objCommand);
+    await this.client.send(cmd);
 
     const url =
       isPublic && this.cfg.publicBaseUrl
