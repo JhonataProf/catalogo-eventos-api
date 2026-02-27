@@ -1,7 +1,7 @@
 // src/modules/events/infra/model/event-model.ts
-import { DataTypes, Model } from "sequelize";
 import sequelize from "@/core/database";
 import { CidadeModel } from "@/modules/cidades/infra/models/cidade-model";
+import { DataTypes, Model } from "sequelize";
 
 class EventModel extends Model {
   id!: number;
@@ -14,14 +14,6 @@ class EventModel extends Model {
   img!: string;
   desc!: string;
   cidadeId!: number;
-  static associate() {
-    // CASCADE/RESTRICT depende da sua regra. Eu deixei RESTRICT para não apagar eventos ao apagar cidade.
-    EventModel.belongsTo(CidadeModel, {
-      foreignKey: "cidadeId",
-      onDelete: "RESTRICT",
-      onUpdate: "CASCADE",
-    });
-  }
 }
 
 EventModel.init(
@@ -35,12 +27,21 @@ EventModel.init(
     preco: { type: DataTypes.STRING, allowNull: false },
     img: { type: DataTypes.STRING, allowNull: false },
     desc: { type: DataTypes.TEXT, allowNull: false },
-    cidadeId: { type: DataTypes.INTEGER, allowNull: false },
+    cidadeId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "cidades", // Name of the target model
+        key: "id", // Key in the target model that we're referencing
+      },
+    },
   },
   {
     sequelize,
-    tableName: "Eventos",
+    tableName: "eventos",
   },
 );
+
+EventModel.belongsTo(CidadeModel, { foreignKey: "cidadeId", as: "cidade" });
 
 export default EventModel;

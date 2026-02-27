@@ -44,7 +44,7 @@ export const createPontoTuristicoSchema = z.object({
         return { message: "Horário é inválido" };
       },
     })
-    .regex(/^([0-1]?[0-2]|2[0-3]):[0-5][0-9]$/, "Horário deve estar no formato HH:mm")
+    .regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/, "Horário deve estar no formato HH:mm")
     .min(3, "Horário deve ter pelo menos 3 caracteres"),
 
   img: z
