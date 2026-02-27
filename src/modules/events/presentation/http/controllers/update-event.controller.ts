@@ -1,11 +1,10 @@
 // src/modules/events/presentation/http/controllers/update-event.controller.ts
-import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
-import { ok } from "@/core/http/http-resource";
-import { mapErrorToHttpResponse } from "@/core/http/http-error-response";
 import { logger } from "@/core/config/logger";
+import { mapErrorToHttpResponse } from "@/core/http/http-error-response";
+import { ok, resource } from "@/core/http/http-resource";
+import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { UpdateEventUseCase } from "@/modules/events/application/use-cases/update-event.usecase";
 import { eventLinks } from "../event-hateoas";
-import { resource } from "@/core/http/http-resource";
 
 export class UpdateEventController implements Controller {
   constructor(private readonly useCase: UpdateEventUseCase) {}
@@ -24,8 +23,7 @@ export class UpdateEventController implements Controller {
       const id = Number(req.params?.id);
       const body = req.body as any;
 
-      const updated = await this.useCase.execute({
-        id,
+      const updated = await this.useCase.execute(id, {
         ...body,
       });
 
@@ -45,7 +43,7 @@ export class UpdateEventController implements Controller {
           updatedAt: updated.updatedAt,
         },
         eventLinks(updated.id),
-        { version: "1.0.0" }
+        { version: "1.0.0" },
       );
 
       logger.info("Evento atualizado com sucesso", {

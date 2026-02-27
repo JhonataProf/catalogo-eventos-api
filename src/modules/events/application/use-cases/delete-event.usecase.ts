@@ -9,7 +9,7 @@ export class DeleteEventUseCase {
     private readonly logger: DomainLogger = new NoopDomainLogger()
   ) {}
 
-  async execute(id: number): Promise<boolean> {
+  async execute({id}: {id: number}): Promise<boolean> {
     const existing = await this.findByIdRepo.findById(id);
     if (!existing) return false;
 
