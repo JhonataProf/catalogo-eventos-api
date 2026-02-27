@@ -3,6 +3,8 @@ import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { ok } from "@/core/http/http-resource";
 import { ListEventsUseCase } from "@/modules/events/application/use-cases/list-events.usecase";
 import { buildPaginationLinks } from "@/core/http/hateoas/pagination-links";
+import { eventListLinks } from "../event-hateoas";
+import { ListEventsDTO } from "@/modules/events/application/dto";
 
 export class ListEventsController implements Controller {
   constructor(private readonly useCase: ListEventsUseCase) {}
@@ -23,7 +25,13 @@ export class ListEventsController implements Controller {
     });
 
     const data = {
-      items: result.items.map((e) => e.props),
+      items: result.items.map<ListEventsDTO>((e) => ({
+        id: e.id,
+        titulo: e.titulo,
+        descricao: e.desc,
+        dataHora: e.hora,
+        categoria: e.cat,
+      })),
       page: result.page,
       limit: result.limit,
       total: result.total,
@@ -31,22 +39,12 @@ export class ListEventsController implements Controller {
       sort: result.sort,
     };
 
-    const base = `/api/eventos`;
-    const mk = (page: number) =>
-      `${base}?page=${page}&limit=${result.limit}` +
-      (q.titulo ? `&titulo=${encodeURIComponent(q.titulo)}` : "") +
-      (q.cat ? `&cat=${encodeURIComponent(q.cat)}` : "") +
-      (q.cidadeId ? `&cidadeId=${encodeURIComponent(q.cidadeId)}` : "") +
-      (q.sortBy ? `&sortBy=${encodeURIComponent(q.sortBy)}` : "") +
-      (q.sortDir ? `&sortDir=${encodeURIComponent(q.sortDir)}` : "");
-
-    const links = buildPaginationLinks({
-      basePath: base,
+    const links = eventListLinks({
       page: result.page,
-      totalPages: result.totalPages,
       limit: result.limit,
-      query: q,
-      includeFirstLast: true,
+      totalPages: result.totalPages,
+      filters: q.filters,
+      sort: q.sortBy ? { by: q.sortBy, dir: q.sortDir } : undefined,
     });
 
     const meta = {

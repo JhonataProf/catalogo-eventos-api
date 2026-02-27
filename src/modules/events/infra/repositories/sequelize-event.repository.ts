@@ -104,19 +104,27 @@ export class SequelizeEventRepository
     const limit = Math.min(100, Math.max(1, Number(query.limit ?? 10)));
     const offset = (page - 1) * limit;
 
-    const sortBy = ALLOWED_SORT_FIELDS.has(String(query.sortBy)) ? String(query.sortBy) : "createdAt";
-    const sortDir = (String(query.sortDir ?? "desc").toLowerCase() === "asc" ? "asc" : "desc") as "asc" | "desc";
+    const sortByRaw = query.sort?.by;
+    const sortDirRaw = query.sort?.dir;
 
-    // Builder de specs (sem if no usecase)
-    const builder = new SpecificationBuilder<ListEventsQuery>()
+    const sortBy = ALLOWED_SORT_FIELDS.has(String(sortByRaw))
+      ? String(sortByRaw)
+      : "createdAt";
+
+    const sortDir = (String(sortDirRaw ?? "desc").toLowerCase() === "asc"
+      ? "asc"
+      : "desc") as "asc" | "desc";
+
+    const filters = query.filters ?? {};
+    const cidadeId =
+      filters.cidadeId !== undefined ? Number(filters.cidadeId) : undefined;
+
+    const builder = new SpecificationBuilder<typeof filters>()
       .add((p) => (p.titulo ? like("titulo", p.titulo) : null))
       .add((p) => (p.cat ? eq("cat", p.cat) : null))
-      .add((p) => (typeof p.cidadeId === "number" ? eq("cidadeId", p.cidadeId) : null));
+      .add((p) => (typeof cidadeId === "number" ? eq("cidadeId", cidadeId) : null));
 
-    const spec = builder.build({
-      ...query,
-      cidadeId: query.cidadeId !== undefined ? Number(query.cidadeId) : undefined,
-    });
+    const spec = builder.build({ ...filters, cidadeId });
 
     const where = spec ? spec.toSequelizeWhere() : {};
 

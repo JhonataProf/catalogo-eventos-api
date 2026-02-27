@@ -3,16 +3,22 @@ import { EventEntity } from "../entities/event.entity";
 
 export type SortDir = "asc" | "desc";
 
-export interface ListEventsQuery {
-  page?: number;
-  limit?: number;
-
+export interface ListEventsFilters {
   titulo?: string;
   cat?: string;
   cidadeId?: number;
+}
 
-  sortBy?: string;
-  sortDir?: SortDir;
+export interface ListSort {
+  by?: string;
+  dir?: SortDir;
+}
+
+export interface ListEventsQuery {
+  page?: number;
+  limit?: number;
+  filters?: ListEventsFilters;
+  sort?: ListSort;
 }
 
 export interface PaginatedResult<T> {
