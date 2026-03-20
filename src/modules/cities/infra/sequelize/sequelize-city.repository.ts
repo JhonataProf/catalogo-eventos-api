@@ -20,33 +20,44 @@ export class SequelizeCityRepository
     FindCityByNameRepository
 {
   constructor() {}
-  async findByName(nome: string): Promise<CityEntity | null> {
-    const city = await CityModel.findOne({ where: { nome } });
+  async findByName(name: string): Promise<CityEntity | null> {
+    const city = await CityModel.findOne({ where: { name } });
     if (!city) return null;
     return new CityEntity({
       id: city.id,
-      nome: city.nome,
-      desc: city.desc,
-      uf: city.uf,
+      name: city.name,
+      slug: city.slug,
+      state: city.state,
+      summary: city.summary,
+      description: city.description,
+      imageUrl: city.imageUrl,
+      published: city.published,
     });
   }
 
   async create(city: CityEntity, t?: Transaction): Promise<CityEntity> {
     const created = await CityModel.create(
       {
-        id: 0, // Substitua pelo ID gerado pelo banco de dados
-        nome: city.nome,
-        desc: city.desc,
-        uf: city.uf,
+        name: city.name,
+        slug: city.slug,
+        state: city.state,
+        summary: city.summary,
+        description: city.description,
+        imageUrl: city.imageUrl,
+        published: city.published,
       },
       { transaction: t },
     );
     await CityModel.sync();
     return new CityEntity({
       id: created.id,
-      nome: created.nome,
-      desc: created.desc,
-      uf: created.uf,
+      name: created.name,
+      slug: created.slug,
+      state: created.state,
+      summary: created.summary,
+      description: created.description,
+      imageUrl: created.imageUrl,
+      published: created.published,
     });
   }
 
@@ -56,9 +67,13 @@ export class SequelizeCityRepository
       (city) =>
         new CityEntity({
           id: city.id,
-          nome: city.nome,
-          desc: city.desc,
-          uf: city.uf,
+          name: city.name,
+          slug: city.slug,
+          state: city.state,
+          summary: city.summary,
+          description: city.description,
+          imageUrl: city.imageUrl,
+          published: city.published,
         }),
     );
   }
@@ -69,9 +84,13 @@ export class SequelizeCityRepository
 
     return new CityEntity({
       id: city.id,
-      nome: city.nome,
-      desc: city.desc,
-      uf: city.uf,
+      name: city.name,
+      slug: city.slug,
+      state: city.state,
+      summary: city.summary,
+      description: city.description,
+      imageUrl: city.imageUrl,
+      published: city.published,
     });
   }
 
@@ -80,7 +99,7 @@ export class SequelizeCityRepository
     city: Partial<CityEntity>,
     t?: Transaction,
   ): Promise<CityEntity | null> {
-    // Implementação do método de edição usando Sequelize
+    
     const cityUpdated = await CityModel.update(city, {
       where: { id },
       transaction: t,

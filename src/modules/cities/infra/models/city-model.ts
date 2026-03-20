@@ -4,10 +4,13 @@ import { DataTypes, Model } from "sequelize";
 
 export class CityModel extends Model {
   id!: number;
-  nome!: string;
-  uf!: string;
-  desc!: string;
-  touristPoint!: TouristPointModel[];
+  name!: string;
+  slug!: string;
+  state!: string;
+  summary!: string;
+  description!: string;
+  imageUrl!: string;
+  published!: boolean;
 }
 
 CityModel.init(
@@ -17,23 +20,33 @@ CityModel.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    nome: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    uf: {
+    slug: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    state: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    desc: {
+    summary: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    touristPoint: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        return this.getDataValue("touristPoints") || [];
-      },
+    imageUrl: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    published: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
   },
   {

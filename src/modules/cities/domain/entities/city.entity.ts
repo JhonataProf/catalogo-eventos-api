@@ -1,8 +1,12 @@
 export interface CityProps {
   id?: number;
-  nome: string;
-  uf: string;
-  desc: string;
+  name: string;
+  state: string;
+  slug: string;
+  summary: string;
+  description: string;
+  imageUrl: string;
+  published: boolean;
 }
 
 export class CityEntity {
@@ -16,24 +20,44 @@ export class CityEntity {
     return this.props.id;
   }
 
-  get nome() {
-    return this.props.nome;
+  get name() {
+    return this.props.name;
   }
 
-  get uf() {
-    return this.props.uf;
+  get state() {
+    return this.props.state;
   }
 
-  get desc() {
-    return this.props.desc;
+  get slug() {
+    return this.props.slug;
+  }
+
+  get summary() {
+    return this.props.summary;
+  }
+
+  get description() {
+    return this.props.description;
+  }
+
+  get imageUrl() {
+    return this.props.imageUrl;
+  }
+
+  get published() {
+    return this.props.published;
   }
 
   toJSON() {
     return {
       id: this.id,
-      nome: this.nome,
-      uf: this.uf,
-      desc: this.desc,
+      name: this.name,
+      slug: this.slug,
+      state: this.state,
+      summary: this.summary,
+      description: this.description,
+      imageUrl: this.imageUrl,
+      published: this.published,
     };
   }
 }

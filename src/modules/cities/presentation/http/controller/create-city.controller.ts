@@ -1,9 +1,10 @@
-import { created, mapErrorToHttpResponse, resource } from "@/core/http";
-import { logger } from "@/core/logger";
+import { logger } from "@/core/config/logger";
+import { created, mapErrorToHttpResponse, ResourceBuilder } from "@/core/http";
 import { Controller, HttpRequest } from "@/core/protocols";
 import { CreateCityDTO } from "@/modules/cities/application/dto";
 import { CreateCityUseCase } from "@/modules/cities/application/use-cases/create-city.usecase";
-import { cityLinks } from "../city-hateoas";
+import { CityEntity } from "@/modules/cities/domain/entities/city.entity";
+import { adminCityLinks } from "../city-hateoas";
 
 export class CreateCityController implements Controller {
   constructor(private readonly createCityUseCase: CreateCityUseCase) {}
@@ -18,27 +19,20 @@ export class CreateCityController implements Controller {
     try {
       const body = httpRequest.body as CreateCityDTO;
       const city = await this.createCityUseCase.execute(body);
-      const resourceResp = resource(
-        {
-          id: city.id,
-          nome: city.nome,
-          uf: city.uf,
-          desc: city.desc,
-        },
-        cityLinks(city.id),
-        {
-          version: "1.0.0",
-        },
-      );
+      const resourceBuild = new ResourceBuilder<CityEntity>(city);
+      const resource = resourceBuild
+        .addAllLinks(adminCityLinks(city.id))
+        .addMeta({ correlationId, version: "1.0.0" })
+        .build();
 
       logger.info("Cidade criada com sucesso", {
         correlationId,
         route: "CreateCityController",
         cityId: city.id,
-        nome: city.nome,
+        name: city.name,
       });
 
-      return created(resourceResp);
+      return created(resource);
     } catch (error) {
       logger.error("Erro ao criar cidade", {
         correlationId,

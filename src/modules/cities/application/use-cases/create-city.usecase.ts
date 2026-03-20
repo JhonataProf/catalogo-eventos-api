@@ -15,18 +15,18 @@ export class CreateCityUseCase {
 
   async execute(dto: CreateCityDTO): Promise<CityEntity> {
     this.logger.info("Iniciando CreateCidadeUseCase", {
-      nome: dto.nome,
-      uf: dto.uf,
+      nome: dto.name,
+      uf: dto.state,
     });
 
-    const existing = await this.findCityByNameRepository.findByName(dto.nome);
+    const existing = await this.findCityByNameRepository.findByName(dto.name);
 
     if (existing) {
       throw new AppError({
         code: "CITY_ALREADY_EXISTS",
-        message: `A cidade ${dto.nome} já está cadastrada`,
+        message: `A cidade ${dto.name} já está cadastrada`,
         statusCode: 409,
-        details: { nome: dto.nome },
+        details: { name: dto.name },
       });
     }
     const transaction = await sequelize.transaction();
@@ -34,9 +34,13 @@ export class CreateCityUseCase {
     try {
       const city = new CityEntity({
         id: 0,
-        nome: dto.nome,
-        uf: dto.uf,
-        desc: dto.desc,
+        name: dto.name,
+        slug: dto.slug,
+        state: dto.state,
+        summary: dto.summary,
+        description: dto.description,
+        imageUrl: dto.imageUrl,
+        published: dto.published
       });
 
       const created = await this.createCityRepository.create(
@@ -48,8 +52,8 @@ export class CreateCityUseCase {
 
       this.logger.info("Cidade criada com sucesso", {
         cityId: created.id,
-        nome: created.nome,
-        uf: created.uf,
+        nome: created.name,
+        uf: created.state,
       });
       return created;
     } catch (error) {

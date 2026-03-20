@@ -15,17 +15,11 @@ export type ListCitiesQueryDTO = z.infer<typeof listCitiesQuerySchema>;
 
 export interface CityViewModel {
   id: number;
-  nome: string;
-  uf: string;
-  desc: string;
-  pontos: TouristPointViewModel[];
-}
-
-export interface TouristPointViewModel {
-    id: number;
-    nome: string;
-    tipo: string;
-    horario: string;
-    img: string;
-    desc: string;
+  name: string;
+  slug: string;
+  state: string;
+  summary: string;
+  description: string;
+  imageUrl: string;
+  published: boolean;
 }
