@@ -11,9 +11,9 @@ describe("UpdateUserUseCase", () => {
   const makeExistingUser = () =>
     new UserEntity({
       id: 1,
-      nome: "User 1",
+      name: "User 1",
       email: "user1@example.com",
-      senha: "old-hash",
+      password: "old-hash",
       role: "Admin",
     });
 
@@ -29,9 +29,9 @@ describe("UpdateUserUseCase", () => {
         async (id: number, data: Partial<UserProps>) =>
           new UserEntity({
             id,
-            nome: data.nome ?? existingUser.nome,
+            name: data.name ?? existingUser.name,
             email: data.email ?? existingUser.email,
-            senha: data.senha ?? existingUser.senha,
+            password: data.password ?? existingUser.password,
             role: data.role ?? existingUser.role,
           })
       ),
@@ -66,11 +66,11 @@ describe("UpdateUserUseCase", () => {
     expect(result).toBeNull();
   });
 
-  it("deve atualizar campos básicos sem alterar senha quando senha não é enviada", async () => {
+  it("deve atualizar campos básicos sem alterar password quando password não é enviada", async () => {
     const { sut, updateRepoMock } = makeSut();
 
     const input = {
-      nome: "User 1 Atualizado",
+      name: "User 1 Atualizado",
       email: "novo-email@example.com",
       role: "Admin",
     } as any;
@@ -82,33 +82,33 @@ describe("UpdateUserUseCase", () => {
       Partial<UserProps>
     ];
 
-    expect(data.nome).toBe("User 1 Atualizado");
+    expect(data.name).toBe("User 1 Atualizado");
     expect(data.email).toBe("novo-email@example.com");
     expect(data.role).toBe("Admin");
-    expect(data.senha).toBeUndefined();
+    expect(data.password).toBeUndefined();
 
-    expect(result?.nome).toBe("User 1 Atualizado");
+    expect(result?.name).toBe("User 1 Atualizado");
     expect(result?.email).toBe("novo-email@example.com");
     expect(result?.role).toBe("Admin");
   });
 
-  it("deve criptografar nova senha quando enviada", async () => {
+  it("deve criptografar nova password quando enviada", async () => {
     const { sut, encrypterMock, updateRepoMock } = makeSut();
 
     const input = {
-      senha: "nova-senha",
+      password: "nova-password",
     } as any;
 
     const result = await sut.execute(1, input);
 
-    expect(encrypterMock.hash).toHaveBeenCalledWith("nova-senha");
+    expect(encrypterMock.hash).toHaveBeenCalledWith("nova-password");
 
     const [, data] = (updateRepoMock.update as jest.Mock).mock.calls[0] as [
       number,
       Partial<UserProps>
     ];
 
-    expect(data.senha).toBe("hashed-nova-senha");
-    expect(result?.senha).toBe("hashed-nova-senha");
+    expect(data.password).toBe("hashed-nova-password");
+    expect(result?.password).toBe("hashed-nova-password");
   });
 });

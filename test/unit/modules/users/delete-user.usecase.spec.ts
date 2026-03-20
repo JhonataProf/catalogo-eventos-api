@@ -7,9 +7,9 @@ describe("DeleteUserUseCase", () => {
   const makeExistingUser = () =>
     new UserEntity({
       id: 1,
-      nome: "User 1",
+      name: "User 1",
       email: "user1@example.com",
-      senha: "hash",
+      password: "hash",
       role: "Admin",
     });
 

@@ -1,6 +1,6 @@
 import { ListUsersUseCase } from "@/modules/users/application/use-cases/list-users.usecase";
-import { ListUsersRepository } from "@/modules/users/domain/repositories/list-users.repository";
 import { UserEntity } from "@/modules/users/domain/entities/user.entity";
+import { ListUsersRepository } from "@/modules/users/domain/repositories/list-users.repository";
 
 describe("ListUsersUseCase", () => {
   const makeSut = () => {
@@ -8,16 +8,16 @@ describe("ListUsersUseCase", () => {
       findAll: jest.fn(async () => [
         new UserEntity({
           id: 1,
-          nome: "User 1",
+          name: "User 1",
           email: "user1@example.com",
-          senha: "hash1",
+          password: "hash1",
           role: "Admin",
         }),
         new UserEntity({
           id: 2,
-          nome: "User 2",
+          name: "User 2",
           email: "user2@example.com",
-          senha: "hash2",
+          password: "hash2",
           role: "Admin",
         }),
       ]),

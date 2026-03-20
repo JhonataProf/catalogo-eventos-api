@@ -13,9 +13,9 @@ describe("CreateUserUseCase", () => {
       create: jest.fn(async (user: UserEntity) => {
         return new UserEntity({
           id: 1,
-          nome: user.nome,
+          name: user.name,
           email: user.email,
-          senha: user.senha,
+          password: user.password,
           role: user.role,
         });
       }),
@@ -77,7 +77,7 @@ describe("CreateUserUseCase", () => {
     jest.restoreAllMocks();
   });
 
-  it("deve criar um usuário com senha criptografada quando email não existe", async () => {
+  it("deve criar um usuário com password criptografada quando email não existe", async () => {
     const {
       sut,
       findByEmailRepoMock,
@@ -90,9 +90,9 @@ describe("CreateUserUseCase", () => {
     } = makeSut();
 
     const input = {
-      nome: "Fulano",
+      name: "Fulano",
       email: "fulano@example.com",
-      senha: "123456",
+      password: "123456",
       role: "Admin",
     } as any;
 
@@ -102,7 +102,7 @@ describe("CreateUserUseCase", () => {
     expect(encrypterMock.hash).toHaveBeenCalledWith("123456");
 
     const [userPassed] = (createRepoMock.create as jest.Mock).mock.calls[0] as [UserEntity];
-    expect(userPassed.senha).toBe("hashed-123456");
+    expect(userPassed.password).toBe("hashed-123456");
 
     // ✅ strategy chamada corretamente
     expect(profileStrategyFactoryMock.getStrategy).toHaveBeenCalledWith("Admin");
@@ -138,17 +138,17 @@ describe("CreateUserUseCase", () => {
     (findByEmailRepoMock.findByEmail as jest.Mock).mockResolvedValueOnce(
       new UserEntity({
         id: 99,
-        nome: "Outro",
+        name: "Outro",
         email: "exists@example.com",
-        senha: "hash",
+        password: "hash",
         role: "Admin",
       })
     );
 
     const input = {
-      nome: "Fulano",
+      name: "Fulano",
       email: "exists@example.com",
-      senha: "123456",
+      password: "123456",
       role: "Admin",
     } as any;
 

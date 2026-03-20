@@ -6,6 +6,6 @@ import User from "@/modules/users/infra/model/user-model";
 export async function makeAdmin(user: User, attrs?: Partial<Admin>) {
   return Admin.create({
     userId: user.id,
-    nome: attrs?.nome ?? user.nome,
+    name: attrs?.name ?? user.name,
   } as any);
 }
