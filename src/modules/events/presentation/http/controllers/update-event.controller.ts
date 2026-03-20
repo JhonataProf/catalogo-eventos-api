@@ -1,7 +1,7 @@
 // src/modules/events/presentation/http/controllers/update-event.controller.ts
 import { logger } from "@/core/config/logger";
 import { mapErrorToHttpResponse } from "@/core/http/http-error-response";
-import { ok, resource } from "@/core/http/http-resource";
+import { ok, ResourceBuilder } from "@/core/http/http-resource";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { UpdateEventUseCase } from "@/modules/events/application/use-cases/update-event.usecase";
 import { eventLinks } from "../event-hateoas";
@@ -27,24 +27,28 @@ export class UpdateEventController implements Controller {
         ...body,
       });
 
-      const payload = resource(
-        {
-          id: updated.id,
-          titulo: updated.titulo,
-          cat: updated.cat,
-          data: updated.data,
-          hora: updated.hora,
-          local: updated.local,
-          preco: updated.preco,
-          img: updated.img,
-          desc: updated.desc,
-          cityId: updated.cityId,
-          createdAt: updated.createdAt,
-          updatedAt: updated.updatedAt,
-        },
-        eventLinks(updated.id),
-        { version: "1.0.0" },
-      );
+      const payload = {
+        id: updated.id,
+        cityId: updated.cityId,
+        citySlug: updated.citySlug,
+        name: updated.name,
+        description: updated.description,
+        category: updated.category as any,
+        startDate: updated.startDate,
+        endDate: updated.endDate,
+        formattedDate: updated.formattedDate,
+        location: updated.location,
+        imageUrl: updated.imageUrl,
+        featured: updated.featured,
+        published: updated.published,
+        createdAt: updated.createdAt,
+        updatedAt: updated.updatedAt,
+      };
+      const builder = new ResourceBuilder(payload);
+      const resource = builder
+        .addAllLinks(eventLinks(updated.id))
+        .addMeta({ correlationId, version: "1.0.0" })
+        .build();
 
       logger.info("Evento atualizado com sucesso", {
         correlationId,
@@ -52,7 +56,7 @@ export class UpdateEventController implements Controller {
         eventId: updated.id,
       });
 
-      return ok(payload);
+      return ok(resource);
     } catch (error) {
       logger.error("Erro ao atualizar evento", {
         correlationId,

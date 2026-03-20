@@ -9,31 +9,39 @@ import { makeCreateEventController } from "../factories/make-create-event.contro
 import { makeUpdateEventController } from "../factories/make-update-event.controller";
 import { makeDeleteEventController } from "../factories/make-delete-event.controller";
 
-import { createEventSchema, updateEventSchema } from "../validators/event-schemas";
+import {
+  createEventSchema,
+  updateEventSchema,
+} from "../validators/event-schemas";
 
 export function registerEventRoutes(router: Router) {
-  router.get("/api/events", adaptRoute(makeListEventsController()));
+  router.get(
+    "/api/admin/events",
+    authMiddleware,
+    authorizeRoles(["Admin"]),
+    adaptRoute(makeListEventsController()),
+  );
 
   router.post(
-    "/api/events",
+    "/api/admin/events",
     authMiddleware,
     authorizeRoles(["Admin"]),
     validateBody(createEventSchema),
-    adaptRoute(makeCreateEventController())
+    adaptRoute(makeCreateEventController()),
   );
 
   router.put(
-    "/api/events/:id",
+    "/api/admin/events/:id",
     authMiddleware,
     authorizeRoles(["Admin"]),
     validateBody(updateEventSchema),
-    adaptRoute(makeUpdateEventController())
+    adaptRoute(makeUpdateEventController()),
   );
 
   router.delete(
-    "/api/events/:id",
+    "/api/admin/events/:id",
     authMiddleware,
     authorizeRoles(["Admin"]),
-    adaptRoute(makeDeleteEventController())
+    adaptRoute(makeDeleteEventController()),
   );
 }

@@ -2,15 +2,15 @@
 import { Links } from "@/core/http/http-resource";
 
 type SortDir = "asc" | "desc";
-
+const API_ADMIN_PREFIX = "/api/admin";
 export function eventLinks(id: string | number): Links {
   const eventId = String(id);
 
   return {
-    self: { href: `/api/events/${eventId}`, method: "GET" },
-    update: { href: `/api/events/${eventId}`, method: "PUT" },
-    delete: { href: `/api/events/${eventId}`, method: "DELETE" },
-    list: { href: `/api/events`, method: "GET" },
+    self: { href: `${API_ADMIN_PREFIX}/events/${eventId}`, method: "GET" },
+    update: { href: `${API_ADMIN_PREFIX}/events/${eventId}`, method: "PUT" },
+    delete: { href: `${API_ADMIN_PREFIX}/events/${eventId}`, method: "DELETE" },
+    list: { href: `${API_ADMIN_PREFIX}/events`, method: "GET" },
   };
 }
 
@@ -40,7 +40,6 @@ export function eventListLinks({
   filters,
   sort,
 }: ListLinksParams): Links {
-  const base = "/api/events";
 
   const baseQuery = {
     page,
@@ -50,18 +49,18 @@ export function eventListLinks({
     sortDir: sort?.dir,
   };
 
-  const self = `${base}${toQueryString(baseQuery)}`;
+  const self = `${API_ADMIN_PREFIX}${toQueryString(baseQuery)}`;
 
   const next =
     page < totalPages
-      ? `${base}${toQueryString({ ...baseQuery, page: page + 1 })}`
+      ? `${API_ADMIN_PREFIX}${toQueryString({ ...baseQuery, page: page + 1 })}`
       : undefined;
 
   const prev =
-    page > 1 ? `${base}${toQueryString({ ...baseQuery, page: page - 1 })}` : undefined;
+    page > 1 ? `${API_ADMIN_PREFIX}${toQueryString({ ...baseQuery, page: page - 1 })}` : undefined;
 
-  const first = `${base}${toQueryString({ ...baseQuery, page: 1 })}`;
-  const last = `${base}${toQueryString({ ...baseQuery, page: totalPages })}`;
+  const first = `${API_ADMIN_PREFIX}${toQueryString({ ...baseQuery, page: 1 })}`;
+  const last = `${API_ADMIN_PREFIX}${toQueryString({ ...baseQuery, page: totalPages })}`;
 
   return {
     self: { href: self, method: "GET" },

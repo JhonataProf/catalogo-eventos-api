@@ -25,8 +25,8 @@ export class ListEventsUseCase {
     const sort = normalizeSort(input.sortBy, input.sortDir as string);
 
     const filters = {
-      titulo: input.titulo,
-      cat: input.cat,
+      name: input.name,
+      category: input.category,
       cityId: input.cityId !== undefined ? Number(input.cityId) : undefined,
     };
 

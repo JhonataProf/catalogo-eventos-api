@@ -4,8 +4,8 @@ import { EventEntity } from "../entities/event.entity";
 export type SortDir = "asc" | "desc";
 
 export interface ListEventsFilters {
-  titulo?: string;
-  cat?: string;
+  name?: string;
+  category?: string;
   cityId?: number;
 }
 
