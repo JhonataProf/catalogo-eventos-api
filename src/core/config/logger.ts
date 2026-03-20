@@ -22,23 +22,42 @@ const formatLog = (
 
   return meta ? { ...base, ...meta } : base;
 };
-
+const addColorConsole = {
+  red(message: string) {
+    return `\x1b[31m ${message} \x1b[0m`
+  },
+  green(message: string) {
+    return `\x1b[32m ${message} \x1b[0m`
+  },
+  yellow(message: string) {
+    return `\x1b[33m ${message} \x1b[0m`
+  },
+  blue(message: string) {
+    return `\x1b[34m ${message} \x1b[0m`
+  },
+  magenta(message: string) {
+    return `\x1b[35m ${message} \x1b[0m`
+  },
+  cyan(message: string) {
+    return `\x1b[36m ${message} \x1b[0m`
+  }
+}
 export const logger: Logger = {
   debug: (message, meta) => {
     if (process.env.NODE_ENV === "production") return; // opcional: mutar debug em prod
     // eslint-disable-next-line no-console
-    console.debug(JSON.stringify(formatLog("debug", message, meta)));
+    console.debug(addColorConsole.cyan(JSON.stringify(formatLog("debug", message, meta))));
   },
   info: (message, meta) => {
     // eslint-disable-next-line no-console
-    console.info(JSON.stringify(formatLog("info", message, meta)));
+    console.info(addColorConsole.blue(JSON.stringify(formatLog("info", message, meta))));
   },
   warn: (message, meta) => {
     // eslint-disable-next-line no-console
-    console.warn(JSON.stringify(formatLog("warn", message, meta)));
+    console.warn(addColorConsole.yellow(JSON.stringify(formatLog("warn", message, meta))));
   },
   error: (message, meta) => {
     // eslint-disable-next-line no-console
-    console.error(JSON.stringify(formatLog("error", message, meta)));
+    console.error(addColorConsole.red(JSON.stringify(formatLog("error", message, meta))));
   },
 };

@@ -15,20 +15,20 @@ export interface Links {
 
 export interface Resource<T> {
   data: T;
-  links: Links|LinksPagination;
+  links: Links | LinksPagination;
   meta?: Record<string, any>;
 }
 
 export interface CollectionResource<T> {
   data: Array<T>;
-  links: Links|LinksPagination;
+  links: Links | LinksPagination;
   meta?: Record<string, any>;
 }
 
 export const resource = <T>(
   data: T,
-  links: Links|LinksPagination,
-  meta?: Record<string, any>
+  links: Links | LinksPagination,
+  meta?: Record<string, any>,
 ): Resource<T> => ({
   data,
   links,
@@ -37,16 +37,76 @@ export const resource = <T>(
 
 export const collection = <T>(
   data: Array<T>,
-  links: Links|LinksPagination,
-  meta?: Record<string, any>
+  links: Links | LinksPagination,
+  meta?: Record<string, any>,
 ): CollectionResource<T> => ({
   data,
   links,
   meta,
 });
 
+export class ResourceBuilder<T> {
+  private links: Links = {};
+  private meta: Record<string, any> = {};
+
+  constructor(private readonly data: T) {}
+
+  addOneLink(rel: string, method: HttpMethod, href: string): this {
+    this.links[rel] = { method, href };
+    return this;
+  }
+
+  addAllLinks(links: Links): this {
+    this.links = links;
+    return this;
+  }
+
+  addMeta(itemMeta: Record<string, any>): this {
+    this.meta = itemMeta;
+    return this;
+  }
+
+  build(): Resource<T> {
+    return {
+      data: this.data,
+      links: this.links,
+      meta: this.meta,
+    };
+  }
+}
+
+export class CollectionResourceBuilder<T> {
+  private links: Links = {};
+  private meta: Record<string, any> = {};
+
+  constructor(private readonly data: Array<T>) {}
+
+  addOneLink(rel: string, method: HttpMethod, href: string): this {
+    this.links[rel] = { method, href };
+    return this;
+  }
+
+  addAllLinks(links: Links): this {
+    this.links = links;
+    return this;
+  }
+
+  addMeta(itemMeta: Record<string, any>): this {
+    this.meta = itemMeta;
+    return this;
+  }
+
+  build(): CollectionResource<T> {
+    return {
+      data: this.data,
+      links: this.links,
+      meta: this.meta,
+    };
+  }
+}
+
 export const ok = <T>(
-  body: Resource<T> | CollectionResource<T>
+  body: Resource<T> | CollectionResource<T>,
 ): HttpResponse => ({
   statusCode: 200,
   body,
