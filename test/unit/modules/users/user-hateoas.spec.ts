@@ -5,10 +5,10 @@ describe("user-hateoas", () => {
     const links = userLinks(10);
 
     expect(links).toEqual({
-      self: { href: "/api/usuarios/10", method: "GET" },
-      update: { href: "/api/usuarios/10", method: "PUT" },
-      delete: { href: "/api/usuarios/10", method: "DELETE" },
-      list: { href: "/api/usuarios", method: "GET" },
+      self: { href: "/api/admin/users/10", method: "GET" },
+      update: { href: "/api/admin/users/10", method: "PATCH" },
+      delete: { href: "/api/admin/users/10", method: "DELETE" },
+      list: { href: "/api/admin/users", method: "GET" },
     });
 
     // asserts “de segurança” (opcional)

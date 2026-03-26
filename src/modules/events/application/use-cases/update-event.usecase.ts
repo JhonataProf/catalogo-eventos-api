@@ -39,7 +39,6 @@ export class UpdateEventUseCase {
 
     const updated = await this.updateRepo.update(id, dto);
     if (!updated) {
-      // fallback, caso o repo retorne null por alguma condição
       throw new AppError({
         code: "EVENT_UPDATE_FAILED",
         message: `Falha ao atualizar evento ${id}`,

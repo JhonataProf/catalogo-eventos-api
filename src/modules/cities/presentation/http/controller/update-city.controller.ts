@@ -1,7 +1,10 @@
-import { mapErrorToHttpResponse } from "@/core/http";
-import { logger } from "@/core/logger";
+import { logger } from "@/core/config/logger";
+import { notFound } from "@/core/helpers/http-helper";
+import { mapErrorToHttpResponse, ok, ResourceBuilder } from "@/core/http";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { UpdateCityUseCase } from "@/modules/cities/application/use-cases";
+import { CityEntity } from "@/modules/cities/domain/entities/city.entity";
+import { adminCityLinks } from "../city-hateoas";
 
 export class UpdateCityController implements Controller {
   constructor(private readonly updateCityUseCase: UpdateCityUseCase) {}
@@ -14,10 +17,13 @@ export class UpdateCityController implements Controller {
         cityId,
         request.body,
       );
-      return {
-        statusCode: 200,
-        body: updatedCity,
-      };
+      if (!updatedCity) return notFound(updatedCity);
+      const resourceBuild = new ResourceBuilder<CityEntity>(updatedCity);
+      const resource = resourceBuild
+        .addAllLinks(adminCityLinks(updatedCity.id))
+        .addMeta({ correlationId, version: "1.0.0" })
+        .build();
+      return ok(resource);
     } catch (error) {
       logger.error("Erro ao atualizar cidade", {
         correlationId,

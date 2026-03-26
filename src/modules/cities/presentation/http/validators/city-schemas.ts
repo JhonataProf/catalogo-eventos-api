@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const createCitySchema = z.object({
-  nome: z
+  name: z
     .string({
       error: (issue) => {
         if (issue.code === "invalid_type" && issue.expected === "string") {
@@ -15,7 +15,20 @@ export const createCitySchema = z.object({
     })
     .min(3, "Nome deve ter pelo menos 3 caracteres"),
 
-  uf: z
+  slug: z.string({
+      error: (issue) => {
+        if (issue.code === "invalid_type" && issue.expected === "string") {
+          return { message: "Slug deve ser uma string" };
+        }
+        if (issue.code === "invalid_type" && issue.expected === "undefined") {
+          return { message: "Slug é obrigatório" };
+        }
+        return { message: "slug é inválido" };
+      },
+    })
+    .min(3, "slug deve ter pelo menos 3 caracteres"),
+
+  state: z
     .string({
       error: (issue) => {
         if (issue.code === "invalid_type" && issue.expected === "string") {
@@ -29,7 +42,9 @@ export const createCitySchema = z.object({
     })
     .length(2, "UF deve ter exatamente 2 caracteres"),
 
-  desc: z
+  summary: z.string().min(3, "Resumo deve ter no mínimo 3 caracteres"),
+
+  description: z
     .string({
       error: (issue) => {
         if (issue.code === "invalid_type" && issue.expected === "string") {
@@ -42,10 +57,14 @@ export const createCitySchema = z.object({
       },
     })
     .min(10, "Descrição deve ter pelo menos 10 caracteres"),
+
+  imageUrl: z.url(),
+
+  published: z.boolean(),
 });
 
 export const updateCitySchema = z.object({
-  nome: z
+  name: z
     .string({
       error: (issue) => {
         if (issue.code === "invalid_type" && issue.expected === "string") {
@@ -57,19 +76,36 @@ export const updateCitySchema = z.object({
     .min(3, "Nome deve ter pelo menos 3 caracteres")
     .optional(),
 
-  uf: z
+  slug: z.string({
+      error: (issue) => {
+        if (issue.code === "invalid_type" && issue.expected === "string") {
+          return { message: "Slug deve ser uma string" };
+        }
+        if (issue.code === "invalid_type" && issue.expected === "undefined") {
+          return { message: "Slug é obrigatório" };
+        }
+        return { message: "slug é inválido" };
+      },
+    })
+    .min(3, "slug deve ter pelo menos 3 caracteres").optional(),
+
+  state: z
     .string({
       error: (issue) => {
         if (issue.code === "invalid_type" && issue.expected === "string") {
           return { message: "UF deve ser uma string" };
         }
+        if (issue.code === "invalid_type" && issue.expected === "undefined") {
+          return { message: "UF é obrigatório" };
+        }
         return { message: "UF é inválida" };
       },
     })
-    .length(2, "UF deve ter exatamente 2 caracteres")
-    .optional(),
+    .length(2, "UF deve ter exatamente 2 caracteres").optional(),
 
-  desc: z
+  summary: z.string().min(3, "Resumo deve ter no mínimo 3 caracteres").optional(),
+
+  description: z
     .string({
       error: (issue) => {
         if (issue.code === "invalid_type" && issue.expected === "string") {
@@ -80,6 +116,10 @@ export const updateCitySchema = z.object({
     })
     .min(10, "Descrição deve ter pelo menos 10 caracteres")
     .optional(),
+
+  imageUrl: z.url().optional(),
+
+  published: z.boolean().optional(),
 });
 
 export const getCityParamsSchema = z.object({

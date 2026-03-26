@@ -6,8 +6,11 @@ import {
   EditCityRepository,
   FindCityByIdRepository,
   FindCityByNameRepository,
+  FindCityBySlugRepository,
   ListCityRepository,
+  PublicListCityRepository,
 } from "../../domain/repositories";
+import { cityModelToEntity } from "../mappers/city-model.mapper";
 import { CityModel } from "../models/city-model";
 
 export class SequelizeCityRepository
@@ -17,62 +20,53 @@ export class SequelizeCityRepository
     FindCityByIdRepository,
     EditCityRepository,
     DeleteCityRepository,
-    FindCityByNameRepository
+    FindCityByNameRepository,
+    FindCityBySlugRepository,
+    PublicListCityRepository
 {
   constructor() {}
-  async findByName(nome: string): Promise<CityEntity | null> {
-    const city = await CityModel.findOne({ where: { nome } });
+  async publicFindBySlug(slug: string): Promise<CityEntity | null> {
+    const city = await CityModel.findOne({ where: { slug } });
     if (!city) return null;
-    return new CityEntity({
-      id: city.id,
-      nome: city.nome,
-      desc: city.desc,
-      uf: city.uf,
-    });
+    return cityModelToEntity(city);
+  }
+  async publicList(): Promise<CityEntity[] | null> {
+    const cities = await CityModel.findAll();
+    return cities.map((city) => cityModelToEntity(city));
+  }
+  async findByName(name: string): Promise<CityEntity | null> {
+    const city = await CityModel.findOne({ where: { name } });
+    if (!city) return null;
+    return cityModelToEntity(city);
   }
 
   async create(city: CityEntity, t?: Transaction): Promise<CityEntity> {
     const created = await CityModel.create(
       {
-        id: 0, // Substitua pelo ID gerado pelo banco de dados
-        nome: city.nome,
-        desc: city.desc,
-        uf: city.uf,
+        name: city.name,
+        slug: city.slug,
+        state: city.state,
+        summary: city.summary,
+        description: city.description,
+        imageUrl: city.imageUrl,
+        published: city.published,
       },
       { transaction: t },
     );
     await CityModel.sync();
-    return new CityEntity({
-      id: created.id,
-      nome: created.nome,
-      desc: created.desc,
-      uf: created.uf,
-    });
+    return cityModelToEntity(created);
   }
 
   async list(): Promise<CityEntity[]> {
     const cities = await CityModel.findAll();
-    return cities.map(
-      (city) =>
-        new CityEntity({
-          id: city.id,
-          nome: city.nome,
-          desc: city.desc,
-          uf: city.uf,
-        }),
-    );
+    return cities.map((city) => cityModelToEntity(city));
   }
 
   async findById(id: number): Promise<CityEntity | null> {
     const city = await CityModel.findByPk(id);
     if (!city) return null;
 
-    return new CityEntity({
-      id: city.id,
-      nome: city.nome,
-      desc: city.desc,
-      uf: city.uf,
-    });
+    return cityModelToEntity(city);
   }
 
   async edit(
@@ -80,7 +74,6 @@ export class SequelizeCityRepository
     city: Partial<CityEntity>,
     t?: Transaction,
   ): Promise<CityEntity | null> {
-    // Implementação do método de edição usando Sequelize
     const cityUpdated = await CityModel.update(city, {
       where: { id },
       transaction: t,

@@ -3,15 +3,18 @@ import { EventCategory } from "../value-objects/event-category";
 
 export interface EventProps {
   id: number;
-  titulo: string;
-  cat: EventCategory;
-  data: string; // manter string por enquanto (YYYY-MM-DD). Depois podemos evoluir para Date VO
-  hora: string; // "HH:mm"
-  local: string;
-  preco: string; // manter string por enquanto
-  img: string; // url/path
-  desc: string;
   cityId: number;
+  citySlug: string;
+  name: string;
+  description: string;
+  category: EventCategory;
+  startDate: Date;
+  endDate: Date;
+  formattedDate: string; 
+  location: string; 
+  imageUrl: string;
+  featured: boolean; 
+  published: boolean; 
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -22,32 +25,41 @@ export class EventEntity {
   get id() {
     return this.props.id;
   }
-  get titulo() {
-    return this.props.titulo;
-  }
-  get cat() {
-    return this.props.cat;
-  }
-  get data() {
-    return this.props.data;
-  }
-  get hora() {
-    return this.props.hora;
-  }
-  get local() {
-    return this.props.local;
-  }
-  get preco() {
-    return this.props.preco;
-  }
-  get img() {
-    return this.props.img;
-  }
-  get desc() {
-    return this.props.desc;
-  }
   get cityId() {
     return this.props.cityId;
+  }
+  get citySlug() {
+    return this.props.citySlug;
+  }
+  get name() {
+    return this.props.name;
+  }
+  get description() {
+    return this.props.description;
+  }
+  get category() {
+    return this.props.category;
+  }
+  get startDate() {
+    return this.props.startDate;
+  }
+  get endDate() {
+    return this.props.endDate;
+  }
+  get formattedDate() {
+    return this.props.formattedDate;
+  }
+  get location() {
+    return this.props.location;
+  }
+  get imageUrl() {
+    return this.props.imageUrl;
+  }
+  get featured() {
+    return this.props.featured;
+  }
+  get published() {
+    return this.props.published
   }
   get createdAt() {
     return this.props.createdAt;

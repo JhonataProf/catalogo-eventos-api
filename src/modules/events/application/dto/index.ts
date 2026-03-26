@@ -1,15 +1,18 @@
 import { EventCategory } from "../../domain/value-objects/event-category";
 
 export type CreateEventDTO = {
-  titulo: string;
-  cat: EventCategory;
-  data: string;
-  hora: string;
-  local: string;
-  preco: string;
-  img: string;
-  desc: string;
   cityId: number;
+  citySlug: string;
+  name: string;
+  description: string;
+  category: EventCategory;
+  startDate: Date;
+  endDate: Date;
+  formattedDate: string;
+  location: string;
+  imageUrl: string;
+  featured: boolean;
+  published: boolean;
 };
 
 export type UpdateEventDTO = Partial<CreateEventDTO>;
@@ -18,8 +21,8 @@ export type ListEventsDTO = {
   page?: number | string;
   limit?: number | string;
 
-  titulo?: string;
-  cat?: EventCategory;
+  name?: string;
+  category?: EventCategory;
   cityId?: number | string;
 
   sortBy?: string;
@@ -29,15 +32,18 @@ export type ListEventsDTO = {
 export type ListEventsResult = {
   items: Array<{
     id: number;
-    titulo: string;
-    cat: EventCategory;
-    data: string;
-    hora: string;
-    local: string;
-    preco: string;
-    img: string;
-    desc: string;
     cityId: number;
+    citySlug: string;
+    name: string;
+    description: string;
+    category: EventCategory;
+    startDate: Date;
+    endDate: Date;
+    formattedDate: string;
+    location: string;
+    imageUrl: string;
+    featured: boolean;
+    published: boolean;
     createdAt?: Date;
     updatedAt?: Date;
   }>;

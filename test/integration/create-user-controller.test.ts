@@ -21,10 +21,10 @@ describe("CreateUserController (integration)", () => {
   });
 
   it("deve criar um usuário com sucesso", async () => {
-    const resp = await api().withAuth(api().post("/api/usuarios"), token).send({
-      nome: "John Doe",
+    const resp = await api().withAuth(api().post("/api/admin/users"), token).send({
+      name: "John Doe",
       email: "jhondoe123@dominio.com",
-      senha: "senha123",
+      password: "senha123",
       role: "Admin",
     });
 
@@ -32,17 +32,17 @@ describe("CreateUserController (integration)", () => {
     expect(resp.type).toMatch(/json/);
     expect(resp.body.data).toHaveProperty("id");
     expect(resp.body.data).toMatchObject({
-      nome: "John Doe",
+      name: "John Doe",
       email: "jhondoe123@dominio.com",
       role: "Admin",
     });
   });
 
   it("não deve criar usuário sem autenticação", async () => {
-    const resp = await api().post("/api/usuarios").send({
-      nome: "John Doe",
+    const resp = await api().post("/api/admin/users").send({
+      name: "John Doe",
       email: "jhondoe123@dominio.com",
-      senha: "senha123",
+      password: "senha123",
       role: "Admin",
     });
     expect(resp.status).toBe(401);
@@ -63,14 +63,14 @@ describe("CreateUserController (integration)", () => {
   it("não deve criar usuário com dados inválidos", async () => {
     // ARRANGE
     const dadosInvalidos = {
-      nome: "Jo", // muito curto
+      name: "Jo", // muito curto
       email: "emailinvalido", // formato inválido
-      senha: "123", // muito curto
+      password: "123", // muito curto
       role: "Administrador", // valor inválido
     };
     // ACT
     const resp = await api()
-      .withAuth(api().post("/api/usuarios"), token)
+      .withAuth(api().post("/api/admin/users"), token)
       .send(dadosInvalidos);
     // ASSERT
     expect(resp.status).toBe(400);
@@ -79,10 +79,10 @@ describe("CreateUserController (integration)", () => {
       errors: [
         {
           message: "Nome deve ter pelo menos 3 caracteres",
-          path: "nome",
+          path: "name",
         },
         { message: "Email deve ser uma string", path: "email" },
-        { message: "Senha deve ter pelo menos 6 caracteres", path: "senha" },
+        { message: "Senha deve ter pelo menos 6 caracteres", path: "password" },
         {
           message: "A Role Administrador é inválida",
           path: "role",
@@ -95,15 +95,15 @@ describe("CreateUserController (integration)", () => {
   it("não deve criar usuário sem dados obrigatórios", async () => {
     const dadosFaltando = {}; // nenhum campo fornecido
     const resp = await api()
-      .withAuth(api().post("/api/usuarios"), token)
+      .withAuth(api().post("/api/admin/users"), token)
       .send(dadosFaltando);
     expect(resp.status).toBe(400);
     expect(resp.type).toMatch(/json/);
     expect(resp.body).toEqual({
       errors: [
-        { message: "Nome é obrigatório", path: "nome" },
+        { message: "Nome é obrigatório", path: "name" },
         { message: "Email é obrigatório", path: "email" },
-        { message: "Senha é obrigatória", path: "senha" },
+        { message: "Senha é obrigatória", path: "password" },
         {
           message: "A Role undefined é inválida",
           path: "role",
@@ -116,20 +116,20 @@ describe("CreateUserController (integration)", () => {
   it("não deve criar usuário com email já existente", async () => {
     // 1ª criação
     const first = await api()
-      .withAuth(api().post("/api/usuarios"), token)
+      .withAuth(api().post("/api/admin/users"), token)
       .send({
-        nome: "Jane Doe",
+        name: "Jane Doe",
         email: "jhondoe123@dominio.com",
-        senha: "senha123",
+        password: "senha123",
         role: "Admin",
       });
     expect(first.status).toBe(201);
 
     // 2ª criação (duplicada)
-    const dup = await api().withAuth(api().post("/api/usuarios"), token).send({
-      nome: "Outra Pessoa",
+    const dup = await api().withAuth(api().post("/api/admin/users"), token).send({
+      name: "Outra Pessoa",
       email: "jhondoe123@dominio.com",
-      senha: "senha123",
+      password: "senha123",
       role: "Admin",
     });
 

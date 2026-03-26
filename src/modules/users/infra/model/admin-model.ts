@@ -4,9 +4,9 @@ import User from "./user-model";
 
 class Admin extends Model {
   id!: number;
-  nome!: string;
+  name!: string;
   email!: string;
-  telefone!: string;
+  phone!: string;
   userId!: number;
   user!: User; // Associação com o modelo User
 }
@@ -18,11 +18,11 @@ Admin.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    nome: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    telefone: {
+    phone: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -30,14 +30,14 @@ Admin.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Users", // Nome do modelo alvo
-        key: "id", // Chave no modelo alvo que estamos referenciando
+        model: "Users",
+        key: "id",
       },
     },
   },
   {
     sequelize,
-    modelName: "Gerentes",
+    modelName: "admins",
   }
 );
 Admin.belongsTo(User, { foreignKey: "userId", as: "user", onDelete: "CASCADE", onUpdate: "CASCADE" });

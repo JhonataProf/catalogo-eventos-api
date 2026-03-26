@@ -9,9 +9,9 @@ import { DomainLogger, NoopDomainLogger } from "@/core/logger/domain-logger";
 import { UserRole } from "../../domain/value-objects/user-role";
 
 interface CreateUserDTO {
-  nome: string;
+  name: string;
   email: string;
-  senha: string;
+  password: string;
   role: UserRole;
   // campos extras para perfil
   clienteTelefone?: string;
@@ -44,21 +44,21 @@ export class CreateUserUseCase {
       });
     }
 
-    const hashed = await this.encrypter.hash(dto.senha);
+    const hashed = await this.encrypter.hash(dto.password);
 
     const transaction = await sequelize.transaction();
     try {
       const user = new UserEntity({
         id: 0,
-        nome: dto.nome,
+        name: dto.name,
         email: dto.email,
-        senha: hashed,
+        password: hashed,
         role: dto.role,
       });
 
       const created = await this.createUserRepo.create(user, transaction);
 
-      const strategy = this.profileStrategyFactory.getStrategy(created.role as any);
+      const strategy = this.profileStrategyFactory.getStrategy(created.role);
 
       await strategy.createProfile({
         user: created,

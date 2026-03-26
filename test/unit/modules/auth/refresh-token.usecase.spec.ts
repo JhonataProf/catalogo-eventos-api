@@ -14,9 +14,9 @@ describe("RefreshTokenUseCase", () => {
     const findUserByIdRepoMock: FindUserByIdRepository = {
       findById: jest.fn(async () => ({
         id: 1,
-        nome: "Fulano",
+        name: "Fulano",
         email: "fulano@example.com",
-        senha: "hash",
+        password: "hash",
         role: "Admin",
       } as any)),
     };

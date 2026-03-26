@@ -8,7 +8,7 @@ import {
 
 describe("core/http/http-resource", () => {
   it("resource() deve montar Resource com data, links e meta", () => {
-    const data = { id: 1, nome: "John" };
+    const data = { id: 1, name: "John" };
     const links = {
       self: { href: "/users/1", method: "GET" as const },
     };

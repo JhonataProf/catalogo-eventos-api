@@ -8,9 +8,9 @@ describe("auth-hateoas", () => {
     const links = loginLinks();
 
     expect(links).toEqual({
-      self: { href: "/api/login", method: "POST" },
-      refreshToken: { href: "/api/refresh-token", method: "POST" },
-      me: { href: "/api/users/me", method: "GET" },
+      self: { href: "/api/auth/login", method: "POST" },
+      refreshToken: { href: "/api/auth/refresh-token", method: "POST" },
+      me: { href: "/api/auth/users/me", method: "GET" },
     });
   });
 
@@ -18,8 +18,8 @@ describe("auth-hateoas", () => {
     const links = refreshTokenLinks();
 
     expect(links).toEqual({
-      self: { href: "/api/refresh-token", method: "POST" },
-      login: { href: "/api/login", method: "POST" },
+      self: { href: "/api/auth/refresh-token", method: "POST" },
+      login: { href: "/api/auth/login", method: "POST" },
     });
   });
 });

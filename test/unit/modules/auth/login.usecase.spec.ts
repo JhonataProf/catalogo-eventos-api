@@ -10,9 +10,9 @@ describe("LoginUseCase", () => {
   const makeUser = () =>
     new UserEntity({
       id: 1,
-      nome: "User Teste",
+      name: "User Teste",
       email: "user@example.com",
-      senha: "hashed-password",
+      password: "hashed-password",
       role: "Admin",
     });
 
@@ -63,7 +63,7 @@ describe("LoginUseCase", () => {
 
     const input = {
       email: "user@example.com",
-      senha: "plain-password",
+      password: "plain-password",
     };
 
     const result = await sut.execute(input);
@@ -99,7 +99,7 @@ describe("LoginUseCase", () => {
 
     const input = {
       email: "notfound@example.com",
-      senha: "123456",
+      password: "123456",
     };
 
     await expect(sut.execute(input)).rejects.toMatchObject<AppError>({
@@ -110,14 +110,14 @@ describe("LoginUseCase", () => {
     });
   });
 
-  it("deve lançar AppError INVALID_CREDENTIALS quando senha for inválida", async () => {
+  it("deve lançar AppError INVALID_CREDENTIALS quando password for inválida", async () => {
     const { sut, encrypterMock } = makeSut();
 
     (encrypterMock.compare as jest.Mock).mockResolvedValueOnce(false);
 
     const input = {
       email: "user@example.com",
-      senha: "senha-errada",
+      password: "password-errada",
     };
 
     await expect(sut.execute(input)).rejects.toMatchObject<AppError>({

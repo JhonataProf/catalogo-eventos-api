@@ -1,7 +1,5 @@
-import { Links } from "../http-resource";
+import { Link, Links } from "../http-resource";
 
-// src/core/http/hateoas/pagination-links.ts
-export type Link = { href: string; method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" };
 export type LinksPagination = Record<string, Link | undefined>;
 
 type BuildLinksInput = {

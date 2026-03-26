@@ -6,11 +6,11 @@ import { ENV } from "@/core/config/env";
 const encrypter = new BcryptAdapter(ENV.SALT);
 
 export async function makeUser(attrs?: Partial<User>): Promise<User> {
-  const senhaCriptografada = await encrypter.hash(attrs?.senha ?? "senha123");
+  const senhaCriptografada = await encrypter.hash(attrs?.password ?? "senha123");
   return User.create({
-    nome: attrs?.nome ?? "John Doe",
+    name: attrs?.name ?? "John Doe",
     email: attrs?.email ?? `john${Date.now()}@dominio.com`,
-    senha: senhaCriptografada,
+    password: senhaCriptografada,
     role: attrs?.role ?? "Admin",
   } as any);
 }

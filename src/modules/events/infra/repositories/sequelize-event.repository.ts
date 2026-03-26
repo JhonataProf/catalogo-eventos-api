@@ -1,24 +1,35 @@
 // src/modules/events/infra/repositories/sequelize-event.repository.ts
-import { Op, Transaction } from "sequelize";
+import { Transaction } from "sequelize";
 import EventModel from "../model/event-model";
 import { EventEntity } from "../../domain/entities/event.entity";
 import { CreateEventRepository } from "../../domain/repositories/create-event.repository";
 import { DeleteEventRepository } from "../../domain/repositories/delete-event.repository";
 import { FindEventByIdRepository } from "../../domain/repositories/find-event-by-id.repository";
-import { ListEventsRepository, ListEventsQuery, PaginatedResult } from "../../domain/repositories/list-events.repository";
+import {
+  ListEventsRepository,
+  ListEventsQuery,
+  PaginatedResult,
+} from "../../domain/repositories/list-events.repository";
 import { UpdateEventRepository } from "../../domain/repositories/update-event.repository";
 
-// ajuste estes imports conforme o seu core
 import { SpecificationBuilder } from "@/core/domain/specification/specification-builder";
 import { eq, like } from "@/core/domain/specification/builders";
+import { eventModelToEntity } from "../mappers/event-model.mapper";
 
 const ALLOWED_SORT_FIELDS = new Set([
   "id",
-  "titulo",
-  "cat",
-  "data",
-  "hora",
   "cityId",
+  "citySlug",
+  "name",
+  "description",
+  "category",
+  "startDate",
+  "endDate",
+  "formattedDate",
+  "location",
+  "imageUrl",
+  "featured",
+  "published",
   "createdAt",
   "updatedAt",
 ]);
@@ -31,67 +42,60 @@ export class SequelizeEventRepository
     UpdateEventRepository,
     DeleteEventRepository
 {
-  private toEntity(m: EventModel): EventEntity {
-    return new EventEntity({
-      id: m.id,
-      titulo: m.titulo,
-      cat: m.cat as any,
-      data: m.data,
-      hora: m.hora,
-      local: m.local,
-      preco: m.preco,
-      img: m.img,
-      desc: m.desc,
-      cityId: m.cityId,
-      createdAt: (m as any).createdAt,
-      updatedAt: (m as any).updatedAt,
-    });
-  }
-
   async create(event: EventEntity, t?: Transaction): Promise<EventEntity> {
     const created = await EventModel.create(
       {
-        titulo: event.titulo,
-        cat: event.cat,
-        data: event.data,
-        hora: event.hora,
-        local: event.local,
-        preco: event.preco,
-        img: event.img,
-        desc: event.desc,
         cityId: event.cityId,
+        citySlug: event.citySlug,
+        name: event.name,
+        description: event.description,
+        category: event.category,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        formattedDate: event.formattedDate,
+        location: event.location,
+        imageUrl: event.imageUrl,
+        featured: event.featured,
+        published: event.published,
       },
-      { transaction: t }
+      { transaction: t },
     );
 
-    return this.toEntity(created);
+    return eventModelToEntity(created);
   }
 
   async findById(id: number): Promise<EventEntity | null> {
     const found = await EventModel.findByPk(id);
-    return found ? this.toEntity(found) : null;
+    return found ? eventModelToEntity(found) : null;
   }
 
-  async update(id: number, data: Partial<EventEntity["props"]>, t?: Transaction): Promise<EventEntity | null> {
+  async update(
+    id: number,
+    data: Partial<EventEntity["props"]>,
+    t?: Transaction,
+  ): Promise<EventEntity | null> {
     const found = await EventModel.findByPk(id);
     if (!found) return null;
 
     await found.update(
       {
-        titulo: data.titulo ?? found.titulo,
-        cat: (data as any).cat ?? found.cat,
-        data: data.data ?? found.data,
-        hora: data.hora ?? found.hora,
-        local: data.local ?? found.local,
-        preco: data.preco ?? found.preco,
-        img: data.img ?? found.img,
-        desc: data.desc ?? found.desc,
         cityId: data.cityId ?? found.cityId,
+        citySlug: data.citySlug ?? found.citySlug,
+        name: data.name ?? found.name,
+        description: data.description ?? found.description,
+        category: data.category ?? found.category,
+        startDate: data.startDate ?? found.startDate,
+        endDate: data.endDate ?? found.endDate,
+        formattedDate: data.formattedDate ?? found.formattedDate,
+        location: data.location ?? found.location,
+        imageUrl: data.imageUrl ?? found.imageUrl,
+        featured: data.featured ?? found.featured,
+        published: data.published ?? found.published,
       },
-      { transaction: t }
+      { transaction: t },
     );
 
-    return this.toEntity(found);
+    return eventModelToEntity(found);
   }
 
   async delete(id: number, t?: Transaction): Promise<boolean> {
@@ -111,17 +115,17 @@ export class SequelizeEventRepository
       ? String(sortByRaw)
       : "createdAt";
 
-    const sortDir = (String(sortDirRaw ?? "desc").toLowerCase() === "asc"
-      ? "asc"
-      : "desc") as "asc" | "desc";
+    const sortDir = (
+      String(sortDirRaw ?? "desc").toLowerCase() === "asc" ? "asc" : "desc"
+    ) as "asc" | "desc";
 
     const filters = query.filters ?? {};
     const cityId =
       filters.cityId !== undefined ? Number(filters.cityId) : undefined;
 
     const builder = new SpecificationBuilder<typeof filters>()
-      .add((p) => (p.titulo ? like("titulo", p.titulo) : null))
-      .add((p) => (p.cat ? eq("cat", p.cat) : null))
+      .add((p) => (p.name ? like("name", p.name) : null))
+      .add((p) => (p.category ? eq("category", p.category) : null))
       .add((p) => (typeof cityId === "number" ? eq("cityId", cityId) : null));
 
     const spec = builder.build({ ...filters, cityId });
@@ -139,7 +143,7 @@ export class SequelizeEventRepository
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
     return {
-      items: rows.map((r) => this.toEntity(r)),
+      items: rows.map((r) => eventModelToEntity(r)),
       page,
       limit,
       total,

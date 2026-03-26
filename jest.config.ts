@@ -1,4 +1,5 @@
 module.exports = {
+  setupFiles: ['<rootDir>/test/jest-ci-env.js'],
   roots: ['<rootDir>/src', '<rootDir>/test'],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
@@ -11,6 +12,14 @@ module.exports = {
   },
   testEnvironment: 'node',
   coverageDirectory: 'coverage',
+  coverageThreshold: {
+    global: {
+      statements: 80,
+      branches: 55,
+      functions: 75,
+      lines: 80,
+    },
+  },
   transform: {
     '.+\\.ts$': 'ts-jest'
   }

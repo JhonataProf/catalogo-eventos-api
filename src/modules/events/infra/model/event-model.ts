@@ -5,28 +5,25 @@ import { DataTypes, Model } from "sequelize";
 
 class EventModel extends Model {
   id!: number;
-  titulo!: string;
-  cat!: string;
-  data!: string;
-  hora!: string;
-  local!: string;
-  preco!: string;
-  img!: string;
-  desc!: string;
   cityId!: number;
+  citySlug!: string;
+  name!: string;
+  description!: string;
+  category!: string;
+  startDate!: Date;
+  endDate!: Date;
+  formattedDate!: string;
+  location!: string;
+  imageUrl!: string;
+  featured!: boolean;
+  published!: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 EventModel.init(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    titulo: { type: DataTypes.STRING, allowNull: false },
-    cat: { type: DataTypes.STRING, allowNull: false },
-    data: { type: DataTypes.STRING, allowNull: false },
-    hora: { type: DataTypes.STRING, allowNull: false },
-    local: { type: DataTypes.STRING, allowNull: false },
-    preco: { type: DataTypes.STRING, allowNull: false },
-    img: { type: DataTypes.STRING, allowNull: false },
-    desc: { type: DataTypes.TEXT, allowNull: false },
     cityId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -35,10 +32,22 @@ EventModel.init(
         key: "id", // Key in the target model that we're referencing
       },
     },
+    citySlug: { type: DataTypes.STRING, allowNull: false },
+    name: { type: DataTypes.STRING, allowNull: false },
+    description: { type: DataTypes.TEXT, allowNull: false },
+    category: { type: DataTypes.STRING, allowNull: false },
+    startDate: { type: DataTypes.DATE, allowNull: false },
+    endDate: { type: DataTypes.DATE, allowNull: false },
+    formattedDate: { type: DataTypes.STRING, allowNull: false },
+    location: { type: DataTypes.STRING, allowNull: false },
+    imageUrl: { type: DataTypes.STRING, allowNull: false },
+    featured: { type: DataTypes.BOOLEAN, allowNull: false },
+    published: { type: DataTypes.BOOLEAN, allowNull: false },
   },
   {
     sequelize,
     tableName: "events",
+    timestamps: true,
   },
 );
 

@@ -8,32 +8,46 @@ import { makeListEventsController } from "../factories/make-list-events.controll
 import { makeCreateEventController } from "../factories/make-create-event.controller";
 import { makeUpdateEventController } from "../factories/make-update-event.controller";
 import { makeDeleteEventController } from "../factories/make-delete-event.controller";
+import { makeGetEventByIdController } from "../factories/make-get-event-by-id.controller";
 
-import { createEventSchema, updateEventSchema } from "../validators/event-schemas";
+import {
+  createEventSchema,
+  updateEventSchema,
+} from "../validators/event-schemas";
 
 export function registerEventRoutes(router: Router) {
-  router.get("/api/events", adaptRoute(makeListEventsController()));
+  router.get(
+    "/admin/events",
+    authMiddleware,
+    authorizeRoles(["Admin"]),
+    adaptRoute(makeListEventsController("admin")),
+  );
 
   router.post(
-    "/api/events",
+    "/admin/events",
     authMiddleware,
     authorizeRoles(["Admin"]),
     validateBody(createEventSchema),
-    adaptRoute(makeCreateEventController())
+    adaptRoute(makeCreateEventController()),
   );
 
-  router.put(
-    "/api/events/:id",
+  router.patch(
+    "/admin/events/:id",
     authMiddleware,
     authorizeRoles(["Admin"]),
     validateBody(updateEventSchema),
-    adaptRoute(makeUpdateEventController())
+    adaptRoute(makeUpdateEventController()),
   );
 
   router.delete(
-    "/api/events/:id",
+    "/admin/events/:id",
     authMiddleware,
     authorizeRoles(["Admin"]),
-    adaptRoute(makeDeleteEventController())
+    adaptRoute(makeDeleteEventController()),
+  );
+  router.get("/public/events", adaptRoute(makeListEventsController("public")));
+  router.get(
+    "/public/events/:id",
+    adaptRoute(makeGetEventByIdController()),
   );
 }

@@ -1,4 +1,6 @@
 import adaptRoute from "@/core/adapters/express-route-adapter";
+import authMiddleware from "@/core/http/middlewares/auth-middleware";
+import authorizeRoles from "@/core/http/middlewares/authorize-roles";
 import { validateBody } from "@/core/http/middlewares/validate-body";
 import { Router } from "express";
 
@@ -8,9 +10,7 @@ import {
   makeGetTouristPointByIdController,
   makeListTouristPointsController,
   makeUpdateTouristPointController,
-} from "../factories/tourist-point-controllers.factory";
-
-import { authMiddleware } from "@/core/http/middlewares";
+} from "../factories";
 import {
   createTouristPointSchema,
   updateTouristPointSchema,
@@ -18,26 +18,44 @@ import {
 
 export function registerTouristPointsRoutes(router: Router) {
   router.post(
-    "/tourist-points",
+    "/admin/tourist-points",
+    authMiddleware,
+    authorizeRoles(["Admin"]),
     validateBody(createTouristPointSchema),
     adaptRoute(makeCreateTouristPointController()),
   );
   router.get(
-    "/tourist-points",
-    adaptRoute(makeListTouristPointsController()),
+    "/admin/tourist-points",
+    authMiddleware,
+    authorizeRoles(["Admin"]),
+    adaptRoute(makeListTouristPointsController("admin")),
   );
   router.get(
-    "/tourist-points/:id",
-    adaptRoute(makeGetTouristPointByIdController()),
+    "/admin/tourist-points/:id",
+    authMiddleware,
+    authorizeRoles(["Admin"]),
+    adaptRoute(makeGetTouristPointByIdController("admin")),
   );
   router.put(
-    "/tourist-points/:id",
+    "/admin/tourist-points/:id",
+    authMiddleware,
+    authorizeRoles(["Admin"]),
     validateBody(updateTouristPointSchema),
     adaptRoute(makeUpdateTouristPointController()),
   );
   router.delete(
-    "/tourist-points/:id",
+    "/admin/tourist-points/:id",
     authMiddleware,
+    authorizeRoles(["Admin"]),
     adaptRoute(makeDeleteTouristPointController()),
+  );
+
+  router.get(
+    "/public/tourist-points",
+    adaptRoute(makeListTouristPointsController("public")),
+  );
+  router.get(
+    "/public/tourist-points/:id",
+    adaptRoute(makeGetTouristPointByIdController("public")),
   );
 }

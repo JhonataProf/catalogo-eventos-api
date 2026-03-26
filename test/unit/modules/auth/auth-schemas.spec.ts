@@ -1,8 +1,8 @@
 import {
-  loginSchema,
-  refreshTokenSchema,
   authResponseSchema,
   loginResponseSchema,
+  loginSchema,
+  refreshTokenSchema,
 } from "@/modules/auth/presentation/http/validators/auth-schemas";
 
 function issueForPath(issues: any[], path: string) {
@@ -13,7 +13,7 @@ describe("auth-schemas", () => {
   it("loginSchema deve validar payload válido", () => {
     const result = loginSchema.safeParse({
       email: "user@mail.com",
-      senha: "123456",
+      password: "123456",
     });
 
     expect(result.success).toBe(true);
@@ -22,7 +22,7 @@ describe("auth-schemas", () => {
   it("loginSchema deve falhar com email inválido", () => {
     const result = loginSchema.safeParse({
       email: "invalid",
-      senha: "123456",
+      password: "123456",
     });
 
     expect(result.success).toBe(false);
@@ -32,28 +32,28 @@ describe("auth-schemas", () => {
     }
   });
 
-  it("loginSchema deve falhar com senha menor que 6", () => {
+  it("loginSchema deve falhar com password menor que 6", () => {
     const result = loginSchema.safeParse({
       email: "user@mail.com",
-      senha: "123",
+      password: "123",
     });
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = issueForPath(result.error.issues, "senha");
+      const issue = issueForPath(result.error.issues, "password");
       expect(issue.message).toBe("A senha deve ter no minimo 6 caracteres");
     }
   });
 
-  it("loginSchema deve falhar com senha maior que 8", () => {
+  it("loginSchema deve falhar com password maior que 8", () => {
     const result = loginSchema.safeParse({
       email: "user@mail.com",
-      senha: "123456789",
+      password: "123456789",
     });
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = issueForPath(result.error.issues, "senha");
+      const issue = issueForPath(result.error.issues, "password");
       expect(issue.message).toBe("A senha deve ter no máximo 8 caracteres");
     }
   });
