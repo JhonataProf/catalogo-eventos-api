@@ -8,9 +8,34 @@ import { loadSwaggerDocument } from "./swagger";
 import setupMiddlewares from "@/core/config/middlewares";
 import { resolveRuntimePath } from "@/core/config/paths";
 import setupRoutes from "@/core/config/routes";
+import { runReadinessCheck } from "@/core/config/readiness";
 
 export const createApp = (): Application => {
   const app = express();
+
+  // Health check para ALB/ECS (sem tocar no banco)
+  app.get("/health", (_req, res) => {
+    res.status(200).json({
+      status: "ok",
+      uptimeSeconds: Math.round(process.uptime()),
+    });
+  });
+
+  // Readiness: opcionalmente valida banco (target group / ECS health “advanced”)
+  app.get("/ready", async (_req, res) => {
+    const result = await runReadinessCheck();
+    if (result.ok) {
+      res.status(200).json({
+        status: "ready",
+        dbChecked: result.dbChecked,
+      });
+      return;
+    }
+    res.status(503).json({
+      status: "not_ready",
+      error: result.message,
+    });
+  });
 
   // Swagger opcional
   if (ENV.SWAGGER_ENABLED) {

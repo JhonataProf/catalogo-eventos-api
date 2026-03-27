@@ -1,4 +1,6 @@
 import path from "path";
+import os from "node:os";
+import fs from "node:fs/promises";
 import crypto from "crypto";
 import { LocalMediaStorageService } from "../../../../src/modules/media/infra/storage/local-media-storage.service";
 
@@ -37,17 +39,17 @@ describe("LocalMediaStorageService", () => {
     });
 
     // dir normalizado (remove / inicial)
-    expect(ensureDir).toHaveBeenCalledWith(path.join("/tmp/uploads", "users/10"));
+    expect(ensureDir).toHaveBeenCalledWith(path.join("/tmp/uploads", "public", "users/10"));
 
     // arquivo salvo
     expect(writeBufferFile).toHaveBeenCalledWith(
-      path.join("/tmp/uploads", "users/10", "uuid-1-uuid-1-uuid-1-uuid-1.png"),
+      path.join("/tmp/uploads/public", "users/10", "uuid-1-uuid-1-uuid-1-uuid-1.png"),
       buffer
     );
 
     // retorno
     expect(result).toEqual({
-      path: "/uploads/users/10/uuid-1-uuid-1-uuid-1-uuid-1.png",
+      path: "/uploads/public/users/10/uuid-1-uuid-1-uuid-1-uuid-1.png",
       size: 5,
       mimeType: "image/png",
     });
@@ -70,5 +72,28 @@ describe("LocalMediaStorageService", () => {
 
     expect(result.path).toBe(path.join("/tmp/uploads", "docs", "uuid-2-uuid-2-uuid-2-uuid-2.txt"));
     expect(result.size).toBe(3);
+  });
+
+  it("headOwnedPublicUrl retorna metadados para arquivo existente sob public/", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "media-local-head-"));
+    const rel = "public/phase1/pixel.txt";
+    const full = path.join(root, rel);
+    await fs.mkdir(path.dirname(full), { recursive: true });
+    await fs.writeFile(full, "abc", "utf8");
+
+    const svc = new LocalMediaStorageService({
+      rootDir: root,
+      publicBasePath: "/uploads",
+      publicOrigin: "http://127.0.0.1:3000",
+      publicKeyPrefix: "public",
+    });
+
+    const url = "http://127.0.0.1:3000/uploads/public/phase1/pixel.txt";
+    const meta = await svc.headOwnedPublicUrl(url);
+
+    expect(meta).toEqual({
+      contentType: "text/plain",
+      contentLength: 3,
+    });
   });
 });
