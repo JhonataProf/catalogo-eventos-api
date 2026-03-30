@@ -43,11 +43,11 @@ resource "aws_security_group" "aurora" {
   dynamic "ingress" {
     for_each = var.allowed_security_group_ids
     content {
-      description              = "MySQL de SG interno (ex.: ECS)"
-      from_port                = 3306
-      to_port                  = 3306
-      protocol                 = "tcp"
-      source_security_group_id = ingress.value
+      description     = "MySQL de SG interno (ex.: ECS)"
+      from_port       = 3306
+      to_port         = 3306
+      protocol        = "tcp"
+      security_groups = [ingress.value]
     }
   }
 
@@ -75,8 +75,8 @@ resource "aws_rds_cluster" "this" {
   master_username = var.master_username
   master_password = random_password.master.result
 
-  db_subnet_group_name   = aws_db_subnet_group.aurora.name
-  vpc_security_group_ids = [aws_security_group.aurora.id]
+  db_subnet_group_name            = aws_db_subnet_group.aurora.name
+  vpc_security_group_ids          = [aws_security_group.aurora.id]
   storage_encrypted               = true
   backup_retention_period         = var.backup_retention_days
   preferred_backup_window         = "05:00-06:00"

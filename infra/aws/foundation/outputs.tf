@@ -41,6 +41,16 @@ output "vpc_id" {
   value = aws_vpc.main.id
 }
 
+output "private_subnet_ids" {
+  description = "IDs das subnets privadas (2 AZs). Use no Aurora/RDS em produção ou com bastion/VPN."
+  value       = aws_subnet.private[*].id
+}
+
+output "public_subnet_ids" {
+  description = "IDs das subnets públicas (2 AZs). Só para laboratório com publicly_accessible=true no Aurora."
+  value       = aws_subnet.public[*].id
+}
+
 output "nat_gateway_public_ip" {
   description = "IP elástico do NAT quando nat_gateway_enabled=true (egress das tasks)"
   value       = var.nat_gateway_enabled ? aws_eip.nat[0].public_ip : null
