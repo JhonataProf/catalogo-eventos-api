@@ -20,7 +20,7 @@ export class SequelizeHomeBannerRepository
     UpdateHomeBannerRepository
 {
   async create(
-    homeBanner: Omit<HomeBannerEntity, "id">,
+    homeBanner: Omit<HomeBannerProps, "id">,
   ): Promise<HomeBannerEntity | null> {
     const result = await HomeBannerModel.create({ ...homeBanner });
 
@@ -33,6 +33,8 @@ export class SequelizeHomeBannerRepository
       ctaUrl: result.ctaUrl,
       active: result.active,
       order: result.order,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
     });
   }
   async delete(id: number): Promise<boolean> {
@@ -51,6 +53,8 @@ export class SequelizeHomeBannerRepository
       ctaUrl: result.ctaUrl,
       active: result.active,
       order: result.order,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
     });
   }
   async getAll(): Promise<HomeBannerEntity[] | null> {
@@ -67,6 +71,8 @@ export class SequelizeHomeBannerRepository
           ctaUrl: h.ctaUrl,
           active: h.active,
           order: h.order,
+          createdAt: h.createdAt,
+          updatedAt: h.updatedAt,
         }),
     );
   }
@@ -95,6 +101,8 @@ export class SequelizeHomeBannerRepository
       ctaUrl: result.ctaUrl,
       active: result.active,
       order: result.order,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
     });
   }
 }

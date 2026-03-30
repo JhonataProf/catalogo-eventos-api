@@ -1,5 +1,5 @@
 import { logger } from "@/core/config/logger";
-import { notFound } from "@/core/helpers/http-helper";
+import { AppError } from "@/core/errors-app-error";
 import { mapErrorToHttpResponse, ok, ResourceBuilder } from "@/core/http";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { FindCityBySlugUsecase } from "@/modules/cities/application/use-cases/find-city-by-slug.usecase";
@@ -28,7 +28,15 @@ export class FindCityBySlugController implements Controller {
     try {
       const city = await this.usecase.execute(slug);
       if (!city) {
-        return notFound({ error: "CITY_NOT_FOUND", meta: { correlationId } });
+        return mapErrorToHttpResponse(
+          new AppError({
+            code: "CITY_NOT_FOUND",
+            message: "Cidade não encontrada",
+            statusCode: 404,
+            details: { slug },
+          }),
+          correlationId,
+        );
       }
       const resource = new ResourceBuilder(cityToJson(city))
         .addAllLinks(publicCityBySlugLinks(city.slug))

@@ -26,12 +26,17 @@ export class SequelizeCityRepository
 {
   constructor() {}
   async publicFindBySlug(slug: string): Promise<CityEntity | null> {
-    const city = await CityModel.findOne({ where: { slug } });
+    const city = await CityModel.findOne({
+      where: { slug, published: true },
+    });
     if (!city) return null;
     return cityModelToEntity(city);
   }
   async publicList(): Promise<CityEntity[] | null> {
-    const cities = await CityModel.findAll();
+    const cities = await CityModel.findAll({
+      where: { published: true },
+      order: [["name", "ASC"]],
+    });
     return cities.map((city) => cityModelToEntity(city));
   }
   async findByName(name: string): Promise<CityEntity | null> {

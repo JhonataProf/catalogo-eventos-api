@@ -1,6 +1,6 @@
 import { logger } from "@/core/config/logger";
+import { AppError } from "@/core/errors-app-error";
 import { mapErrorToHttpResponse, ok, ResourceBuilder } from "@/core/http";
-import { notFound } from "@/core/helpers/http-helper";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { FindSocialLinkByIdUseCase } from "@/modules/social-links/application/use-cases/find-social-link-by-id.usecase";
 import {
@@ -23,10 +23,15 @@ export class FindSocialLinkByIdController implements Controller {
       const socialLink = await this.useCase.execute(id);
 
       if (!socialLink) {
-        return notFound({
-          error: "SOCIAL_LINK_NOT_FOUND",
-          meta: { correlationId },
-        });
+        return mapErrorToHttpResponse(
+          new AppError({
+            code: "SOCIAL_LINK_NOT_FOUND",
+            message: "Link social não encontrado",
+            statusCode: 404,
+            details: { id },
+          }),
+          correlationId,
+        );
       }
 
       const data = {

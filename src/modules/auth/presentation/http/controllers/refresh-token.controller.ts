@@ -24,7 +24,7 @@ export class RefreshTokenController implements Controller {
       const body = resource(
         { accessToken: result.accessToken },
         refreshTokenLinks(),
-        { correlationId },
+        { correlationId, version: "1.0.0" },
       );
 
       logger.info("Refresh token bem-sucedido", {

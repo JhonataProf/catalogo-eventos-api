@@ -38,4 +38,10 @@ export class HomeBannerEntity {
   get order(){
     return this.props.order
   }
+  get createdAt() {
+    return this.props.createdAt;
+  }
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
 }

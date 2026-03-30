@@ -53,6 +53,7 @@ CityModel.init(
   {
     sequelize,
     modelName: "cities",
+    tableName: "cities",
   },
 );
 

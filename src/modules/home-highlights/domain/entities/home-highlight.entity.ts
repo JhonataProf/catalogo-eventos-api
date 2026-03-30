@@ -11,6 +11,8 @@ export interface HomeHighlightProps {
   ctaUrl: string;
   active: boolean;
   order: number;
+  createdAt?: Date;
+  updatedAt?: Date | null;
 }
 
 export class HomeHighlightEntity {
@@ -53,5 +55,11 @@ export class HomeHighlightEntity {
 
   get order() {
     return this.props.order;
+  }
+  get createdAt() {
+    return this.props.createdAt;
+  }
+  get updatedAt() {
+    return this.props.updatedAt;
   }
 }

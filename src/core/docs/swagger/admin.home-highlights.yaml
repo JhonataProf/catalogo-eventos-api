@@ -1,25 +1,29 @@
 tags:
   - name: Home Highlight ADMIN
-    description: Endpoints relacionados aos destaques da página home
+    description: Destaques da home (admin)
 
 paths:
-  /api/admin/home-highlights:
+  /admin/home-highlights:
     get:
-      summary: Lista de destaques da página home do catálogo de eventos
+      summary: Lista destaques (sem paginação)
       tags:
         - Home Highlight ADMIN
       security:
         - bearerAuth: []
       responses:
-        200:
-          description: A listagem de destaques da página home foi obtida com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminHomeHighlightPagedResponse"
+                $ref: "#/components/schemas/HomeHighlightsCollectionResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
 
     post:
-      summary: Cadastra um destaque da página home do catálogo de eventos
+      summary: Cria destaque
       tags:
         - Home Highlight ADMIN
       security:
@@ -29,17 +33,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#components/schemas/AdminHomeHighlight"
+              $ref: "#/components/schemas/HomeHighlightWriteRequest"
       responses:
-        201:
-          description: O destaque da página home foi criado com sucesso!
+        "201":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminHomeHighlight"
-  /api/admin/home-highlights/{id}:
+                $ref: "#/components/schemas/HomeHighlightCreateResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+  /admin/home-highlights/{id}:
     get:
-      summary: Busca um destaque da página home pelo ID
+      summary: Busca destaque por ID
       tags:
         - Home Highlight ADMIN
       security:
@@ -50,16 +59,25 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do destaque da página home que deseja buscar
       responses:
-        200:
-          description: O destaque da página home foi obtido com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminHomeHighlight"
+                $ref: "#/components/schemas/HomeHighlightInlineResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
     patch:
-      summary: Atualiza os dados de um destaque da página home do catálogo de eventos
+      summary: Atualiza destaque
       tags:
         - Home Highlight ADMIN
       security:
@@ -70,15 +88,31 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do destaque da página home que deseja atualizar
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#components/schemas/AdminHomeHighlight"
+              $ref: "#/components/schemas/HomeHighlightWriteRequest"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HomeHighlightInlineResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
     delete:
-      summary: Exclui um destaque da página home pelo ID
+      summary: Remove destaque
       tags:
         - Home Highlight ADMIN
       security:
@@ -89,61 +123,89 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do destaques da página home que deseja excluir
       responses:
-        200:
-          description: OK
+        "200":
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      deleted: { type: boolean, example: true }
+                $ref: "#/components/schemas/DeletedFlagResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
 
 components:
   schemas:
-    AdminHomeHighlight:
+    HomeHighlightsCollectionResponse:
       type: object
-      properties:
-        id: { type: number, example: 1 }
-        type: { type: string, example: "" }
-        referenceId: { type: string, example: "" }
-        title: { type: string, example: "" }
-        description: { type: string, example: "" }
-        imageUrl: { type: string, example: "" }
-        cityName: { type: string, example: "" }
-        ctaUrl: { type: string, example: "" }
-        active: { type: boolean, example: true }
-        order: { type: number, example: 1 }
-        createdAt: { type: date, example: "2026-04-26" }
-        updatedAt: { type: date, example: "2026-04-26" }
-    AdminHomeHighlightPagedResponse:
-      type: object
+      required: [data, links, meta]
       properties:
         data:
-          type: object
-          properties:
-            items:
-              type: array
-              items:
-                $ref: "#components/schemas/AdminHomeHighlight"
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            totalPages:
-              type: integer
-            sort:
-              type: object
-              properties:
-                sortBy: { type: string }
-                sortDir: { type: string }
+          type: array
+          items:
+            $ref: "#/components/schemas/HomeHighlightPayload"
         links:
           $ref: "#/components/schemas/Links"
         meta:
-          $ref: "#/components/schemas/Meta"
+          $ref: "#/components/schemas/SimpleListMeta"
+
+    HomeHighlightPayload:
+      type: object
+      properties:
+        id: { type: integer }
+        type: { type: string, enum: [event, tourist-point, custom] }
+        referenceId: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        imageUrl: { type: string }
+        cityName: { type: string }
+        ctaUrl: { type: string }
+        active: { type: boolean }
+        order: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    HomeHighlightWriteRequest:
+      type: object
+      properties:
+        type: { type: string, enum: [event, tourist-point, custom] }
+        referenceId: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        imageUrl: { type: string }
+        cityName: { type: string }
+        ctaUrl: { type: string }
+        active: { type: boolean }
+        order: { type: integer }
+
+    HomeHighlightCreateResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/HomeHighlightPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/SimpleListMeta"
+
+    HomeHighlightInlineResponse:
+      type: object
+      description: GET/PATCH retornam data + links + meta (envelope completo)
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/HomeHighlightPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          allOf:
+            - $ref: "#/components/schemas/Meta"
+          properties:
+            version: { type: string, example: "1.0.0" }

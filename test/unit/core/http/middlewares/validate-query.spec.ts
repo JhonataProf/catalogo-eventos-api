@@ -24,7 +24,10 @@ describe("validateQuery", () => {
 
   it("retorna 400 com issues quando Zod falha", () => {
     const mw = validateQuery(schema);
-    const req = { query: { page: "0", limit: "1" } } as any;
+    const req = {
+      query: { page: "0", limit: "1" },
+      correlationId: "vq-1",
+    } as any;
     const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
     const next = jest.fn();
 
@@ -33,13 +36,19 @@ describe("validateQuery", () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: "Invalid query params",
-        errors: expect.arrayContaining([
-          expect.objectContaining({
-            path: expect.any(String),
-            message: expect.any(String),
-          }),
-        ]),
+        error: expect.objectContaining({
+          code: "INVALID_QUERY",
+          message: "Invalid query params",
+          details: {
+            errors: expect.arrayContaining([
+              expect.objectContaining({
+                path: expect.any(String),
+                message: expect.any(String),
+              }),
+            ]),
+          },
+        }),
+        meta: { correlationId: "vq-1" },
       }),
     );
     expect(next).not.toHaveBeenCalled();

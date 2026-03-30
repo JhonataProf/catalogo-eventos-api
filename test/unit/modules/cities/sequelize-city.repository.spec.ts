@@ -46,6 +46,9 @@ describe("SequelizeCityRepository", () => {
   it("publicFindBySlug e findByName", async () => {
     (CityModel.findOne as jest.Mock).mockResolvedValue({ ...row });
     expect((await repo.publicFindBySlug("campo-grande"))?.id).toBe(1);
+    expect(CityModel.findOne).toHaveBeenCalledWith({
+      where: { slug: "campo-grande", published: true },
+    });
     expect((await repo.findByName("CG"))?.slug).toBe("campo-grande");
   });
 
@@ -58,6 +61,10 @@ describe("SequelizeCityRepository", () => {
     (CityModel.findAll as jest.Mock).mockResolvedValue([{ ...row }]);
     const out = await repo.publicList();
     expect(out).toHaveLength(1);
+    expect(CityModel.findAll).toHaveBeenCalledWith({
+      where: { published: true },
+      order: [["name", "ASC"]],
+    });
   });
 
   it("create", async () => {

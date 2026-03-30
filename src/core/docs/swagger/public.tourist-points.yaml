@@ -1,11 +1,11 @@
 tags:
   - name: Tourist Point PUBLIC
-    description: Endpoints relacionados aos pontos turísticos
+    description: Endpoints públicos de pontos turísticos
 
 paths:
   /public/tourist-points:
     get:
-      summary: Lista de pontos turísticos do catálogo de eventos
+      summary: Lista paginada de pontos turísticos
       tags:
         - Tourist Point PUBLIC
       parameters:
@@ -26,8 +26,7 @@ paths:
           schema: { type: string }
         - in: query
           name: published
-          schema: { type: string, enum: [true, false] }
-          description: Filtra por publicado; use os literais true ou false
+          schema: { type: string, enum: ["true", "false"] }
         - in: query
           name: sortBy
           schema:
@@ -35,24 +34,22 @@ paths:
             enum: [name, city, state, createdAt]
         - in: query
           name: sortDir
-          schema: { type: string, example: ASC }
+          schema: { type: string, enum: [asc, desc, ASC, DESC] }
       responses:
-        200:
-          description: A listagem de pontos turísticos foi obtida com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminTouristPointPagedResponse"
-        400:
-          description: Parâmetros de query inválidos ou chaves não permitidas (strict)
+                $ref: "#/components/schemas/TouristPointsCollectionResponse"
+        "400":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/InvalidQueryResponse"
+                $ref: "#/components/schemas/ValidationErrorResponse"
 
   /public/tourist-points/{id}:
     get:
-      summary: Busca um link de ponto turístico pelo ID
+      summary: Busca ponto turístico por ID
       tags:
         - Tourist Point PUBLIC
       parameters:
@@ -61,73 +58,89 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do link de ponto turístico que deseja buscar
       responses:
-        200:
-          description: O link de ponto turístico foi obtido com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminSocialLink"
+                $ref: "#/components/schemas/TouristPointResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   schemas:
-    InvalidQueryResponse:
+    TouristPointListItemPayload:
       type: object
+      description: Item de listagem (timestamps opcionais conforme persistência)
       properties:
-        message:
-          type: string
-          example: Invalid query params
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              path:
-                type: string
-              message:
-                type: string
-      required: [message, errors]
-    AdminTouristPoint:
+        id: { type: integer }
+        cityId: { type: integer }
+        citySlug: { type: string }
+        name: { type: string }
+        description: { type: string }
+        category: { type: string }
+        address: { type: string }
+        openingHours: { type: string }
+        imageUrl: { type: string }
+        featured: { type: boolean }
+        published: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    TouristPointDetailPayload:
       type: object
+      description: Detalhe (sem timestamps de auditoria no contrato atual)
       properties:
-        id: { type: number, example: 0 }
-        cityId: { type: number, example: 0 }
-        citySlug: { type: string, example: "" }
-        name: { type: string, example: "" }
-        description: { type: string, example: "" }
-        category: { type: string, example: "" }
-        address: { type: string, example: "" }
-        openingHours: { type: date, example: "2026-04-26" }
-        imageUrl: { type: string, example: "" }
-        featured: { type: boolean, example: true }
-        published: { type: boolean, example: true }
-        createdAt: { type: date, example: "2026-04-26" }
-        updatedAt: { type: date, example: "2026-04-26" }
-    AdminTouristPointPagedResponse:
-      type: object
+        id: { type: integer }
+        cityId: { type: integer }
+        citySlug: { type: string }
+        name: { type: string }
+        description: { type: string }
+        category: { type: string }
+        address: { type: string }
+        openingHours: { type: string }
+        imageUrl: { type: string }
+        featured: { type: boolean }
+        published: { type: boolean }
+
+    TouristPointsListMeta:
+      allOf:
+        - $ref: "#/components/schemas/Meta"
       properties:
-        data:
+        version: { type: string, example: "1.0.0" }
+        page: { type: integer }
+        limit: { type: integer }
+        total: { type: integer }
+        totalPages: { type: integer }
+        sort:
           type: object
           properties:
-            items:
-              type: array
-              items:
-                $ref: "#components/schemas/AdminTouristPoint"
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            totalPages:
-              type: integer
-            sort:
-              type: object
-              properties:
-                sortBy: { type: string }
-                sortDir: { type: string }
+            by: { type: string }
+            dir: { type: string }
+
+    TouristPointsCollectionResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/TouristPointListItemPayload"
         links:
           $ref: "#/components/schemas/Links"
         meta:
-          $ref: "#/components/schemas/Meta"
+          $ref: "#/components/schemas/TouristPointsListMeta"
+
+    TouristPointResourceResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/TouristPointDetailPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/SimpleListMeta"

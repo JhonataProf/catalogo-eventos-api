@@ -9,33 +9,10 @@ import setupMiddlewares from "@/core/config/middlewares";
 import { resolveRuntimePath } from "@/core/config/paths";
 import setupRoutes from "@/core/config/routes";
 import { runReadinessCheck } from "@/core/config/readiness";
+import { ensureCorrelationId } from "@/core/http/correlation";
 
 export const createApp = (): Application => {
   const app = express();
-
-  // Health check para ALB/ECS (sem tocar no banco)
-  app.get("/health", (_req, res) => {
-    res.status(200).json({
-      status: "ok",
-      uptimeSeconds: Math.round(process.uptime()),
-    });
-  });
-
-  // Readiness: opcionalmente valida banco (target group / ECS health “advanced”)
-  app.get("/ready", async (_req, res) => {
-    const result = await runReadinessCheck();
-    if (result.ok) {
-      res.status(200).json({
-        status: "ready",
-        dbChecked: result.dbChecked,
-      });
-      return;
-    }
-    res.status(503).json({
-      status: "not_ready",
-      error: result.message,
-    });
-  });
 
   // Swagger opcional
   if (ENV.SWAGGER_ENABLED) {
@@ -50,6 +27,41 @@ export const createApp = (): Application => {
 
   // Middlewares globais (incluindo CORS, JSON parser, security headers, etc.)
   setupMiddlewares(app);
+
+  // Health/readiness após correlation-id (meta e header x-correlation-id)
+  app.get("/health", (req, res) => {
+    const correlationId = ensureCorrelationId(
+      (req as { correlationId?: string }).correlationId,
+    );
+    res.status(200).json({
+      status: "ok",
+      uptimeSeconds: Math.round(process.uptime()),
+      meta: { correlationId },
+    });
+  });
+
+  app.get("/ready", async (req, res) => {
+    const correlationId = ensureCorrelationId(
+      (req as { correlationId?: string }).correlationId,
+    );
+    const result = await runReadinessCheck();
+    if (result.ok) {
+      res.status(200).json({
+        status: "ready",
+        dbChecked: result.dbChecked,
+        meta: { correlationId },
+      });
+      return;
+    }
+    res.status(503).json({
+      status: "not_ready",
+      error: {
+        code: "NOT_READY",
+        message: result.message ?? "Serviço indisponível",
+      },
+      meta: { correlationId },
+    });
+  });
 
   // Rotas da aplicação
   setupRoutes(app);

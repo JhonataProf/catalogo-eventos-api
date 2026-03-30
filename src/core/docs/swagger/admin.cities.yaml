@@ -5,22 +5,32 @@ tags:
 paths:
   /admin/cities:
     get:
-      summary: Lista as cidades da região do catálogo de eventos
-      tags: 
+      summary: Lista todas as cidades (admin)
+      tags:
         - Cities ADMIN
       security:
         - bearerAuth: []
       responses:
-        200:
-          description: A listagem de cidades foi obtida com sucesso!
+        "200":
+          description: Coleção de cidades
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminCityPagedResponse"
+                $ref: "#/components/schemas/AdminCityCollectionResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
 
     post:
-      summary: Cadastra uma cidade da região do catálogo de eventos
-      tags: 
+      summary: Cadastra uma cidade
+      tags:
         - Cities ADMIN
       security:
         - bearerAuth: []
@@ -29,37 +39,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#components/schemas/AdminCity"
+              $ref: "#/components/schemas/AdminCityCreateRequest"
       responses:
-        201:
-          description: A cidade foi criada com sucesso!
+        "201":
+          description: Cidade criada
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminCity"
+                $ref: "#/components/schemas/AdminCityResourceResponse"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
   /admin/cities/{id}:
     get:
-      summary: Busca uma cidade pelo ID
-      tags: 
-        - Cities ADMIN
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID da cidade que deseja buscar
-      responses:
-        200:
-          description: A cidades foi obtida com sucesso!
-          content:
-            application/json:
-              schema:
-                $ref: "#components/schemas/AdminCity"
-    patch:
-      summary: Atualiza os dados de uma cidade da região do catálogo de eventos
+      summary: Busca cidade por ID
       tags:
         - Cities ADMIN
       security:
@@ -70,16 +71,26 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID da cidade que deseja atualizar
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#components/schemas/AdminCity"
-    delete:
-      summary: Exclui uma cidade pelo ID
-      tags: 
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminCityResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+    patch:
+      summary: Atualiza cidade
+      tags:
         - Cities ADMIN
       security:
         - bearerAuth: []
@@ -89,64 +100,119 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID da cidade que deseja excluir
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminCityCreateRequest"
       responses:
-        200:
-          description: OK
+        "200":
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      deleted: { type: boolean, example: true }
+                $ref: "#/components/schemas/AdminCityResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+    delete:
+      summary: Exclui cidade
+      tags:
+        - Cities ADMIN
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removido (sem corpo; use header x-correlation-id)
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
 
 components:
   schemas:
-    AdminCity:
+    AdminCityPayload:
+      type: object
+      description: Corpo de cidade na API (resposta)
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        state:
+          type: string
+        summary:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        published:
+          type: boolean
+      required:
+        [id, name, slug, state, summary, description, imageUrl, published]
+
+    AdminCityCreateRequest:
       type: object
       properties:
-        id: { type: number, example: 0 }
-        name: { type: string, example: "Dourados" }
-        slug: { type: string, example: "dourados" }
-        state: { type: string, example: "MS" }
-        summary: { type: string, example: "Um resumo sobre Dourados" }
+        name:
+          type: string
+        slug:
+          type: string
+        state:
+          type: string
+        summary:
+          type: string
         description:
-          {
-            type: string,
-            example: "Este é um texto contando algo sobre Dourados",
-          }
+          type: string
         imageUrl:
-          { type: string, example: https://repositorio.com.br/imagem.jpg }
-        published: { type: boolean, example: true }
-        createdAt: { type: date, example: "2026-04-26" }
-        updatedAt: { type: date, example: "2026-04-26" }
-    AdminCityPagedResponse:
+          type: string
+        published:
+          type: boolean
+      required: [name, slug, summary, imageUrl, published]
+
+    AdminCityCollectionResponse:
       type: object
+      required: [data, links, meta]
       properties:
         data:
-          type: object
-          properties:
-            items:
-              type: array
-              items:
-                $ref: "#components/schemas/AdminCity"
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            totalPages:
-              type: integer
-            sort:
-              type: object
-              properties:
-                sortBy: { type: string }
-                sortDir: { type: string }
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminCityPayload"
         links:
-          $ref: '#/components/schemas/Links'
+          $ref: "#/components/schemas/Links"
         meta:
-          $ref: '#/components/schemas/Meta'
+          $ref: "#/components/schemas/Meta"
+
+    AdminCityResourceResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/AdminCityPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/Meta"

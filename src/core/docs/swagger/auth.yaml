@@ -47,11 +47,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/RefreshTokenResponse'
         401:
-          description: Refresh token inválido
+          description: Refresh token inválido ou ausente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/UnauthorizedResponse'
 
 components:
   schemas:
@@ -82,7 +82,7 @@ components:
           $ref: '#/components/schemas/Links'
         meta:
           $ref: '#/components/schemas/Meta'
-      required: [data]
+      required: [data, links, meta]
 
     RefreshTokenRequest:
       type: object
@@ -104,7 +104,7 @@ components:
           $ref: '#/components/schemas/Links'
         meta:
           $ref: '#/components/schemas/Meta'
-      required: [data]
+      required: [data, links, meta]
 
     UserLogin:
       type: object

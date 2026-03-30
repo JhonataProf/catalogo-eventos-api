@@ -1,5 +1,10 @@
-import { HomeHighlightEntity } from "../entities/home-highlight.entity";
+import {
+  HomeHighlightEntity,
+  HomeHighlightProps,
+} from "../entities/home-highlight.entity";
 
 export interface CreateHomeHighlightRepository {
-    create(__homeHighlight: Omit<HomeHighlightEntity, 'id'>):Promise<HomeHighlightEntity|null>
+  create(
+    input: Omit<HomeHighlightProps, "id">,
+  ): Promise<HomeHighlightEntity | null>;
 }
