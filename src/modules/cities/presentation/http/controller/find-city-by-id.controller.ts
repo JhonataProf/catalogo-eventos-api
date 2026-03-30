@@ -30,6 +30,17 @@ export class FindCityByIdController implements Controller {
       }
 
       const city = await this.findCityByIdUseCase.execute(cityId);
+      if (this.audience === "public" && !city.published) {
+        return mapErrorToHttpResponse(
+          new AppError({
+            code: "CIDADE_NOT_FOUND",
+            message: `Cidade ${cityId} não encontrada`,
+            statusCode: 404,
+            details: { id: cityId },
+          }),
+          correlationId,
+        );
+      }
       const payload = toCityHttpPayload(city);
 
       const resourceBuild = new ResourceBuilder(payload);

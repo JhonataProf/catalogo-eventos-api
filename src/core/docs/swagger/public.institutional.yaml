@@ -1,82 +1,81 @@
 tags:
-  - name: Institutional Content ADMIN
-    description: Endpoints relacionados ao conteudo institucional
+  - name: Institutional Content PUBLIC
+    description: Conteúdo institucional (público)
 
 paths:
-  /admin/institutional-content:
+  /public/institutional-content:
     get:
-      summary: Lista de conteudo institucional do catálogo de eventos
-      tags: 
-        - Institutional Content ADMIN
+      summary: Lista registros institucionais (sem paginação; data = array)
+      tags:
+        - Institutional Content PUBLIC
       responses:
-        200:
-          description: A listagem de destaques da página home foi obtida com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminInstitutionalContentPagedResponse"
+                $ref: "#/components/schemas/InstitutionalContentCollectionResponse"
 
-  /admin/institutional-content/{id}:
+  /public/institutional-content/{id}:
     get:
-      summary: Busca um conteudo institucional pelo ID
-      tags: 
-        - Institutional Content ADMIN
+      summary: Busca por ID
+      tags:
+        - Institutional Content PUBLIC
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: integer
-          description: ID do conteudo institucional que deseja buscar
       responses:
-        200:
-          description: O conteudo institucional foi obtido com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminInstitutionalContent"
+                $ref: "#/components/schemas/InstitutionalContentResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   schemas:
-    AdminInstitutionalContent:
+    InstitutionalContentPayload:
       type: object
       properties:
-        id: { type: number ,example: 0 }
-        aboutTitle: { type: string, example: "" }
-        aboutText: { type: string, example: "" }
-        whoWeAreTitle: { type: string, example: "" }
-        whoWeAreText: { type: string, example: "" }
-        purposeTitle: { type: string, example: "" }
-        purposeText: { type: string, example: "" }
-        mission: { type: string, example: "" }
-        vision: { type: string, example: "" }
-        valuesJson: { type:  ,example: "" }
-        createdAt: { type: date, example: "2026-04-26" }
-        updatedAt: { type: date, example: "2026-04-26" }
-    AdminInstitutionalContentPagedResponse:
+        id: { type: integer }
+        aboutTitle: { type: string }
+        aboutText: { type: string }
+        whoWeAreTitle: { type: string }
+        whoWeAreText: { type: string }
+        purposeTitle: { type: string }
+        purposeText: { type: string }
+        mission: { type: string }
+        vision: { type: string }
+        valuesJson: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    InstitutionalContentCollectionResponse:
       type: object
+      required: [data, links, meta]
       properties:
         data:
-          type: object
-          properties:
-            items:
-              type: array
-              items:
-                $ref: "#components/schemas/AdminInstitutionalContent"
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            totalPages:
-              type: integer
-            sort:
-              type: object
-              properties:
-                sortBy: { type: string }
-                sortDir: { type: string }
+          type: array
+          items:
+            $ref: "#/components/schemas/InstitutionalContentPayload"
         links:
-          $ref: '#/components/schemas/Links'
+          $ref: "#/components/schemas/Links"
         meta:
-          $ref: '#/components/schemas/Meta'
+          $ref: "#/components/schemas/SimpleListMeta"
+
+    InstitutionalContentResourceResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/InstitutionalContentPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/SimpleListMeta"

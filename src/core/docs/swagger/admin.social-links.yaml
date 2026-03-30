@@ -1,26 +1,30 @@
 tags:
   - name: Social Link ADMIN
-    description: Endpoints relacionados aos links de redes sociais
+    description: Links de redes sociais (admin)
 
 paths:
-  /api/admin/social-links:
+  /admin/social-links:
     get:
-      summary: Lista de links de redes sociais do catálogo de eventos
-      tags: 
+      summary: Lista links sociais
+      tags:
         - Social Link ADMIN
       security:
         - bearerAuth: []
       responses:
-        200:
-          description: A listagem de links de redes sociais foi obtida com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminSocialLinkPagedResponse"
+                $ref: "#/components/schemas/SocialLinksCollectionResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
 
     post:
-      summary: Cadastra um link de rede social do catálogo de eventos
-      tags: 
+      summary: Cadastra link social
+      tags:
         - Social Link ADMIN
       security:
         - bearerAuth: []
@@ -29,37 +33,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#components/schemas/AdminInstitutionalContent"
+              $ref: "#/components/schemas/SocialLinkWriteRequest"
       responses:
-        201:
-          description: O link de rede social foi criado com sucesso!
+        "201":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminSocialLink"
-  /api/admin/social-links/{id}:
+                $ref: "#/components/schemas/SocialLinkResourceResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+  /admin/social-links/{id}:
     get:
-      summary: Busca um link de rede social pelo ID
-      tags: 
-        - Social Link ADMIN
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID do link de rede social que deseja buscar
-      responses:
-        200:
-          description: O link de rede social foi obtido com sucesso!
-          content:
-            application/json:
-              schema:
-                $ref: "#components/schemas/AdminSocialLink"
-    patch:
-      summary: Atualiza os dados de um link de rede social do catálogo de eventos
+      summary: Busca por ID
       tags:
         - Social Link ADMIN
       security:
@@ -70,16 +59,26 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do link de rede social que deseja atualizar
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#components/schemas/AdminSocialLink"
-    delete:
-      summary: Exclui um link de rede social pelo ID
-      tags: 
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialLinkResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+    patch:
+      summary: Atualiza link social
+      tags:
         - Social Link ADMIN
       security:
         - bearerAuth: []
@@ -89,57 +88,101 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do link de rede social que deseja excluir
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SocialLinkWriteRequest"
       responses:
-        200:
-          description: OK
+        "200":
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      deleted: { type: boolean, example: true }
-  
+                $ref: "#/components/schemas/SocialLinkResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+    delete:
+      summary: Remove link social
+      tags:
+        - Social Link ADMIN
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeletedFlagResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
 components:
   schemas:
-    AdminSocialLink:
+    SocialLinkWriteRequest:
       type: object
       properties:
-        id: { type:  number, example: 0 }
-        platform: { type:  string, example: "" }
-        label: { type:  string, example: "" }
-        url: { type:  string, example: "" }
-        active: { type:  boolean, example: true }
-        order: { type:  number, example: 0 }
-        createdAt: { type: date, example: "2026-04-26" }
-        updatedAt: { type: date, example: "2026-04-26" }
-    AdminSocialLinkPagedResponse:
+        platform: { type: string }
+        label: { type: string }
+        url: { type: string }
+        active: { type: boolean }
+        order: { type: integer }
+
+    SocialLinkPayload:
       type: object
+      properties:
+        id: { type: integer }
+        platform: { type: string }
+        label: { type: string }
+        url: { type: string }
+        active: { type: boolean }
+        order: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    SocialLinksCollectionResponse:
+      type: object
+      required: [data, links, meta]
       properties:
         data:
-          type: object
-          properties:
-            items:
-              type: array
-              items:
-                $ref: "#components/schemas/AdminSocialLink"
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            totalPages:
-              type: integer
-            sort:
-              type: object
-              properties:
-                sortBy: { type: string }
-                sortDir: { type: string }
+          type: array
+          items:
+            $ref: "#/components/schemas/SocialLinkPayload"
         links:
-          $ref: '#/components/schemas/Links'
+          $ref: "#/components/schemas/Links"
         meta:
-          $ref: '#/components/schemas/Meta'
+          $ref: "#/components/schemas/SimpleListMeta"
+
+    SocialLinkResourceResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/SocialLinkPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/SimpleListMeta"

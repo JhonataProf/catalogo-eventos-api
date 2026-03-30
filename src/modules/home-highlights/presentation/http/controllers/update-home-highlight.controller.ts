@@ -1,8 +1,10 @@
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { UpdateHomeHighlightUseCase } from "@/modules/home-highlights/application/use-cases/update-home-highlight.usecase";
-import { mapErrorToHttpResponse } from "@/core/http";
-import { notFound } from "@/core/helpers/http-helper";
+import { AppError } from "@/core/errors-app-error";
 import { logger } from "@/core/config/logger";
+import { mapErrorToHttpResponse, ok, ResourceBuilder } from "@/core/http";
+import { homeHighlightLinks } from "../home-highlight-hateoas";
+import { toHomeHighlightHttpPayload } from "../mappers/home-highlight-response.mapper";
 import { UpdateHomeHighlightDTO } from "@/modules/home-highlights/application/dto";
 
 export class UpdateHomeHighlightController implements Controller {
@@ -14,12 +16,22 @@ export class UpdateHomeHighlightController implements Controller {
             const body = httpRequest.body as UpdateHomeHighlightDTO;
             const result = await this.usecase.execute(id, body);
             if (!result) {
-                return notFound({ error: "HOME_HIGHLIGHT_NOT_FOUND", meta: { correlationId } });
+                return mapErrorToHttpResponse(
+                    new AppError({
+                        code: "HOME_HIGHLIGHT_NOT_FOUND",
+                        message: "Destaque não encontrado",
+                        statusCode: 404,
+                        details: { id },
+                    }),
+                    correlationId,
+                );
             }
-            return {
-                statusCode: 200,
-                body: { data: result, meta: { correlationId } },
-            };
+            const payload = toHomeHighlightHttpPayload(result);
+            const resource = new ResourceBuilder(payload)
+                .addAllLinks(homeHighlightLinks(payload.id))
+                .addMeta({ correlationId, version: "1.0.0" })
+                .build();
+            return ok(resource);
         } catch (error) {
             logger.error("UpdateHomeHighlightController: erro ao atualizar", {
                 correlationId,

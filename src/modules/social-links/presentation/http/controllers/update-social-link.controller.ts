@@ -1,6 +1,6 @@
 import { logger } from "@/core/config/logger";
+import { AppError } from "@/core/errors-app-error";
 import { mapErrorToHttpResponse } from "@/core/http";
-import { notFound } from "@/core/helpers/http-helper";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { UpdateSocialLinkDTO } from "@/modules/social-links/application/dto";
 import { UpdateSocialLinkUseCase } from "@/modules/social-links/application/use-cases/update-social-link.usecase";
@@ -16,15 +16,24 @@ export class UpdateSocialLinkController implements Controller {
       const updated = await this.useCase.execute(id, body);
 
       if (!updated) {
-        return notFound({
-          error: "SOCIAL_LINK_NOT_FOUND",
-          meta: { correlationId },
-        });
+        return mapErrorToHttpResponse(
+          new AppError({
+            code: "SOCIAL_LINK_NOT_FOUND",
+            message: "Link social não encontrado",
+            statusCode: 404,
+            details: { id },
+          }),
+          correlationId,
+        );
       }
 
       return {
         statusCode: 200,
-        body: { data: updated, meta: { correlationId } },
+        body: {
+          data: updated,
+          links: {},
+          meta: { correlationId, version: "1.0.0" },
+        },
       };
     } catch (error) {
       logger.error("UpdateSocialLinkController: erro ao atualizar social link", {

@@ -1,4 +1,7 @@
-import { HomeHighlightEntity } from "../../domain/entities/home-highlight.entity";
+import {
+  HomeHighlightEntity,
+  HomeHighlightProps,
+} from "../../domain/entities/home-highlight.entity";
 import { CreateHomeHighlightRepository } from "../../domain/repositories/create-home-highlight.reposiotry";
 import { DeleteHomeHighlightRepository } from "../../domain/repositories/delete-home-highlight.repository";
 import { FindHomeHighlightByIdRepository } from "../../domain/repositories/find-home-highlight-by-id.repository";
@@ -15,7 +18,7 @@ export class SequelizeHomeHighlightRepository
     GetHomeHighlightRepository
 {
   async create(
-    __homeHighlight: Omit<HomeHighlightEntity, "id">,
+    __homeHighlight: Omit<HomeHighlightProps, "id">,
   ): Promise<HomeHighlightEntity | null> {
     const result = await HomeHighLightsModel.create({ ...__homeHighlight });
     if (!result) return null;
@@ -30,6 +33,8 @@ export class SequelizeHomeHighlightRepository
       ctaUrl: result.ctaUrl,
       active: result.active,
       order: result.order,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
     });
   }
   async update(
@@ -62,6 +67,8 @@ export class SequelizeHomeHighlightRepository
       ctaUrl: result.ctaUrl,
       active: result.active,
       order: result.order,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
     });
   }
   async delete(id: number): Promise<boolean> {
@@ -83,6 +90,8 @@ export class SequelizeHomeHighlightRepository
       ctaUrl: result.ctaUrl,
       active: result.active,
       order: result.order,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
     });
   }
   async getAll(): Promise<HomeHighlightEntity[] | null> {
@@ -101,6 +110,8 @@ export class SequelizeHomeHighlightRepository
           ctaUrl: hh.ctaUrl,
           active: hh.active,
           order: hh.order,
+          createdAt: hh.createdAt,
+          updatedAt: hh.updatedAt,
         }),
     );
   }

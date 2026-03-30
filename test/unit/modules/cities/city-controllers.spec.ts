@@ -79,6 +79,26 @@ describe("FindCityByIdController", () => {
     expect(p.statusCode).toBe(200);
   });
 
+  it("público retorna 404 quando cidade não publicada", async () => {
+    const draft = new CityEntity({
+      id: 2,
+      name: "Rascunho",
+      state: "MS",
+      slug: "rascunho",
+      summary: "Sum",
+      description: "D",
+      imageUrl: "https://x.com/c.jpg",
+      published: false,
+    });
+    execute.mockResolvedValue(draft);
+    const r = await pub.handle({ correlationId: "c", params: { id: "2" } });
+    expect(r.statusCode).toBe(404);
+    expect(r.body).toMatchObject({
+      error: { code: "CIDADE_NOT_FOUND" },
+      meta: { correlationId: "c" },
+    });
+  });
+
   it("erro inesperado", async () => {
     execute.mockRejectedValue(new Error("x"));
     expect((await admin.handle({ correlationId: "c", params: { id: "1" } })).statusCode).not.toBe(

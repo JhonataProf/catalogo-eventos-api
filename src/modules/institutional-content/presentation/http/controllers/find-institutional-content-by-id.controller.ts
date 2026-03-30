@@ -1,8 +1,8 @@
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { FindInstitutionalContentByIdUseCase } from "@/modules/institutional-content/application/use-cases/find-institutional-content-by-id.usecase";
-import { mapErrorToHttpResponse, ok, ResourceBuilder } from "@/core/http";
-import { notFound } from "@/core/helpers/http-helper";
+import { AppError } from "@/core/errors-app-error";
 import { logger } from "@/core/config/logger";
+import { mapErrorToHttpResponse, ok, ResourceBuilder } from "@/core/http";
 import {
   institutionalContentLinks,
   institutionalContentPublicLinks,
@@ -22,10 +22,15 @@ export class FindInstitutionalContentByIdController implements Controller {
       const id = Number(httpRequest.pathParams?.id);
       const result = await this.usecase.execute(id);
       if (!result) {
-        return notFound({
-          error: "INSTITUTIONAL_CONTENT_NOT_FOUND",
-          meta: { correlationId },
-        });
+        return mapErrorToHttpResponse(
+          new AppError({
+            code: "INSTITUTIONAL_CONTENT_NOT_FOUND",
+            message: "Conteúdo institucional não encontrado",
+            statusCode: 404,
+            details: { id },
+          }),
+          correlationId,
+        );
       }
       const data = {
         id: result.id,

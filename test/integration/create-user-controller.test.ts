@@ -52,6 +52,7 @@ describe("CreateUserController (integration)", () => {
         code: "UNAUTHORIZED",
         message: "Credenciais ausentes ou inválidas",
       },
+      meta: { correlationId: expect.any(String) },
     });
     expect(resp.body.links).toEqual(
       expect.arrayContaining([
@@ -75,20 +76,26 @@ describe("CreateUserController (integration)", () => {
     // ASSERT
     expect(resp.status).toBe(400);
     expect(resp.type).toMatch(/json/);
-    expect(resp.body).toEqual({
-      errors: [
-        {
-          message: "Nome deve ter pelo menos 3 caracteres",
-          path: "name",
+    expect(resp.body).toMatchObject({
+      error: {
+        code: "VALIDATION_ERROR",
+        message: "Validation error",
+        details: {
+          errors: [
+            {
+              message: "Nome deve ter pelo menos 3 caracteres",
+              path: "name",
+            },
+            { message: "Email deve ser uma string", path: "email" },
+            { message: "Senha deve ter pelo menos 6 caracteres", path: "password" },
+            {
+              message: "A Role Administrador é inválida",
+              path: "role",
+            },
+          ],
         },
-        { message: "Email deve ser uma string", path: "email" },
-        { message: "Senha deve ter pelo menos 6 caracteres", path: "password" },
-        {
-          message: "A Role Administrador é inválida",
-          path: "role",
-        },
-      ],
-      message: "Validation error",
+      },
+      meta: { correlationId: expect.any(String) },
     });
   });
 
@@ -99,17 +106,23 @@ describe("CreateUserController (integration)", () => {
       .send(dadosFaltando);
     expect(resp.status).toBe(400);
     expect(resp.type).toMatch(/json/);
-    expect(resp.body).toEqual({
-      errors: [
-        { message: "Nome é obrigatório", path: "name" },
-        { message: "Email é obrigatório", path: "email" },
-        { message: "Senha é obrigatória", path: "password" },
-        {
-          message: "A Role undefined é inválida",
-          path: "role",
+    expect(resp.body).toMatchObject({
+      error: {
+        code: "VALIDATION_ERROR",
+        message: "Validation error",
+        details: {
+          errors: [
+            { message: "Nome é obrigatório", path: "name" },
+            { message: "Email é obrigatório", path: "email" },
+            { message: "Senha é obrigatória", path: "password" },
+            {
+              message: "A Role undefined é inválida",
+              path: "role",
+            },
+          ],
         },
-      ],
-      message: "Validation error",
+      },
+      meta: { correlationId: expect.any(String) },
     });
   });
 

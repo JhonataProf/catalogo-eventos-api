@@ -1,24 +1,24 @@
 tags:
   - name: Social Link PUBLIC
-    description: Endpoints relacionados aos links de redes sociais
+    description: Links de redes sociais (público)
 
 paths:
   /public/social-links:
     get:
-      summary: Lista de links de redes sociais do catálogo de eventos
+      summary: Lista todos os links sociais ativos/inativos conforme regra de negócio
       tags:
         - Social Link PUBLIC
       responses:
-        200:
-          description: A listagem de links de redes sociais foi obtida com sucesso!
+        "200":
+          description: Coleção sem paginação (data = array)
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminSocialLinkPagedResponse"
+                $ref: "#/components/schemas/SocialLinksCollectionResponse"
 
   /public/social-links/{id}:
     get:
-      summary: Busca um link de rede social pelo ID
+      summary: Busca link social por ID
       tags:
         - Social Link PUBLIC
       parameters:
@@ -27,52 +27,52 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do link de rede social que deseja buscar
       responses:
-        200:
-          description: O link de rede social foi obtido com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminSocialLink"
+                $ref: "#/components/schemas/SocialLinkResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   schemas:
-    AdminSocialLink:
+    SocialLinkPayload:
       type: object
       properties:
-        id: { type: number, example: 0 }
-        platform: { type: string, example: "" }
-        label: { type: string, example: "" }
-        url: { type: string, example: "" }
-        active: { type: boolean, example: true }
-        order: { type: number, example: 0 }
-        createdAt: { type: date, example: "2026-04-26" }
-        updatedAt: { type: date, example: "2026-04-26" }
-    AdminSocialLinkPagedResponse:
+        id: { type: integer }
+        platform: { type: string }
+        label: { type: string }
+        url: { type: string }
+        active: { type: boolean }
+        order: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    SocialLinksCollectionResponse:
       type: object
+      required: [data, links, meta]
       properties:
         data:
-          type: object
-          properties:
-            items:
-              type: array
-              items:
-                $ref: "#components/schemas/AdminSocialLink"
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            totalPages:
-              type: integer
-            sort:
-              type: object
-              properties:
-                sortBy: { type: string }
-                sortDir: { type: string }
+          type: array
+          items:
+            $ref: "#/components/schemas/SocialLinkPayload"
         links:
           $ref: "#/components/schemas/Links"
         meta:
-          $ref: "#/components/schemas/Meta"
+          $ref: "#/components/schemas/SimpleListMeta"
+
+    SocialLinkResourceResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/SocialLinkPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/SimpleListMeta"

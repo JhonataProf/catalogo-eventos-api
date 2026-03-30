@@ -1,3 +1,4 @@
+import { ensureCorrelationId } from "@/core/http/correlation";
 import { NextFunction, Request, Response } from "express";
 import { ZodError, ZodObject, ZodRawShape } from "zod";
 
@@ -22,12 +23,21 @@ export const validateQuery =
       next();
     } catch (error) {
       if (error instanceof ZodError) {
+        const correlationId = ensureCorrelationId(
+          (req as { correlationId?: string }).correlationId,
+        );
         res.status(400).json({
-          message: "Invalid query params",
-          errors: error.issues.map((issue) => ({
-            path: issue.path.join("."),
-            message: issue.message,
-          })),
+          error: {
+            code: "INVALID_QUERY",
+            message: "Invalid query params",
+            details: {
+              errors: error.issues.map((issue) => ({
+                path: issue.path.join("."),
+                message: issue.message,
+              })),
+            },
+          },
+          meta: { correlationId },
         });
 
         return;

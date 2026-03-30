@@ -6,7 +6,10 @@ describe("GET /health", () => {
     const app = createApp();
     const res = await request(app).get("/health");
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ status: "ok" });
+    expect(res.body).toMatchObject({
+      status: "ok",
+      meta: { correlationId: expect.any(String) },
+    });
     expect(typeof res.body.uptimeSeconds).toBe("number");
   });
 });

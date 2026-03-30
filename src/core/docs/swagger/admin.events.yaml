@@ -3,10 +3,10 @@ tags:
     description: Endpoints relacionados aos eventos da região
 
 paths:
-  /api/admin/events:
+  /admin/events:
     get:
-      summary: Lista de eventos do catálogo de eventos
-      tags: 
+      summary: Lista paginada de eventos (admin)
+      tags:
         - Events ADMIN
       security:
         - bearerAuth: []
@@ -22,7 +22,6 @@ paths:
           schema: { type: string }
         - in: query
           name: category
-          description: Valores inválidos são ignorados no filtro (não geram erro)
           schema: { type: string }
         - in: query
           name: cityId
@@ -34,22 +33,30 @@ paths:
           name: sortDir
           schema: { type: string, enum: [asc, desc], default: asc }
       responses:
-        200:
-          description: A listagem de eventos foi obtida com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminEventPagedResponse"
-        400:
-          description: Parâmetros de query inválidos ou chaves não permitidas (strict)
+                $ref: "#/components/schemas/AdminEventsCollectionResponse"
+        "400":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/InvalidQueryResponse"
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForbiddenResponse"
 
     post:
-      summary: Cadastra um evento da região do catálogo de eventos
-      tags: 
+      summary: Cria evento
+      tags:
         - Events ADMIN
       security:
         - bearerAuth: []
@@ -58,37 +65,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#components/schemas/AdminEvent"
+              $ref: "#/components/schemas/EventWriteRequest"
       responses:
-        201:
-          description: O Evento foi criada com sucesso!
+        "201":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/AdminEvent"
-  /api/admin/events/{id}:
+                $ref: "#/components/schemas/AdminEventResourceResponse"
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+  /admin/events/{id}:
     get:
-      summary: Busca um evento pelo ID
-      tags: 
-        - Events ADMIN
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID do evento que deseja buscar
-      responses:
-        200:
-          description: O evento foi obtido com sucesso!
-          content:
-            application/json:
-              schema:
-                $ref: "#components/schemas/AdminEvent"
-    patch:
-      summary: Atualiza os dados de um evento do catálogo de eventos
+      summary: Busca evento por ID
       tags:
         - Events ADMIN
       security:
@@ -99,16 +96,26 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do evento que deseja atualizar
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#components/schemas/AdminEvent"
-    delete:
-      summary: Exclui um evento pelo ID
-      tags: 
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminEventResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+    patch:
+      summary: Atualiza evento
+      tags:
         - Events ADMIN
       security:
         - bearerAuth: []
@@ -118,39 +125,58 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do evento que deseja excluir
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventWriteRequest"
       responses:
-        200:
-          description: OK
+        "200":
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      deleted: { type: boolean, example: true }
-   
+                $ref: "#/components/schemas/AdminEventResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
+    delete:
+      summary: Remove evento
+      tags:
+        - Events ADMIN
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Sem corpo; use header x-correlation-id
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+
 components:
   schemas:
-    InvalidQueryResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          example: Invalid query params
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              path:
-                type: string
-              message:
-                type: string
-      required: [message, errors]
-    AdminEvent:
+    EventHttpPayload:
       type: object
       properties:
         id: { type: integer }
@@ -166,32 +192,61 @@ components:
         imageUrl: { type: string }
         featured: { type: boolean }
         published: { type: boolean }
-        createdAt: { type: date, example: "2026-04-26" }
-        updatedAt: { type: date, example: "2026-04-26" }
-    AdminEventPagedResponse:
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    EventWriteRequest:
       type: object
+      description: Corpo de criação/atualização (campos conforme DTO da API)
       properties:
-        data:
+        cityId: { type: integer }
+        citySlug: { type: string }
+        name: { type: string }
+        description: { type: string }
+        category: { type: string }
+        startDate: { type: string }
+        endDate: { type: string }
+        formattedDate: { type: string }
+        location: { type: string }
+        imageUrl: { type: string }
+        featured: { type: boolean }
+        published: { type: boolean }
+
+    EventsListMeta:
+      allOf:
+        - $ref: "#/components/schemas/Meta"
+      properties:
+        version: { type: string, example: "1.0.0" }
+        total: { type: integer }
+        totalPages: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+        sort:
           type: object
           properties:
-            items:
-              type: array
-              items:
-                $ref: "#components/schemas/AdminEvent"
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            totalPages:
-              type: integer
-            sort:
-              type: object
-              properties:
-                sortBy: { type: string }
-                sortDir: { type: string }
+            by: { type: string }
+            dir: { type: string, enum: [asc, desc] }
+
+    AdminEventsCollectionResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventHttpPayload"
         links:
-          $ref: '#/components/schemas/Links'
+          $ref: "#/components/schemas/Links"
         meta:
-          $ref: '#/components/schemas/Meta'
+          $ref: "#/components/schemas/EventsListMeta"
+
+    AdminEventResourceResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/EventHttpPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/SimpleListMeta"

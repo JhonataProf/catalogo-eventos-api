@@ -12,7 +12,11 @@ describe("GET /ready", () => {
     const app = createApp();
     const res = await request(app).get("/ready");
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ status: "ready", dbChecked: true });
+    expect(res.body).toMatchObject({
+      status: "ready",
+      dbChecked: true,
+      meta: { correlationId: expect.any(String) },
+    });
   });
 
   it("retorna 503 quando authenticate falha", async () => {
@@ -24,7 +28,11 @@ describe("GET /ready", () => {
     expect(res.status).toBe(503);
     expect(res.body).toMatchObject({
       status: "not_ready",
-      error: "connection refused",
+      error: {
+        code: "NOT_READY",
+        message: "connection refused",
+      },
+      meta: { correlationId: expect.any(String) },
     });
   });
 });

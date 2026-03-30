@@ -2,8 +2,10 @@ import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { CreateInstitutionalContentUseCase } from "@/modules/institutional-content/application/use-cases/create-institutional-content.usecase";
 import { CreateInstitutionalContentDTO } from "@/modules/institutional-content/application/dto";
 import { InstitutionalContentEntity } from "@/modules/institutional-content/domain/entities/institutional-content.entity";
-import { created, mapErrorToHttpResponse } from "@/core/http";
+import { created, mapErrorToHttpResponse, ResourceBuilder } from "@/core/http";
 import { logger } from "@/core/config/logger";
+import { AppError } from "@/core/errors-app-error";
+import { institutionalContentLinks } from "../institutional-content-hateoas";
 
 export class CreateInstitutionalContentController implements Controller {
     constructor(private readonly usecase: CreateInstitutionalContentUseCase){}
@@ -27,7 +29,35 @@ export class CreateInstitutionalContentController implements Controller {
             });
 
             const result = await this.usecase.execute(entity);
-            return created({ data: result, meta: { correlationId } } as any);
+            if (!result) {
+                return mapErrorToHttpResponse(
+                    new AppError({
+                        code: "INSTITUTIONAL_CONTENT_CREATE_FAILED",
+                        message: "Erro ao criar conteúdo institucional",
+                        statusCode: 500,
+                    }),
+                    correlationId,
+                );
+            }
+            const data = {
+                id: result.id,
+                aboutTitle: result.aboutTitle,
+                aboutText: result.aboutText,
+                whoWeAreTitle: result.whoWeAreTitle,
+                whoWeAreText: result.whoWeAreText,
+                purposeTitle: result.purposeTitle,
+                purposeText: result.purposeText,
+                mission: result.mission,
+                vision: result.vision,
+                valuesJson: result.valuesJson,
+                createdAt: result.createdAt,
+                updatedAt: result.updatedAt,
+            };
+            const resource = new ResourceBuilder(data)
+                .addAllLinks(institutionalContentLinks(result.id))
+                .addMeta({ correlationId, version: "1.0.0" })
+                .build();
+            return created(resource);
         } catch (error) {
             logger.error("CreateInstitutionalContentController: erro ao criar", {
                 correlationId,

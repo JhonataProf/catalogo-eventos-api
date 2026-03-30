@@ -1,9 +1,6 @@
 import { logger } from "@/core/config/logger";
-import {
-  badRequestResource,
-  notFound,
-  serverError,
-} from "@/core/helpers/http-helper";
+import { AppError } from "@/core/errors-app-error";
+import { mapErrorToHttpResponse } from "@/core/http";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { UpdateUserDTO, UserViewModel } from "@/modules/users/application/dto";
 import { UpdateUserUseCase } from "../../../application/use-cases/update-user.usecase";
@@ -19,18 +16,14 @@ export class UpdateUserController implements Controller {
       const id = Number(httpRequest.params.id);
 
       if (Number.isNaN(id)) {
-        const data = {
-          error: {
+        return mapErrorToHttpResponse(
+          new AppError({
             code: "INVALID_ID",
             message: "ID inválido",
-          },
-        };
-        const builder = new ResourceBuilder(data);
-        const resource = builder
-          .addOneLink("list", "GET", "/users")
-          .addMeta({ correlationId, version: "1.0.0" })
-          .build();
-        return badRequestResource(resource);
+            statusCode: 400,
+          }),
+          correlationId,
+        );
       }
 
       const body = httpRequest.body as UpdateUserDTO;
@@ -38,19 +31,14 @@ export class UpdateUserController implements Controller {
       const updated = await this.useCase.execute(id, body);
 
       if (!updated) {
-        const data = {
-          error: {
+        return mapErrorToHttpResponse(
+          new AppError({
             code: "USER_NOT_FOUND",
             message: "Usuário não encontrado",
-          },
-        };
-        const builder = new ResourceBuilder(data);
-        const resource = builder
-          .addOneLink("list", "GET", "/users")
-          .addOneLink("create", "POST", "/users")
-          .addMeta({ correlationId, version: "1.0.0" })
-          .build();
-        return notFound(resource);
+            statusCode: 404,
+          }),
+          correlationId,
+        );
       }
 
       const builder = new ResourceBuilder<UserViewModel>(updated);
@@ -62,13 +50,14 @@ export class UpdateUserController implements Controller {
       return ok(resource);
     } catch (error) {
       logger.error("UpdateUserController: erro inesperado", {
+        correlationId,
         error:
           error instanceof Error
             ? { message: error.message, stack: error.stack }
             : error,
       });
 
-      return serverError(error as Error);
+      return mapErrorToHttpResponse(error, correlationId);
     }
   }
 }

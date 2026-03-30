@@ -27,11 +27,15 @@ describe("GET /api/admin/users — validateQuery (integração)", () => {
 
     expect(resp.status).toBe(400);
     expect(resp.body).toMatchObject({
-      message: "Invalid query params",
-      errors: expect.any(Array),
+      error: {
+        code: "INVALID_QUERY",
+        message: "Invalid query params",
+        details: { errors: expect.any(Array) },
+      },
+      meta: { correlationId: expect.any(String) },
     });
-    expect(resp.body.errors.length).toBeGreaterThan(0);
-    expect(resp.body.errors[0]).toMatchObject({
+    expect(resp.body.error.details.errors.length).toBeGreaterThan(0);
+    expect(resp.body.error.details.errors[0]).toMatchObject({
       path: expect.any(String),
       message: expect.any(String),
     });
@@ -44,7 +48,8 @@ describe("GET /api/admin/users — validateQuery (integração)", () => {
     );
 
     expect(resp.status).toBe(400);
-    expect(resp.body.message).toBe("Invalid query params");
+    expect(resp.body.error?.message).toBe("Invalid query params");
+    expect(resp.body.meta?.correlationId).toEqual(expect.any(String));
   });
 
   it("retorna 200 com lista quando query é válida", async () => {

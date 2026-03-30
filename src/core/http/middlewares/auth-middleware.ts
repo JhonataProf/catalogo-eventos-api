@@ -1,6 +1,7 @@
 // src/middlewares/auth-middleware.ts
 import { ENV } from "@/core/config/env";
 import { logger } from "@/core/config/logger";
+import { ensureCorrelationId } from "@/core/http/correlation";
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
@@ -33,23 +34,31 @@ export default function authMiddleware(
         method: req.method,
       });
 
+      const correlationId = ensureCorrelationId(
+        (req as { correlationId?: string }).correlationId,
+      );
       return res.status(401).json({
         error: {
           code: "UNAUTHORIZED",
           message: "Credenciais ausentes ou inválidas",
         },
         links: [{ rel: "login", href: "/api/auth/login", method: "POST" }],
+        meta: { correlationId },
       });
     }
 
     const secret = ENV.JWT_ACCESS_SECRET;
     if (!secret) {
       logger.error("JWT_ACCESS_SECRET is not configured");
+      const correlationId = ensureCorrelationId(
+        (req as { correlationId?: string }).correlationId,
+      );
       return res.status(500).json({
         error: {
           code: "INTERNAL_ERROR",
           message: "Configuração de autenticação inválida",
         },
+        meta: { correlationId },
       });
     }
 
@@ -72,12 +81,16 @@ export default function authMiddleware(
         err instanceof Error ? { message: err.message, name: err.name } : err,
     });
 
+    const correlationId = ensureCorrelationId(
+      (req as { correlationId?: string }).correlationId,
+    );
     return res.status(401).json({
       error: {
         code: "UNAUTHORIZED",
         message: "Credenciais ausentes ou inválidas",
       },
       links: [{ rel: "login", href: "/api/auth/login", method: "POST" }],
+      meta: { correlationId },
     });
   }
 }

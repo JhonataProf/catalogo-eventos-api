@@ -1,5 +1,5 @@
 import { logger } from "@/core/config/logger";
-import { notFound } from "@/core/helpers/http-helper";
+import { AppError } from "@/core/errors-app-error";
 import { mapErrorToHttpResponse, ok, ResourceBuilder } from "@/core/http";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { UpdateCityUseCase } from "@/modules/cities/application/use-cases";
@@ -17,7 +17,17 @@ export class UpdateCityController implements Controller {
         cityId,
         request.body,
       );
-      if (!updatedCity) return notFound(updatedCity);
+      if (!updatedCity) {
+        return mapErrorToHttpResponse(
+          new AppError({
+            code: "CIDADE_NOT_FOUND",
+            message: `Cidade ${cityId} não encontrada`,
+            statusCode: 404,
+            details: { id: cityId },
+          }),
+          correlationId,
+        );
+      }
       const resourceBuild = new ResourceBuilder<CityEntity>(updatedCity);
       const resource = resourceBuild
         .addAllLinks(adminCityLinks(updatedCity.id))

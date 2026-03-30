@@ -1,5 +1,6 @@
 // src/middlewares/authorize-roles.ts
 import { logger } from "@/core/config/logger";
+import { ensureCorrelationId } from "@/core/http/correlation";
 import { NextFunction, Request, Response } from "express";
 import { AuthenticatedRequest } from "./auth-middleware";
 
@@ -19,6 +20,9 @@ export default function authorizeRoles(roles: string[]) {
         requiredRoles: [...allowed],
       });
 
+      const correlationId = ensureCorrelationId(
+        (req as { correlationId?: string }).correlationId,
+      );
       return res.status(403).json({
         error: {
           code: "FORBIDDEN",
@@ -28,6 +32,7 @@ export default function authorizeRoles(roles: string[]) {
           { rel: "self", href: req.path, method: req.method },
           { rel: "login", href: "/api/auth/login", method: "POST" },
         ],
+        meta: { correlationId },
       });
     }
 

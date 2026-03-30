@@ -5,8 +5,8 @@ tags:
 paths:
   /public/events:
     get:
-      summary: Lista de eventos do catálogo de eventos
-      tags: 
+      summary: Lista paginada de eventos (público)
+      tags:
         - Events PUBLIC
       parameters:
         - in: query
@@ -20,9 +20,8 @@ paths:
           schema: { type: string }
         - in: query
           name: category
-          description: Valores que não forem categoria válida são ignorados no filtro
-          schema:
-            type: string
+          description: Valores inválidos são ignorados no filtro
+          schema: { type: string }
         - in: query
           name: cityId
           schema: { type: integer }
@@ -33,23 +32,28 @@ paths:
           name: sortDir
           schema: { type: string, enum: [asc, desc], default: asc }
       responses:
-        200:
-          description: A listagem de eventos foi obtida com sucesso!
+        "200":
+          description: Coleção paginada (data = array de eventos)
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/PublicEventPagedResponse"
-        400:
-          description: Parâmetros de query inválidos ou chaves não permitidas (strict)
+                $ref: "#/components/schemas/PublicEventsCollectionResponse"
+        "400":
+          description: Query inválida
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/InvalidQueryResponse"
+                $ref: "#/components/schemas/ValidationErrorResponse"
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /public/events/{id}:
     get:
-      summary: Busca um evento pelo ID
-      tags: 
+      summary: Busca evento por ID
+      tags:
         - Events PUBLIC
       parameters:
         - in: path
@@ -57,75 +61,74 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID do evento que deseja buscar
       responses:
-        200:
-          description: O evento foi obtido com sucesso!
+        "200":
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/PublicEvent"
-   
+                $ref: "#/components/schemas/PublicEventResourceResponse"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
-    InvalidQueryResponse:
+    EventHttpPayload:
       type: object
       properties:
-        message:
-          type: string
-          example: Invalid query params
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              path:
-                type: string
-              message:
-                type: string
-      required: [message, errors]
-    PublicEvent:
-      type: object
+        id: { type: integer }
+        cityId: { type: integer }
+        citySlug: { type: string }
+        name: { type: string }
+        description: { type: string }
+        category: { type: string }
+        startDate: { type: string }
+        endDate: { type: string }
+        formattedDate: { type: string }
+        location: { type: string }
+        imageUrl: { type: string }
+        featured: { type: boolean }
+        published: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    EventsListMeta:
+      allOf:
+        - $ref: "#/components/schemas/Meta"
       properties:
-        id: { type: integer, example: 0 }
-        cityId: { type: integer, example: 0 }
-        citySlug: { type: string, example: "" }
-        name: { type: string, example: "" }
-        description: { type: string, example: "" }
-        category: { type: string, example: "" }
-        startDate: { type: string, example: "2026-04-26" }
-        endDate: { type: string, example: "2026-04-26" }
-        formattedDate: { type: string, example: "26/04/2026" }
-        location: { type: string, example: "" }
-        imageUrl: { type: string, example: "" }
-        featured: { type: boolean, example: true }
-        published: { type: boolean, example: true }
-        createdAt: { type: date, example: "2026-04-26" }
-        updatedAt: { type: date, example: "2026-04-26" }
-    PublicEventPagedResponse:
-      type: object
-      properties:
-        data:
+        version: { type: string, example: "1.0.0" }
+        total: { type: integer }
+        totalPages: { type: integer }
+        page: { type: integer }
+        limit: { type: integer }
+        sort:
           type: object
           properties:
-            items:
-              type: array
-              items:
-                $ref: "#components/schemas/AdminEvent"
-            page:
-              type: integer
-            limit:
-              type: integer
-            total:
-              type: integer
-            totalPages:
-              type: integer
-            sort:
-              type: object
-              properties:
-                sortBy: { type: string }
-                sortDir: { type: string }
+            by: { type: string }
+            dir: { type: string, enum: [asc, desc] }
+
+    PublicEventsCollectionResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventHttpPayload"
         links:
-          $ref: '#/components/schemas/Links'
+          $ref: "#/components/schemas/Links"
         meta:
-          $ref: '#/components/schemas/Meta'
+          $ref: "#/components/schemas/EventsListMeta"
+
+    PublicEventResourceResponse:
+      type: object
+      required: [data, links, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/EventHttpPayload"
+        links:
+          $ref: "#/components/schemas/Links"
+        meta:
+          $ref: "#/components/schemas/SimpleListMeta"
