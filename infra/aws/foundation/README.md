@@ -32,6 +32,25 @@ terraform apply tfplan
 - **Atualizar serviço para a API Node**  
   Ajuste no `terraform.tfvars` (ou `-var`): `container_image` (URI ECR), `container_port = 3000`, `health_check_path = "/health"`, depois `terraform apply`.
 
+### Outputs de rede (`private_subnet_ids` / `public_subnet_ids`)
+
+Esses outputs existem no `outputs.tf` para integrar o stack **Aurora** (`infra/aws/aurora-phase2`). Eles **só passam a existir no state** depois que você roda **`terraform apply` no foundation** com essa versão do código (mesmo que o plan não altere recursos — o state é atualizado com os novos outputs).
+
+Se aparecer `Output "private_subnet_ids" not found`, rode:
+
+```bash
+cd infra/aws/foundation
+terraform apply   # confirme o plan (pode ser “no changes” nos recursos)
+```
+
+**Sem esperar pelo bloco `output`:** dá para ler os IDs direto do state/config:
+
+```bash
+cd infra/aws/foundation
+printf '%s\n' 'jsonencode(aws_subnet.private[*].id)' | terraform console
+printf '%s\n' 'jsonencode(aws_subnet.public[*].id)' | terraform console
+```
+
 ## Migrações de banco
 
 O RDS **não** fica público. Opções:

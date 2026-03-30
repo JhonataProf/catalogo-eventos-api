@@ -43,6 +43,39 @@ Diretório: **`infra/aws/aurora-phase2/`**
 - Variáveis: `vpc_id`, `database_subnet_ids`, `allowed_cidr_blocks`, `allowed_security_group_ids`, `publicly_accessible` (lab).
 - **ECS Fargate (Fase 3):** em `allowed_security_group_ids`, inclua o output Terraform **`ecs_tasks_security_group_id`** do stack `infra/aws/foundation` para liberar MySQL **3306** das tasks para o cluster Aurora.
 
+**Obter `vpc_id` e subnets a partir do foundation (sem remote state):**
+
+```bash
+cd infra/aws/foundation
+terraform output -raw vpc_id
+terraform output -json private_subnet_ids   # Aurora em subnets privadas (recomendado)
+# ou: terraform output -json public_subnet_ids  # lab + publicly_accessible
+```
+
+Se o Terraform responder que o **output não existe no state**, rode **`terraform apply` no foundation** após puxar o código que declara esses outputs (o apply pode não alterar recursos, só grava os outputs). Alternativa: `printf '%s\n' 'jsonencode(aws_subnet.private[*].id)' | terraform console` no diretório do foundation.
+
+O stack `foundation` expõe `private_subnet_ids` e `public_subnet_ids` como outputs (lista de 2 subnets em AZs distintas).
+
+**Automatizar com `terraform_remote_state`:** configure backend remoto (por exemplo S3) no `foundation` e no `aurora-phase2`, depois no Aurora:
+
+```hcl
+data "terraform_remote_state" "foundation" {
+  backend = "s3"
+  config = {
+    bucket = "meu-terraform-state"
+    key    = "foundation/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
+# locals {
+#   vpc_id              = data.terraform_remote_state.foundation.outputs.vpc_id
+#   database_subnet_ids = data.terraform_remote_state.foundation.outputs.private_subnet_ids
+# }
+```
+
+Use esses `locals` nas variáveis do módulo ou substitua referências em `terraform.tfvars` por `-var` / `TF_VAR_` gerados em pipeline.
+
 Detalhes de comandos: [`infra/aws/aurora-phase2/README.md`](../../infra/aws/aurora-phase2/README.md).
 
 ## 4. Melhor forma de conectar localmente (validação)
