@@ -36,9 +36,7 @@ export function makeListCityController(): Controller {
   return new ListCityController(listCityUseCase);
 }
 
-export function makeFindCityByIdController(
-  audience: FindCityByIdAudience,
-): Controller {
+export function makeFindCityByIdController(audience: FindCityByIdAudience): Controller {
   return new FindCityByIdController(findCityByIdUseCase, audience);
 }
 

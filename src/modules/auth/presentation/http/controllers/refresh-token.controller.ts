@@ -21,11 +21,10 @@ export class RefreshTokenController implements Controller {
 
       const result = await this.useCase.execute(token);
 
-      const body = resource(
-        { accessToken: result.accessToken },
-        refreshTokenLinks(),
-        { correlationId, version: "1.0.0" },
-      );
+      const body = resource({ accessToken: result.accessToken }, refreshTokenLinks(), {
+        correlationId,
+        version: "1.0.0",
+      });
 
       logger.info("Refresh token bem-sucedido", {
         correlationId,

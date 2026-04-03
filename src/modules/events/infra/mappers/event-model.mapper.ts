@@ -1,14 +1,9 @@
 import { EventEntity } from "../../domain/entities/event.entity";
-import {
-  EventCategory,
-  isEventCategory,
-} from "../../domain/value-objects/event-category";
+import { EventCategory, isEventCategory } from "../../domain/value-objects/event-category";
 import EventModel from "../model/event-model";
 
 export function eventModelToEntity(m: EventModel): EventEntity {
-  const category: EventCategory = isEventCategory(m.category)
-    ? m.category
-    : "show";
+  const category: EventCategory = isEventCategory(m.category) ? m.category : "show";
   return new EventEntity({
     id: m.id,
     cityId: m.cityId,

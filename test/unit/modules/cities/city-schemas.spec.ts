@@ -28,9 +28,7 @@ describe("city-schemas", () => {
   });
 
   it("createCitySchema rejeita nome curto", () => {
-    expect(
-      createCitySchema.safeParse({ ...validCreate, name: "ab" }).success,
-    ).toBe(false);
+    expect(createCitySchema.safeParse({ ...validCreate, name: "ab" }).success).toBe(false);
   });
 
   it("updateCitySchema aceita parcial", () => {
@@ -52,16 +50,12 @@ describe("city-schemas", () => {
   });
 
   it("createCitySchema cobre erros de tipo / obrigatoriedade", () => {
-    expect(createCitySchema.safeParse({ ...validCreate, name: undefined }).success).toBe(
-      false,
-    );
+    expect(createCitySchema.safeParse({ ...validCreate, name: undefined }).success).toBe(false);
     expect(createCitySchema.safeParse({ ...validCreate, slug: 1 }).success).toBe(false);
-    expect(createCitySchema.safeParse({ ...validCreate, state: "MST" }).success).toBe(
+    expect(createCitySchema.safeParse({ ...validCreate, state: "MST" }).success).toBe(false);
+    expect(createCitySchema.safeParse({ ...validCreate, description: "curta" }).success).toBe(
       false,
     );
-    expect(
-      createCitySchema.safeParse({ ...validCreate, description: "curta" }).success,
-    ).toBe(false);
     expect(
       createCitySchema.safeParse({
         ...validCreate,
@@ -86,16 +80,12 @@ describe("city-schemas", () => {
   });
 
   it("createCitySchema rejeita resumo curto", () => {
-    expect(
-      createCitySchema.safeParse({ ...validCreate, summary: "ab" }).success,
-    ).toBe(false);
+    expect(createCitySchema.safeParse({ ...validCreate, summary: "ab" }).success).toBe(false);
   });
 
   it("updateCitySchema rejeita slug curto e descrição curta quando informados", () => {
     expect(updateCitySchema.safeParse({ slug: "ab" }).success).toBe(false);
-    expect(
-      updateCitySchema.safeParse({ description: "123456789" }).success,
-    ).toBe(false);
+    expect(updateCitySchema.safeParse({ description: "123456789" }).success).toBe(false);
   });
 
   it("updateCitySchema aceita imagem opcional válida", () => {

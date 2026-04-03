@@ -42,10 +42,7 @@ describe("UpdateHomeBannerUseCase", () => {
     };
     const sut = new UpdateHomeBannerUseCase(findById, repo, images as never);
     const result = await sut.execute(2, { title: "T" });
-    expect(repo.update).toHaveBeenCalledWith(
-      2,
-      expect.objectContaining({ title: "T" }),
-    );
+    expect(repo.update).toHaveBeenCalledWith(2, expect.objectContaining({ title: "T" }));
     expect(images.replacePublicWebImage).not.toHaveBeenCalled();
     expect(result).toBe(updated);
   });
@@ -70,9 +67,7 @@ describe("UpdateHomeBannerUseCase", () => {
     };
     const file = { base64: tinyPngB64, mimeType: "image/png" as const };
     const images = {
-      replacePublicWebImage: jest
-        .fn()
-        .mockResolvedValue({ url: updated.imageUrl }),
+      replacePublicWebImage: jest.fn().mockResolvedValue({ url: updated.imageUrl }),
     };
     const sut = new UpdateHomeBannerUseCase(findById, repo, images as never);
     await sut.execute(2, { image: file });

@@ -8,17 +8,20 @@ describe("RefreshTokenUseCase", () => {
     const tokenServiceMock: AuthTokenService = {
       generateAccessToken: jest.fn(() => "new-access-token"),
       generateRefreshToken: jest.fn(),
-      decodeRefreshToken: jest.fn(() => ({ sub: "1" } as any)),
+      decodeRefreshToken: jest.fn(() => ({ sub: "1" }) as any),
     };
 
     const findUserByIdRepoMock: FindUserByIdRepository = {
-      findById: jest.fn(async () => ({
-        id: 1,
-        name: "Fulano",
-        email: "fulano@example.com",
-        password: "hash",
-        role: "Admin",
-      } as any)),
+      findById: jest.fn(
+        async () =>
+          ({
+            id: 1,
+            name: "Fulano",
+            email: "fulano@example.com",
+            password: "hash",
+            role: "Admin",
+          }) as any,
+      ),
     };
 
     const loggerMock: DomainLogger = {
@@ -26,11 +29,7 @@ describe("RefreshTokenUseCase", () => {
       error: jest.fn(),
     };
 
-    const sut = new RefreshTokenUseCase(
-      tokenServiceMock,
-      findUserByIdRepoMock,
-      loggerMock
-    );
+    const sut = new RefreshTokenUseCase(tokenServiceMock, findUserByIdRepoMock, loggerMock);
 
     return { sut, tokenServiceMock, findUserByIdRepoMock, loggerMock };
   };

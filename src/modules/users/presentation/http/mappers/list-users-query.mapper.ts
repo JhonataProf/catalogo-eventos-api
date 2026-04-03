@@ -6,9 +6,7 @@ import type {
 
 const DEFAULT_SORT_BY: ListUsersSortField = "name";
 
-export function toListUsersSearchParams(
-  query: ListUsersQueryDTO,
-): ListUsersSearchParams {
+export function toListUsersSearchParams(query: ListUsersQueryDTO): ListUsersSearchParams {
   return {
     page: query.page,
     limit: query.limit,

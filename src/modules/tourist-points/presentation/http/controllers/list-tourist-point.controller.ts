@@ -1,11 +1,6 @@
 import { logger } from "@/core/config/logger";
 import { buildPaginationLinks } from "@/core/http/hateoas/pagination-links";
-import {
-  CollectionResourceBuilder,
-  Links,
-  mapErrorToHttpResponse,
-  ok,
-} from "@/core/http";
+import { CollectionResourceBuilder, Links, mapErrorToHttpResponse, ok } from "@/core/http";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { TouristPointEntity } from "@/modules/tourist-points/domain/entities/tourist-point.entity";
 import { ListTouristPointsUseCase } from "../../../application/use-cases/list-tourist-points.usecase";
@@ -47,9 +42,7 @@ export class ListTouristPointsController implements Controller {
     });
 
     try {
-      const result = await this.useCase.execute(
-        toListTouristPointsUseCaseInput(query),
-      );
+      const result = await this.useCase.execute(toListTouristPointsUseCaseInput(query));
 
       const rows = result.items as TouristPointListRow[];
       const data = rows.map((item) =>
@@ -60,9 +53,7 @@ export class ListTouristPointsController implements Controller {
       );
 
       const basePath =
-        this.audience === "public"
-          ? "/api/public/tourist-points"
-          : "/api/admin/tourist-points";
+        this.audience === "public" ? "/api/public/tourist-points" : "/api/admin/tourist-points";
 
       const paginationLinks = buildPaginationLinks({
         basePath,
@@ -99,10 +90,7 @@ export class ListTouristPointsController implements Controller {
         version: "1.0.0",
       };
       const resourceBuild = new CollectionResourceBuilder(data);
-      const collectionResource = resourceBuild
-        .addAllLinks(links)
-        .addMeta(meta)
-        .build();
+      const collectionResource = resourceBuild.addAllLinks(links).addMeta(meta).build();
 
       return ok(collectionResource);
     } catch (error) {

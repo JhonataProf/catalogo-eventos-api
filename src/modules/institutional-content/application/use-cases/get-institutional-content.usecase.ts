@@ -8,4 +8,3 @@ export class GetInstitutionalContentUseCase {
     return this.repo.getAll();
   }
 }
-

@@ -1,7 +1,4 @@
-import {
-  loginLinks,
-  refreshTokenLinks,
-} from "@/modules/auth/presentation/http/auth-hateoas";
+import { loginLinks, refreshTokenLinks } from "@/modules/auth/presentation/http/auth-hateoas";
 
 describe("auth-hateoas", () => {
   it("loginLinks deve retornar links corretos", () => {

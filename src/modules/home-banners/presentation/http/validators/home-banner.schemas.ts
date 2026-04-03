@@ -3,9 +3,7 @@ import { webImageFileSchema } from "@/modules/media/application/validators/web-i
 import { z } from "zod";
 
 export const createHomeBannerSchema = z.object({
-  title: z
-    .string("Titulo é obrigatório.")
-    .min(3, "Título deve ter pelo menos 3 caracteres"),
+  title: z.string("Titulo é obrigatório.").min(3, "Título deve ter pelo menos 3 caracteres"),
   subtitle: z
     .string("Subtitulo é obrigatório.")
     .min(3, "Subtitulo deve ter pelo menos 3 caracteres"),

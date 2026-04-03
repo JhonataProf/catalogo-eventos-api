@@ -7,17 +7,23 @@ const NO_CONTENT = 204;
 
 type RequestWithValidatedQuery = Request & { validatedQuery?: unknown };
 
+/** Campos opcionais injetados por middlewares Express (auth, correlation-id). */
+type ExpressRequestWithContext = RequestWithValidatedQuery & {
+  correlationId?: string;
+  user?: HttpRequest["user"];
+};
+
 const adaptRoute = (controller: Controller) => {
   return async function (req: Request, res: Response) {
-    const r = req as RequestWithValidatedQuery;
+    const r = req as ExpressRequestWithContext;
     const httpRequest: HttpRequest = {
       body: req.body,
       params: req.params,
       query: req.query,
       validatedQuery: r.validatedQuery,
       headers: req.headers,
-      user: (req as any).user,
-      correlationId: (req as any).correlationId,
+      user: r.user,
+      correlationId: r.correlationId,
       pathParams: req.params,
     };
     try {

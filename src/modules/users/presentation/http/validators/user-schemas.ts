@@ -6,25 +6,19 @@ export const createUserSchema = z.object({
   name: z
     .string({
       error: (issue) =>
-        issue.input === undefined
-          ? "Nome é obrigatório"
-          : "Nome deve ser uma string",
+        issue.input === undefined ? "Nome é obrigatório" : "Nome deve ser uma string",
     })
     .min(3, "Nome deve ter pelo menos 3 caracteres"),
 
   email: z.email({
     error: (issue) =>
-      issue.input === undefined
-        ? "Email é obrigatório"
-        : "Email deve ser uma string",
+      issue.input === undefined ? "Email é obrigatório" : "Email deve ser uma string",
   }),
 
   password: z
     .string({
       error: (issue) =>
-        issue.input === undefined
-          ? "Senha é obrigatória"
-          : "Senha deve ser uma string",
+        issue.input === undefined ? "Senha é obrigatória" : "Senha deve ser uma string",
     })
     .min(6, "Senha deve ter pelo menos 6 caracteres"),
 
@@ -52,9 +46,7 @@ export const updateUserSchema = z.object({
   email: z
     .email({
       error: (issue) =>
-        typeof issue.input === "string"
-          ? "Email deve ser uma string"
-          : "Email inválido",
+        typeof issue.input === "string" ? "Email deve ser uma string" : "Email inválido",
     })
     .optional(),
 

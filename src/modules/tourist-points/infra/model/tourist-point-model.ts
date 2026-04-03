@@ -1,10 +1,7 @@
 import sequelize from "@/core/database";
 import CityModel from "@/modules/cities/infra/models/city-model";
 import { DataTypes, Model } from "sequelize";
-import {
-  TOURIST_POINT_CATEGORIES,
-  TouristPointCategory,
-} from "../../domain/value-objects/tourist-point-category";
+import { TouristPointCategory } from "../../domain/value-objects/tourist-point-category";
 
 export class TouristPointModel extends Model {
   id!: number;

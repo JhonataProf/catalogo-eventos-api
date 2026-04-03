@@ -2,9 +2,7 @@ import z from "zod";
 import type { TouristPointCategory } from "../../domain/value-objects/tourist-point-category";
 import { createTouristPointSchema } from "../../presentation/http/validators/tourist-point-schemas";
 
-export type createTouristPointDTO = z.infer<
-  typeof createTouristPointSchema
->;
+export type createTouristPointDTO = z.infer<typeof createTouristPointSchema>;
 export type updateTouristPointDTO = Partial<createTouristPointDTO>;
 
 /** Resposta HTTP após criar/atualizar (URL persistida, sem base64). */

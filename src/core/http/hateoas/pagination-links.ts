@@ -3,7 +3,7 @@ import { Link, Links } from "../http-resource";
 export type LinksPagination = Record<string, Link | undefined>;
 
 type BuildLinksInput = {
-  basePath: string; 
+  basePath: string;
   page: number;
   limit: number;
   totalPages: number;

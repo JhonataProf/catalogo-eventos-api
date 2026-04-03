@@ -1,10 +1,7 @@
 import { UpdateUserUseCase } from "@/modules/users/application/use-cases/update-user.usecase";
 import { FindUserByIdRepository } from "@/modules/users/domain/repositories/find-user-by-id.repository";
 import { UpdateUserRepository } from "@/modules/users/domain/repositories/update-user.repository";
-import {
-  UserEntity,
-  UserProps,
-} from "@/modules/users/domain/entities/user.entity";
+import { UserEntity, UserProps } from "@/modules/users/domain/entities/user.entity";
 import { Encrypter } from "@/core/interfaces";
 
 describe("UpdateUserUseCase", () => {
@@ -33,7 +30,7 @@ describe("UpdateUserUseCase", () => {
             email: data.email ?? existingUser.email,
             password: data.password ?? existingUser.password,
             role: data.role ?? existingUser.role,
-          })
+          }),
       ),
     };
 
@@ -42,11 +39,7 @@ describe("UpdateUserUseCase", () => {
       compare: jest.fn(),
     };
 
-    const sut = new UpdateUserUseCase(
-      findByIdRepoMock,
-      updateRepoMock,
-      encrypterMock
-    );
+    const sut = new UpdateUserUseCase(findByIdRepoMock, updateRepoMock, encrypterMock);
 
     return {
       sut,
@@ -77,9 +70,9 @@ describe("UpdateUserUseCase", () => {
 
     const result = await sut.execute(1, input);
 
-    const [, data] = await (updateRepoMock.update as jest.Mock).mock.calls[0] as [
+    const [, data] = (await (updateRepoMock.update as jest.Mock).mock.calls[0]) as [
       number,
-      Partial<UserProps>
+      Partial<UserProps>,
     ];
 
     expect(data.name).toBe("User 1 Atualizado");
@@ -105,7 +98,7 @@ describe("UpdateUserUseCase", () => {
 
     const [, data] = (updateRepoMock.update as jest.Mock).mock.calls[0] as [
       number,
-      Partial<UserProps>
+      Partial<UserProps>,
     ];
 
     expect(data.password).toBe("hashed-nova-password");

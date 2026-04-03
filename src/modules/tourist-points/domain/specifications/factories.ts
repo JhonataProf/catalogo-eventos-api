@@ -16,15 +16,12 @@ export const touristPointCityIdInState = (state: string) => {
   const safe = sequelize.escape(state.trim());
   return new FieldSpecification({
     cityId: {
-      [Op.in]: sequelize.literal(
-        `(SELECT id FROM \`cities\` WHERE state = ${safe})`,
-      ),
+      [Op.in]: sequelize.literal(`(SELECT id FROM \`cities\` WHERE state = ${safe})`),
     },
   });
 };
 
-export const eq = (field: string, value: any) =>
-  new FieldSpecification({ [field]: value });
+export const eq = (field: string, value: any) => new FieldSpecification({ [field]: value });
 
 export const like = (field: string, value: string) =>
   new FieldSpecification({ [field]: { [Op.like]: `%${value}%` } });

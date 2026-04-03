@@ -6,7 +6,11 @@ import authorizeRoles from "@/core/http/middlewares/authorize-roles";
 import { validateBody } from "@/core/http/middlewares/validate-body";
 import { validateQuery } from "@/core/http/middlewares/validate-query";
 
-import { createUserSchema, listUsersQuerySchema, updateUserSchema } from "../validators/user-schemas";
+import {
+  createUserSchema,
+  listUsersQuerySchema,
+  updateUserSchema,
+} from "../validators/user-schemas";
 import {
   makeCreateUserController,
   makeDeleteUserController,

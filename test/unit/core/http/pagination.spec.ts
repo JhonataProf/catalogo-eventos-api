@@ -10,9 +10,11 @@ describe("normalizePagination", () => {
   });
 
   it("respeita maxLimit", () => {
-    expect(
-      normalizePagination({ page: 1, limit: 999 }, { maxLimit: 20 }),
-    ).toEqual({ page: 1, limit: 20, offset: 0 });
+    expect(normalizePagination({ page: 1, limit: 999 }, { maxLimit: 20 })).toEqual({
+      page: 1,
+      limit: 20,
+      offset: 0,
+    });
   });
 
   it("page mínimo 1 e offset correto", () => {

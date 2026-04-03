@@ -11,7 +11,6 @@ export function api() {
     get: (path: string) => withJson(base.get(path)),
     put: (path: string) => withJson(base.put(path)),
     del: (path: string) => withJson(base.delete(path)),
-    withAuth: (t: Test, token: string) =>
-      t.set("Authorization", `Bearer ${token}`),
+    withAuth: (t: Test, token: string) => t.set("Authorization", `Bearer ${token}`),
   };
 }

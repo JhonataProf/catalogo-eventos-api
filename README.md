@@ -13,7 +13,7 @@ Documentação complementar: pasta [`docs/deployment/`](docs/deployment/README.m
 | Ferramenta | Uso |
 |------------|-----|
 | **Node.js 22** | Alinhado ao `Dockerfile` e ao CI (`nvm`, `fnm` ou instalador oficial). |
-| **npm** | `npm ci`, scripts do `package.json`. |
+| **Yarn 1 (Classic)** | Lockfile `yarn.lock`; use **Corepack** (`corepack enable`) com Node 22. Comandos: `yarn install --frozen-lockfile`, `yarn <script>`. |
 | **Docker** | Build da imagem de produção e push para o ECR. |
 | **Terraform ≥ 1.5** | Infraestrutura em `infra/aws/`. |
 | **AWS CLI v2** | `aws configure` e comandos opcionais de diagnóstico. |
@@ -27,15 +27,16 @@ Documentação complementar: pasta [`docs/deployment/`](docs/deployment/README.m
 git clone <url-do-repositório>   # ex.: git@github.com:<org>/catalogo-eventos-api.git
 cd catalogo-eventos-api          # nome da pasta = nome do repositório remoto
 cp .env-exemplo .env   # ajuste variáveis (JWT ≥ 16 caracteres, DB, etc.)
-npm ci
-npm run dev            # ou: npm run build && npm start
+corepack enable        # ativa o Yarn definido em package.json (uma vez por máquina)
+yarn install --frozen-lockfile
+yarn dev               # ou: yarn build && yarn start
 ```
 
 Testes e qualidade:
 
 ```bash
-npm run check          # typecheck + lint + testes com cobertura
-npm run smoke:http     # sobe servidor de teste e valida /health (ver script)
+yarn run check         # typecheck + format + lint + testes com cobertura (use `run`: `yarn check` é comando nativo do Yarn)
+yarn smoke:http        # sobe servidor de teste e valida /health (ver script)
 ```
 
 ---
@@ -129,8 +130,9 @@ terraform output -raw ecs_service_name
 Na **raiz do repositório** (`cd catalogo-eventos-api`):
 
 ```bash
-npm ci
-npm run build
+corepack enable
+yarn install --frozen-lockfile
+yarn build
 export AWS_REGION=us-east-1   # sua região
 export ECR_REPOSITORY_URL="$(cd infra/aws/foundation && terraform output -raw ecr_repository_url)"
 ./scripts/ecr-build-push.sh
@@ -161,13 +163,13 @@ export ECS_SERVICE_NAME="$(cd infra/aws/foundation && terraform output -raw ecs_
 ```bash
 cd catalogo-eventos-api            # raiz do repositório clonado
 export SMOKE_BASE_URL="$(cd infra/aws/foundation && terraform output -raw alb_public_base_url)"
-npm run smoke:alb
+yarn smoke:alb
 ```
 
 - **`/health`** — liveness (sem banco).
 - **`/ready`** — readiness com banco (se falhar, ver SG do RDS e migrations).
 
-Se precisar isolar o ALB: `SMOKE_SKIP_READY=true npm run smoke:alb`.
+Se precisar isolar o ALB: `SMOKE_SKIP_READY=true yarn smoke:alb`.
 
 ---
 
@@ -175,7 +177,7 @@ Se precisar isolar o ALB: `SMOKE_SKIP_READY=true npm run smoke:alb`.
 
 Em **produção** o Terraform define `UPDATE_MODEL=false` — o schema evolui com **migrations** (`database/migrations/`), não com `sync` automático.
 
-O **RDS** criado pelo foundation fica em **subnet privada** e **não** é público. Para rodar `npm run db:migrate` ou `db:migrate:status` você precisa de **rota à VPC**: bastion, VPN, SSM port forwarding, task one-off no Fargate ou runner de CI na VPC.
+O **RDS** criado pelo foundation fica em **subnet privada** e **não** é público. Para rodar `yarn db:migrate` ou `db:migrate:status` você precisa de **rota à VPC**: bastion, VPN, SSM port forwarding, task one-off no Fargate ou runner de CI na VPC.
 
 Detalhes: [`docs/deployment/database-migrations.md`](docs/deployment/database-migrations.md).
 
@@ -215,8 +217,8 @@ O repositório inclui [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
 
 | Job | O que faz |
 |-----|-----------|
-| **quality** | `npm ci`, `npm run check`, `npm run build && npm run verify:dist`, `npm run smoke:http` em branches `main`, `master`, `develop` e em PRs. |
-| **database** | Sobe **MySQL 8** como serviço e roda `npm run db:bootstrap` (migrations + seeds) para validar o pipeline de banco. |
+| **quality** | `yarn install --frozen-lockfile`, `yarn run check`, `yarn build && yarn verify:dist`, `yarn smoke:http` em branches `main`, `master`, `develop` e em PRs. |
+| **database** | Sobe **MySQL 8** como serviço e roda `yarn db:bootstrap` (migrations + seeds) para validar o pipeline de banco. |
 
 **Não há CD (deploy automático para AWS)** neste repositório. O deploy continua sendo: build da imagem, push ECR, `terraform apply` e/ou `ecs-force-new-deployment` (ou equivalente automatizado por vocês).
 
@@ -252,9 +254,9 @@ Mantenha **Terraform state** fora do git (backend S3) se várias pessoas forem a
 1. `aws configure` + IAM com permissões suficientes  
 2. `infra/aws/s3-phase1` → `apply` → copiar `bucket_name` e `s3_public_base_url`  
 3. `infra/aws/foundation` → preencher `terraform.tfvars` → `apply`  
-4. `npm ci` && `npm run build` → `./scripts/ecr-build-push.sh`  
+4. `corepack enable` && `yarn install --frozen-lockfile` && `yarn build` → `./scripts/ecr-build-push.sh`  
 5. Ajustar `container_image` / porta / health no `terraform.tfvars` → `terraform apply`  
 6. Migrations com acesso à VPC  
-7. `npm run smoke:alb` com `SMOKE_BASE_URL` do output do ALB  
+7. `yarn smoke:alb` com `SMOKE_BASE_URL` do output do ALB  
 
 Com isso, quem clonar o projeto consegue **reproduzir o ambiente**, **alterar código**, **republicar imagens** e **evoluir a infra** seguindo a mesma sequência.

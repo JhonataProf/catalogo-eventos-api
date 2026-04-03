@@ -3,8 +3,8 @@
  * Smoke pós-deploy: GET /health e GET /ready no ALB (ou URL base qualquer).
  *
  * Uso:
- *   SMOKE_BASE_URL=http://k8s-xxx.elb.amazonaws.com npm run smoke:alb
- *   npm run smoke:alb -- http://127.0.0.1:3000
+ *   SMOKE_BASE_URL=http://k8s-xxx.elb.amazonaws.com yarn smoke:alb
+ *   yarn smoke:alb http://127.0.0.1:3000
  *
  * SMOKE_SKIP_READY=true — pula /ready (ex.: sem DB acessível na URL pública).
  */

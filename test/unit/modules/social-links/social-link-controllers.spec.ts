@@ -49,24 +49,20 @@ describe("FindSocialLinkByIdController", () => {
 
   it("200, 404 e erro (admin); público usa links públicos", async () => {
     execute.mockResolvedValue(entity);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "3" } })).statusCode).toBe(
+      200,
+    );
     expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "3" } }))
-        .statusCode,
-    ).toBe(200);
-    expect(
-      (await sutPublic.handle({ correlationId: "c", pathParams: { id: "3" } }))
-        .statusCode,
+      (await sutPublic.handle({ correlationId: "c", pathParams: { id: "3" } })).statusCode,
     ).toBe(200);
     execute.mockResolvedValue(null);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "3" } }))
-        .statusCode,
-    ).toBe(404);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "3" } })).statusCode).toBe(
+      404,
+    );
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "3" } }))
-        .statusCode,
-    ).not.toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "3" } })).statusCode).not.toBe(
+      200,
+    );
   });
 });
 
@@ -76,20 +72,17 @@ describe("DeleteSocialLinkController", () => {
 
   it("200 quando deletado, 404 quando use case retorna false, erro propagado", async () => {
     execute.mockResolvedValue(true);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "3" } }))
-        .statusCode,
-    ).toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "3" } })).statusCode).toBe(
+      200,
+    );
     execute.mockResolvedValue(false);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "3" } }))
-        .statusCode,
-    ).toBe(404);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "3" } })).statusCode).toBe(
+      404,
+    );
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "3" } }))
-        .statusCode,
-    ).not.toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "3" } })).statusCode).not.toBe(
+      200,
+    );
   });
 });
 
@@ -99,17 +92,11 @@ describe("CreateSocialLinkController", () => {
 
   it("201, falha mapeada quando null e erro do use case", async () => {
     execute.mockResolvedValue(entity);
-    expect(
-      (await sut.handle({ correlationId: "c", body: createBody })).statusCode,
-    ).toBe(201);
+    expect((await sut.handle({ correlationId: "c", body: createBody })).statusCode).toBe(201);
     execute.mockResolvedValue(null);
-    expect(
-      (await sut.handle({ correlationId: "c", body: createBody })).statusCode,
-    ).not.toBe(201);
+    expect((await sut.handle({ correlationId: "c", body: createBody })).statusCode).not.toBe(201);
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", body: createBody })).statusCode,
-    ).not.toBe(201);
+    expect((await sut.handle({ correlationId: "c", body: createBody })).statusCode).not.toBe(201);
   });
 });
 

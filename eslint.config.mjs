@@ -1,4 +1,5 @@
 import eslint from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
 
 /** CI / local: rápido, sem type-aware rules (evita project service pesado). */
@@ -27,4 +28,5 @@ export default tseslint.config(
       ],
     },
   },
+  eslintConfigPrettier,
 );

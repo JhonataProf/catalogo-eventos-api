@@ -20,10 +20,7 @@ describe("GET /api/admin/users — validateQuery (integração)", () => {
   });
 
   it("retorna 400 quando query contém parâmetro não permitido (.strict)", async () => {
-    const resp = await api().withAuth(
-      api().get("/api/admin/users?unknownParam=1"),
-      token,
-    );
+    const resp = await api().withAuth(api().get("/api/admin/users?unknownParam=1"), token);
 
     expect(resp.status).toBe(400);
     expect(resp.body).toMatchObject({
@@ -42,10 +39,7 @@ describe("GET /api/admin/users — validateQuery (integração)", () => {
   });
 
   it("retorna 400 quando page é inválido", async () => {
-    const resp = await api().withAuth(
-      api().get("/api/admin/users?page=0"),
-      token,
-    );
+    const resp = await api().withAuth(api().get("/api/admin/users?page=0"), token);
 
     expect(resp.status).toBe(400);
     expect(resp.body.error?.message).toBe("Invalid query params");
@@ -53,10 +47,7 @@ describe("GET /api/admin/users — validateQuery (integração)", () => {
   });
 
   it("retorna 200 com lista quando query é válida", async () => {
-    const resp = await api().withAuth(
-      api().get("/api/admin/users?page=1&limit=5"),
-      token,
-    );
+    const resp = await api().withAuth(api().get("/api/admin/users?page=1&limit=5"), token);
 
     expect(resp.status).toBe(200);
     expect(resp.body).toMatchObject({

@@ -11,10 +11,7 @@ export class UpdateHomeHighlightUseCase {
     private readonly images: PublicWebImageUploader,
   ) {}
 
-  async execute(
-    id: number,
-    patch: UpdateHomeHighlightDTO,
-  ): Promise<HomeHighlightEntity | null> {
+  async execute(id: number, patch: UpdateHomeHighlightDTO): Promise<HomeHighlightEntity | null> {
     const existing = await this.findByIdRepo.findById(id);
     if (!existing) return null;
 

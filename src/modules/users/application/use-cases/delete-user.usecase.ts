@@ -9,7 +9,7 @@ export class DeleteUserUseCase {
     private readonly findByIdRepo: FindUserByIdRepository,
     private readonly deleteUserRepo: DeleteUserRepository,
     private readonly profileStrategyFactory = new ProfileStrategyFactory(),
-    private readonly logger: DomainLogger = new NoopDomainLogger()
+    private readonly logger: DomainLogger = new NoopDomainLogger(),
   ) {}
 
   async execute(id: number): Promise<boolean> {

@@ -8,7 +8,8 @@ import sequelize from "@/core/database";
 // de qualquer import com "@/". Se isso for um problema real no seu build,
 // podemos depois separar um entrypoint JS só para registrar aliases.
 if (process.env.NODE_ENV === "production") {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // module-alias deve registrar antes de resolução @/ no runtime compilado
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("module-alias/register");
 }
 
@@ -29,9 +30,7 @@ async function start() {
         port: ENV.PORT,
         host: "0.0.0.0",
         swaggerEnabled: ENV.SWAGGER_ENABLED,
-        swaggerUrl: ENV.SWAGGER_ENABLED
-          ? `http://localhost:${ENV.PORT}/api-docs`
-          : null,
+        swaggerUrl: ENV.SWAGGER_ENABLED ? `http://localhost:${ENV.PORT}/api-docs` : null,
       });
     });
 
@@ -46,10 +45,7 @@ async function start() {
           process.exit(0);
         } catch (err) {
           logger.error("Error while closing DB connection on shutdown", {
-            error:
-              err instanceof Error
-                ? { message: err.message, stack: err.stack }
-                : err,
+            error: err instanceof Error ? { message: err.message, stack: err.stack } : err,
           });
           process.exit(1);
         }
@@ -68,10 +64,7 @@ async function start() {
     // Boas práticas de runtime
     process.on("unhandledRejection", (reason) => {
       logger.error("unhandledRejection", {
-        reason:
-          reason instanceof Error
-            ? { message: reason.message, stack: reason.stack }
-            : reason,
+        reason: reason instanceof Error ? { message: reason.message, stack: reason.stack } : reason,
       });
       // aqui você pode decidir se quer encerrar o processo ou não.
       // Em muitos cenários é mais seguro encerrar.
@@ -86,8 +79,7 @@ async function start() {
     });
   } catch (err) {
     logger.error("Failed to start HTTP server", {
-      error:
-        err instanceof Error ? { message: err.message, stack: err.stack } : err,
+      error: err instanceof Error ? { message: err.message, stack: err.stack } : err,
     });
     process.exit(1);
   }

@@ -39,7 +39,7 @@ User.init(
   {
     sequelize,
     modelName: "Users",
-  }
+  },
 );
 
 export default User;

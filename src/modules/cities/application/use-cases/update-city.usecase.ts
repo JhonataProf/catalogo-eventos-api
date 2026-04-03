@@ -19,11 +19,7 @@ export class UpdateCityUseCase {
     const payload: Partial<CityProps> = { ...rest };
 
     if (image) {
-      const { url } = await this.images.replacePublicWebImage(
-        existing.imageUrl,
-        image,
-        "cities",
-      );
+      const { url } = await this.images.replacePublicWebImage(existing.imageUrl, image, "cities");
       payload.imageUrl = url;
     }
 

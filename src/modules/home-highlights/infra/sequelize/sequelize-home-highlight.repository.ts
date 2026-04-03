@@ -2,7 +2,7 @@ import {
   HomeHighlightEntity,
   HomeHighlightProps,
 } from "../../domain/entities/home-highlight.entity";
-import { CreateHomeHighlightRepository } from "../../domain/repositories/create-home-highlight.reposiotry";
+import { CreateHomeHighlightRepository } from "../../domain/repositories/create-home-highlight.repository";
 import { DeleteHomeHighlightRepository } from "../../domain/repositories/delete-home-highlight.repository";
 import { FindHomeHighlightByIdRepository } from "../../domain/repositories/find-home-highlight-by-id.repository";
 import { GetHomeHighlightRepository } from "../../domain/repositories/get-home-highlight.repository";

@@ -69,10 +69,7 @@ export class LocalMediaStorageService implements MediaStorageService {
       : filePath;
 
     const origin = this.cfg.publicOrigin?.replace(/\/+$/, "");
-    const url =
-      input.visibility === "public" && origin
-        ? `${origin}${logicalPath}`
-        : undefined;
+    const url = input.visibility === "public" && origin ? `${origin}${logicalPath}` : undefined;
 
     return {
       path: logicalPath,
@@ -93,9 +90,7 @@ export class LocalMediaStorageService implements MediaStorageService {
     const afterOrigin = trimmed.slice(origin.length);
     if (!afterOrigin.startsWith(basePath)) return;
 
-    const relativeFromUploads = afterOrigin
-      .slice(basePath.length)
-      .replace(/^\//, "");
+    const relativeFromUploads = afterOrigin.slice(basePath.length).replace(/^\//, "");
     if (!relativeFromUploads) return;
 
     const abs = path.join(this.cfg.rootDir, relativeFromUploads);
@@ -121,19 +116,11 @@ export class LocalMediaStorageService implements MediaStorageService {
     const afterOrigin = trimmed.slice(origin.length);
     if (!afterOrigin.startsWith(basePath)) return null;
 
-    const relativeFromRoot = afterOrigin
-      .slice(basePath.length)
-      .replace(/^\//, "");
+    const relativeFromRoot = afterOrigin.slice(basePath.length).replace(/^\//, "");
     if (!relativeFromRoot) return null;
 
-    const prefix = (this.cfg.publicKeyPrefix ?? "public").replace(
-      /^\/+|\/+$/g,
-      "",
-    );
-    if (
-      relativeFromRoot !== prefix &&
-      !relativeFromRoot.startsWith(`${prefix}/`)
-    ) {
+    const prefix = (this.cfg.publicKeyPrefix ?? "public").replace(/^\/+|\/+$/g, "");
+    if (relativeFromRoot !== prefix && !relativeFromRoot.startsWith(`${prefix}/`)) {
       return null;
     }
 

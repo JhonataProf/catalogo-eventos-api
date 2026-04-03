@@ -74,7 +74,7 @@ jq -n \
     overrides: {
       containerOverrides: [{
         name: "app",
-        command: ["sh", "-c", "cd /app && NODE_ENV=production npm run db:seed"]
+        command: ["sh", "-c", "cd /app && NODE_ENV=production yarn db:seed"]
       }]
     }
   }' >"$RUN_JSON"

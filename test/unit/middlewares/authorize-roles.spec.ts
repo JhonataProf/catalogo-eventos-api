@@ -38,7 +38,7 @@ describe("authorizeRoles middleware", () => {
     expect(json).toHaveBeenCalledWith(
       expect.objectContaining({
         error: { code: "FORBIDDEN", message: "Acesso negado" },
-      })
+      }),
     );
     expect(next).not.toHaveBeenCalled();
   });
@@ -53,7 +53,7 @@ describe("authorizeRoles middleware", () => {
     expect(json).toHaveBeenCalledWith(
       expect.objectContaining({
         error: { code: "FORBIDDEN", message: "Acesso negado" },
-      })
+      }),
     );
     expect(next).not.toHaveBeenCalled();
   });

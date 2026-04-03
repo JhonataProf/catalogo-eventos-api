@@ -1,8 +1,5 @@
 import { Transaction } from "sequelize";
-import {
-  TouristPointEntity,
-  TouristPointProps,
-} from "../entities/tourist-point.entity";
+import { TouristPointEntity, TouristPointProps } from "../entities/tourist-point.entity";
 
 export interface UpdateTouristPointRepository {
   update(

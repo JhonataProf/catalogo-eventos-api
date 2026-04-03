@@ -35,11 +35,7 @@ export class UpdateEventUseCase {
     const payload: Partial<EventProps> = { ...rest };
 
     if (image) {
-      const { url } = await this.images.replacePublicWebImage(
-        existing.imageUrl,
-        image,
-        "events",
-      );
+      const { url } = await this.images.replacePublicWebImage(existing.imageUrl, image, "events");
       payload.imageUrl = url;
     }
 

@@ -55,9 +55,7 @@ describe("CreateUserController (integration)", () => {
       meta: { correlationId: expect.any(String) },
     });
     expect(resp.body.links).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ rel: "login", method: "POST" }),
-      ]),
+      expect.arrayContaining([expect.objectContaining({ rel: "login", method: "POST" })]),
     );
   });
 
@@ -70,9 +68,7 @@ describe("CreateUserController (integration)", () => {
       role: "Administrador", // valor inválido
     };
     // ACT
-    const resp = await api()
-      .withAuth(api().post("/api/admin/users"), token)
-      .send(dadosInvalidos);
+    const resp = await api().withAuth(api().post("/api/admin/users"), token).send(dadosInvalidos);
     // ASSERT
     expect(resp.status).toBe(400);
     expect(resp.type).toMatch(/json/);
@@ -101,9 +97,7 @@ describe("CreateUserController (integration)", () => {
 
   it("não deve criar usuário sem dados obrigatórios", async () => {
     const dadosFaltando = {}; // nenhum campo fornecido
-    const resp = await api()
-      .withAuth(api().post("/api/admin/users"), token)
-      .send(dadosFaltando);
+    const resp = await api().withAuth(api().post("/api/admin/users"), token).send(dadosFaltando);
     expect(resp.status).toBe(400);
     expect(resp.type).toMatch(/json/);
     expect(resp.body).toMatchObject({
@@ -128,14 +122,12 @@ describe("CreateUserController (integration)", () => {
 
   it("não deve criar usuário com email já existente", async () => {
     // 1ª criação
-    const first = await api()
-      .withAuth(api().post("/api/admin/users"), token)
-      .send({
-        name: "Jane Doe",
-        email: "jhondoe123@dominio.com",
-        password: "senha123",
-        role: "Admin",
-      });
+    const first = await api().withAuth(api().post("/api/admin/users"), token).send({
+      name: "Jane Doe",
+      email: "jhondoe123@dominio.com",
+      password: "senha123",
+      role: "Admin",
+    });
     expect(first.status).toBe(201);
 
     // 2ª criação (duplicada)

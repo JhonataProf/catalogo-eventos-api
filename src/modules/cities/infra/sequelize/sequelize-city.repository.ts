@@ -74,11 +74,7 @@ export class SequelizeCityRepository
     return cityModelToEntity(city);
   }
 
-  async edit(
-    id: number,
-    city: Partial<CityEntity>,
-    t?: Transaction,
-  ): Promise<CityEntity | null> {
+  async edit(id: number, city: Partial<CityEntity>, t?: Transaction): Promise<CityEntity | null> {
     const cityUpdated = await CityModel.update(city, {
       where: { id },
       transaction: t,

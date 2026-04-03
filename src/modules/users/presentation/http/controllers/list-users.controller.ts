@@ -48,10 +48,7 @@ export class ListUsersController implements Controller {
       return ok(resourceList);
     } catch (error) {
       logger.error("ListUsersController: erro inesperado", {
-        error:
-          error instanceof Error
-            ? { message: error.message, stack: error.stack }
-            : error,
+        error: error instanceof Error ? { message: error.message, stack: error.stack } : error,
       });
 
       return mapErrorToHttpResponse(error, correlationId);

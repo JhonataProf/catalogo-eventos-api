@@ -6,12 +6,14 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-COPY package.json package-lock.json ./
-RUN npm ci
+RUN corepack enable
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 COPY tsconfig.json ./
 COPY src ./src
-RUN npm run build
+RUN yarn build
 
 FROM node:22-bookworm-slim AS runner
 WORKDIR /app
@@ -27,8 +29,10 @@ RUN groupadd --gid 1001 nodejs \
 # Não defina DB_SSL_CA_PATH na task: mysql2 usa o perfil "Amazon RDS" (aws-ssl-profiles) e evita self-signed com PEM errado.
 COPY --chown=nodejs:nodejs certs/ /app/certs/
 
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+RUN corepack enable
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production && yarn cache clean
 
 COPY --from=builder /app/dist ./dist
 

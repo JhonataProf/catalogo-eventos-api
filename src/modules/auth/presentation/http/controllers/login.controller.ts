@@ -30,7 +30,7 @@ export class LoginController implements Controller {
           user: result.user,
         },
         loginLinks(),
-        { correlationId, version: "1.0.0" }
+        { correlationId, version: "1.0.0" },
       );
 
       logger.info("Login bem-sucedido", {

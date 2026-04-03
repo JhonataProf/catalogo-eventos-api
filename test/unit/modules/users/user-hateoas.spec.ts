@@ -13,7 +13,7 @@ describe("user-hateoas", () => {
 
     // asserts “de segurança” (opcional)
     expect(Object.keys(links)).toEqual(
-      expect.arrayContaining(["self", "update", "delete", "list"])
+      expect.arrayContaining(["self", "update", "delete", "list"]),
     );
   });
 });

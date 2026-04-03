@@ -19,9 +19,7 @@ export async function seedUserAndLogin({
     await makeAdmin(user);
   }
 
-  const resp = await api()
-    .post("/api/auth/login")
-    .send({ email: user.email, password });
+  const resp = await api().post("/api/auth/login").send({ email: user.email, password });
 
   // Asserte aqui para falhar cedo se o login quebrar
   expect(resp.status).toBe(200);

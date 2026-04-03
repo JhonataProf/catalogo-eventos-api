@@ -22,10 +22,7 @@ describe("GetTouristPointByIdController", () => {
     const useCase: Pick<GetTouristPointByIdUseCase, "execute"> = {
       execute: jest.fn(),
     };
-    const sut = new GetTouristPointByIdController(
-      useCase as GetTouristPointByIdUseCase,
-      audience,
-    );
+    const sut = new GetTouristPointByIdController(useCase as GetTouristPointByIdUseCase, audience);
     return { sut, useCase };
   };
 

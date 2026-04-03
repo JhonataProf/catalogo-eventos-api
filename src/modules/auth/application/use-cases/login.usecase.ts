@@ -45,10 +45,7 @@ export class LoginUseCase {
       throw userNotFound(input.email);
     }
 
-    const senhaValida = await this.encrypter.compare(
-      input.password,
-      user.password,
-    );
+    const senhaValida = await this.encrypter.compare(input.password, user.password);
 
     if (!senhaValida) {
       this.logger.info("Senha inválida para login", { email: input.email });

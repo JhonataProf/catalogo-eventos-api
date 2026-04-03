@@ -10,10 +10,7 @@ import {
   makeUpdateHomeBannerController,
 } from "../factories";
 import { Router } from "express";
-import {
-  createHomeBannerSchema,
-  updateHomeBannerSchema,
-} from "../validators/home-banner.schemas";
+import { createHomeBannerSchema, updateHomeBannerSchema } from "../validators/home-banner.schemas";
 
 export function registerHomeBannerRoutes(router: Router) {
   router.post(

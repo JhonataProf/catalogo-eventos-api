@@ -9,7 +9,7 @@
 
 1. **`UPDATE_MODEL=false` em produção** (padrão atual) — evita `sync` automático contra dados reais.
 2. **Alterações de schema versionadas** com **Sequelize CLI** (`database/migrations/`).
-3. Rodar **`npm run db:migrate`** (ou equivalente no pipeline) **antes** ou como etapa controlada do deploy, com backup e janela de manutenção quando necessário.
+3. Rodar **`yarn db:migrate`** (ou equivalente no pipeline) **antes** ou como etapa controlada do deploy, com backup e janela de manutenção quando necessário.
 4. Manter **`GET /ready`** com `READINESS_CHECK_DB=true` para o target group só receber tráfego quando o app **e** a conexão com o banco estiverem ok.
 
 ## Comandos
@@ -26,21 +26,21 @@ A imagem Docker **copia** `certs/` para `/app/certs/` (bundle versionado no repo
 ```bash
 # NODE_ENV define qual chave do config é usada (development | test | production)
 export NODE_ENV=production
-npm run db:migrate          # aplica pendentes
-npm run db:migrate:status   # inspeciona
-npm run db:migrate:undo     # desfaz última (use com cuidado)
-npm run db:seed             # aplica seeders (admin inicial + cidades MS)
-npm run db:seed:undo        # desfaz todos os seeders registrados
-npm run db:bootstrap        # migrate + seed (ambiente local/staging com .env)
+yarn db:migrate          # aplica pendentes
+yarn db:migrate:status   # inspeciona
+yarn db:migrate:undo     # desfaz última (use com cuidado)
+yarn db:seed             # aplica seeders (admin inicial + cidades MS)
+yarn db:seed:undo        # desfaz todos os seeders registrados
+yarn db:bootstrap        # migrate + seed (ambiente local/staging com .env)
 ```
 
 A migration `20250326120000-phase1-schema-placeholder` é **no-op** (histórico / `SequelizeMeta`). O DDL das tabelas da aplicação está em `20250326120100-create-application-schema.cjs`. O seeder de admin exige **`ADMIN_EMAIL`** e **`ADMIN_PASSWORD`** no ambiente (hash bcrypt com 12 rounds). Em produção, `env.ts` exige que ambas existam em `process.env` (ECS: `ADMIN_EMAIL` na task + `ADMIN_PASSWORD` via Secrets Manager — ver `infra/aws/foundation/ecs.tf`).
 
-O workflow **CI** (`.github/workflows/ci.yml`, job `database`) sobe **MySQL 8** em serviço e executa `npm run db:bootstrap` para validar migrations e seeders em cada push/PR.
+O workflow **CI** (`.github/workflows/ci.yml`, job `database`) sobe **MySQL 8** em serviço e executa `yarn db:bootstrap` para validar migrations e seeders em cada push/PR.
 
 ## Rodar migrate **de dentro da VPC** (RDS privado)
 
-O MySQL do `foundation` não tem endpoint público; da sua máquina na internet o `npm run db:migrate` não conecta. Opções:
+O MySQL do `foundation` não tem endpoint público; da sua máquina na internet o `yarn db:migrate` não conecta. Opções:
 
 ### 1) ECS **Run Task** (recomendado com este repositório)
 
@@ -55,13 +55,13 @@ A imagem de produção inclui `database/`, `.sequelizerc` e `sequelize-cli`; as 
    ./scripts/ecs-run-db-seed.sh
    ```
 
-   O migrate **não** roda seed. Após migrar, execute **`ecs-run-db-seed.sh`** uma vez (ou quando precisar recriar dados iniciais). Os scripts leem `ecs_cluster_name` e `ecs_service_name` via Terraform, copiam subnets/SG do serviço e disparam tasks Fargate com `npm run db:migrate` / `npm run db:seed` (sem ALB). A task usa a mesma definição do serviço, incluindo `ADMIN_*`.
+   O migrate **não** roda seed. Após migrar, execute **`ecs-run-db-seed.sh`** uma vez (ou quando precisar recriar dados iniciais). Os scripts leem `ecs_cluster_name` e `ecs_service_name` via Terraform, copiam subnets/SG do serviço e disparam tasks Fargate com `yarn db:migrate` / `yarn db:seed` (sem ALB). A task usa a mesma definição do serviço, incluindo `ADMIN_*`.
 
 4. Acompanhe em **CloudWatch Logs** → grupo `/ecs/<project>-<env>` (stream da task).
 
 ### 2) Outras formas
 
-- **AWS CodeBuild** na mesma VPC/subnets com acesso ao RDS (checkout do repo + `npm ci` + `npm run db:migrate` com `DB_*` em variáveis ou Secrets Manager).
+- **AWS CodeBuild** na mesma VPC/subnets com acesso ao RDS (checkout do repo + `yarn install --frozen-lockfile` + `yarn db:migrate` com `DB_*` em variáveis ou Secrets Manager).
 - **Bastion** (EC2 ou SSM) na VPC com Node + clone do repo + `.env` com `DB_HOST` interno.
 - **Runner de CI** (GitHub self-hosted, etc.) com interface de rede na VPC.
 

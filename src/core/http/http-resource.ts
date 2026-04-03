@@ -105,9 +105,7 @@ export class CollectionResourceBuilder<T> {
   }
 }
 
-export const ok = <T>(
-  body: Resource<T> | CollectionResource<T>,
-): HttpResponse => ({
+export const ok = <T>(body: Resource<T> | CollectionResource<T>): HttpResponse => ({
   statusCode: 200,
   body,
 });

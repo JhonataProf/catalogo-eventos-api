@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
 const parseOrigins = (raw?: string): string[] =>
-  (raw ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  (raw ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
 const ALLOWED_ORIGINS = parseOrigins(process.env.CORS_ORIGINS); // ex: "https://app.com,https://admin.app.com"
 const ALLOW_CREDENTIALS = (process.env.CORS_CREDENTIALS ?? "false").toLowerCase() === "true";

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Roda `db:migrate` em uma task Fargate na mesma VPC/subnets/SG do serviço — alcança o RDS privado.
 # Pré-requisitos: AWS CLI, jq, imagem no ECR com `database/`, `.sequelizerc`,
-# `scripts/sequelize-with-node-env.cjs` (npm run db:migrate) e sequelize-cli em dependencies;
+# `scripts/sequelize-with-node-env.cjs` (yarn db:migrate) e sequelize-cli em dependencies;
 # build/push após alterar Dockerfile; task definition revisada no ECS.
 set -euo pipefail
 
@@ -74,7 +74,7 @@ jq -n \
     overrides: {
       containerOverrides: [{
         name: "app",
-        command: ["sh", "-c", "cd /app && NODE_ENV=production npm run db:migrate"]
+        command: ["sh", "-c", "cd /app && NODE_ENV=production yarn db:migrate"]
       }]
     }
   }' >"$RUN_JSON"

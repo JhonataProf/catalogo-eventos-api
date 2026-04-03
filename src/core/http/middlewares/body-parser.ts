@@ -6,7 +6,9 @@ const URLENC_LIMIT = process.env.URLENC_LIMIT ?? "1mb";
 
 const parsers: RequestHandler[] = [
   // Necessário para req.ip, proxys etc. (se usar proxy reverso, setar app.set('trust proxy', 1) no app)
-  express.urlencoded() ? urlencoded({ extended: true, limit: URLENC_LIMIT }) : ((req, _res, next) => next()) as RequestHandler,
+  express.urlencoded()
+    ? urlencoded({ extended: true, limit: URLENC_LIMIT })
+    : (((req, _res, next) => next()) as RequestHandler),
   json({ limit: JSON_LIMIT }),
 ];
 

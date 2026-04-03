@@ -23,12 +23,7 @@ function resolvePublicMediaBaseUrl(): string {
 function instantiateMediaStorageFromEnv(): MediaStorageService {
   const publicOrigin = resolvePublicMediaBaseUrl();
 
-  if (
-    ENV.MEDIA_STORAGE === "s3" &&
-    ENV.S3_BUCKET &&
-    ENV.AWS_REGION &&
-    ENV.S3_PUBLIC_BASE_URL
-  ) {
+  if (ENV.MEDIA_STORAGE === "s3" && ENV.S3_BUCKET && ENV.AWS_REGION && ENV.S3_PUBLIC_BASE_URL) {
     return new S3MediaStorageService({
       bucket: ENV.S3_BUCKET,
       region: ENV.AWS_REGION,

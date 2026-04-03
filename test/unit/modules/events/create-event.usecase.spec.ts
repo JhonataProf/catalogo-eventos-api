@@ -47,9 +47,7 @@ describe("CreateEventUseCase", () => {
       execute: jest.fn().mockResolvedValue({}),
     } as unknown as FindCityByIdUseCase;
     const images = {
-      uploadPublicWebImage: jest
-        .fn()
-        .mockResolvedValue({ url: "https://cdn.example/e.png" }),
+      uploadPublicWebImage: jest.fn().mockResolvedValue({ url: "https://cdn.example/e.png" }),
     } as unknown as PublicWebImageUploader;
     const sut = new CreateEventUseCase(createRepo, findCityById, images);
     return { sut, create, findCityById, images };
@@ -61,10 +59,7 @@ describe("CreateEventUseCase", () => {
     const out = await sut.execute(dto);
 
     expect(findCityById.execute).toHaveBeenCalledWith(1);
-    expect(images.uploadPublicWebImage).toHaveBeenCalledWith(
-      dto.image,
-      "events",
-    );
+    expect(images.uploadPublicWebImage).toHaveBeenCalledWith(dto.image, "events");
     expect(create).toHaveBeenCalled();
     const arg = create.mock.calls[0]![0] as EventEntity;
     expect(arg.props.imageUrl).toBe("https://cdn.example/e.png");

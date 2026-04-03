@@ -1,11 +1,7 @@
-
 import { normalizePagination } from "@/core/http/pagination";
 import { normalizeSort } from "@/core/http/sorting";
 import { ListTouristPointsSpecificationRepository } from "../../domain/repositories/list-tourist-points-specification.repository";
-import {
-  TOURIST_POINT_SORT_FIELDS,
-  TouristPointSortField,
-} from "../sorting/tourist-point.sort";
+import { TOURIST_POINT_SORT_FIELDS, TouristPointSortField } from "../sorting/tourist-point.sort";
 import { TouristPointSpecificationBuilder } from "../specifications/tourist-point-spec.builder";
 
 type Input = {

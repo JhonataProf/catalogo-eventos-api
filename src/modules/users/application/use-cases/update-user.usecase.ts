@@ -9,7 +9,7 @@ export class UpdateUserUseCase {
   constructor(
     private readonly findByIdRepo: FindUserByIdRepository,
     private readonly updateUserRepo: UpdateUserRepository,
-    private readonly encrypter: Encrypter
+    private readonly encrypter: Encrypter,
   ) {}
 
   async execute(id: number, input: UpdateUserDTO): Promise<UserEntity | null> {

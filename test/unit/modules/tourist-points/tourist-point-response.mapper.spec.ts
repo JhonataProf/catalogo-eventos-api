@@ -45,9 +45,10 @@ describe("tourist-point-response.mapper", () => {
   it("toTouristPointListItemPayload inclui timestamps opcionais", () => {
     const c = new Date("2024-01-01");
     const u = new Date("2024-01-02");
-    expect(
-      toTouristPointListItemPayload(entity, { createdAt: c, updatedAt: u }),
-    ).toMatchObject({ createdAt: c, updatedAt: u });
+    expect(toTouristPointListItemPayload(entity, { createdAt: c, updatedAt: u })).toMatchObject({
+      createdAt: c,
+      updatedAt: u,
+    });
   });
 
   it("toTouristPointListItemPayload omite timestamps quando undefined", () => {

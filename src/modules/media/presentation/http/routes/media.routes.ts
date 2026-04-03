@@ -6,10 +6,7 @@ import authorizeRoles from "@/core/http/middlewares/authorize-roles";
 import { validateBody } from "@/core/http/middlewares/validate-body";
 import { validateQuery } from "@/core/http/middlewares/validate-query";
 
-import {
-  uploadMediaSchema,
-  verifyMediaQuerySchema,
-} from "../validators/media-schemas";
+import { uploadMediaSchema, verifyMediaQuerySchema } from "../validators/media-schemas";
 import { makeUploadMediaController, makeVerifyMediaController } from "../factories";
 
 export function registerMediaRoutes(router: Router) {

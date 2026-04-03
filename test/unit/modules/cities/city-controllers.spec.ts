@@ -46,9 +46,7 @@ describe("DeleteCityController", () => {
 
   it("204 e erro", async () => {
     execute.mockResolvedValue(undefined);
-    expect((await sut.handle({ correlationId: "c", params: { id: "1" } })).statusCode).toBe(
-      204,
-    );
+    expect((await sut.handle({ correlationId: "c", params: { id: "1" } })).statusCode).toBe(204);
     execute.mockRejectedValue(new Error("e"));
     expect((await sut.handle({ correlationId: "c", params: { id: "1" } })).statusCode).not.toBe(
       204,
@@ -69,9 +67,7 @@ describe("FindCityByIdController", () => {
         statusCode: 404,
       }),
     );
-    expect((await admin.handle({ correlationId: "c", params: { id: "1" } })).statusCode).toBe(
-      404,
-    );
+    expect((await admin.handle({ correlationId: "c", params: { id: "1" } })).statusCode).toBe(404);
     execute.mockResolvedValue(city);
     const a = await admin.handle({ correlationId: "c", params: { id: "1" } });
     expect(a.statusCode).toBe(200);
@@ -113,9 +109,7 @@ describe("FindCityBySlugController", () => {
 
   it("404 slug e 200", async () => {
     execute.mockResolvedValue(null);
-    expect(
-      (await sut.handle({ correlationId: "c", params: { slug: "x" } })).statusCode,
-    ).toBe(404);
+    expect((await sut.handle({ correlationId: "c", params: { slug: "x" } })).statusCode).toBe(404);
     execute.mockResolvedValue(city);
     expect(
       (await sut.handle({ correlationId: "c", params: { slug: "campo-grande" } })).statusCode,

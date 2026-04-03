@@ -1,9 +1,7 @@
 import type { TouristPointPersistedDTO } from "@/modules/tourist-points/application/dto";
 import type { TouristPointEntity } from "@/modules/tourist-points/domain/entities/tourist-point.entity";
 
-export type TouristPointListItemPayload = ReturnType<
-  typeof toTouristPointHttpPayload
-> & {
+export type TouristPointListItemPayload = ReturnType<typeof toTouristPointHttpPayload> & {
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -34,11 +32,7 @@ export function toTouristPointListItemPayload(
 ): TouristPointListItemPayload {
   return {
     ...toTouristPointHttpPayload(entity),
-    ...(timestamps?.createdAt !== undefined
-      ? { createdAt: timestamps.createdAt }
-      : {}),
-    ...(timestamps?.updatedAt !== undefined
-      ? { updatedAt: timestamps.updatedAt }
-      : {}),
+    ...(timestamps?.createdAt !== undefined ? { createdAt: timestamps.createdAt } : {}),
+    ...(timestamps?.updatedAt !== undefined ? { updatedAt: timestamps.updatedAt } : {}),
   };
 }

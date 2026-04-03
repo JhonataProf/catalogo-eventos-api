@@ -3,9 +3,7 @@ import { DeleteInstitutionalContentRepository } from "../../domain/repositories/
 export class DeleteInstitutionalContentUseCase {
   constructor(private readonly repo: DeleteInstitutionalContentRepository) {}
 
-  async execute(
-    id: number,
-  ): Promise<boolean> {
+  async execute(id: number): Promise<boolean> {
     return this.repo.delete(id);
   }
 }

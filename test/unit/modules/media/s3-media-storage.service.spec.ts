@@ -52,7 +52,7 @@ describe("S3MediaStorageService", () => {
         ContentType: "image/png",
         CacheControl: "public, max-age=31536000, immutable",
         StorageClass: "STANDARD",
-      })
+      }),
     );
 
     expect(sendMock).toHaveBeenCalledTimes(1);
@@ -63,7 +63,7 @@ describe("S3MediaStorageService", () => {
         url: "https://my-bucket.s3.amazonaws.com/public/users/10/uuid-1-uuid-1-uuid-1-uuid-1.png",
         size: 5,
         mimeType: "image/png",
-      })
+      }),
     );
   });
 
@@ -103,8 +103,7 @@ describe("S3MediaStorageService", () => {
       defaultStorageClass: "STANDARD",
     });
 
-    const url =
-      "https://my-bucket.s3.amazonaws.com/public/phase1/uuid.png";
+    const url = "https://my-bucket.s3.amazonaws.com/public/phase1/uuid.png";
     const meta = await svc.headOwnedPublicUrl(url);
 
     expect(HeadObjectCommand).toHaveBeenCalledWith(
@@ -128,9 +127,7 @@ describe("S3MediaStorageService", () => {
       defaultStorageClass: "STANDARD",
     });
 
-    const meta = await svc.headOwnedPublicUrl(
-      "https://my-bucket.s3.amazonaws.com/private/x.png",
-    );
+    const meta = await svc.headOwnedPublicUrl("https://my-bucket.s3.amazonaws.com/private/x.png");
     expect(meta).toBeNull();
     expect(sendMock).not.toHaveBeenCalled();
   });

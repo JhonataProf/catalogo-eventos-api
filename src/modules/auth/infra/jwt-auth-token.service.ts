@@ -19,20 +19,12 @@ export class JwtAuthTokenService implements AuthTokenService {
     this.accessSecret = access;
     this.refreshSecret = refresh;
   }
-  generateAccessToken(payload: {
-    sub: string;
-    email: string;
-    role: string;
-  }): string {
-    return jwt.sign(
-      { email: payload.email, role: payload.role },
-      this.accessSecret,
-      {
-        subject: payload.sub,
-        expiresIn: ACCESS_TOKEN_EXP,
-        algorithm: "HS256",
-      },
-    );
+  generateAccessToken(payload: { sub: string; email: string; role: string }): string {
+    return jwt.sign({ email: payload.email, role: payload.role }, this.accessSecret, {
+      subject: payload.sub,
+      expiresIn: ACCESS_TOKEN_EXP,
+      algorithm: "HS256",
+    });
   }
 
   generateRefreshToken(payload: { sub: string }): string {
@@ -42,9 +34,7 @@ export class JwtAuthTokenService implements AuthTokenService {
       algorithm: "HS256",
     });
   }
-  decodeRefreshToken(
-    token: string,
-  ): { sub: string; email?: string; role?: string } | null {
+  decodeRefreshToken(token: string): { sub: string; email?: string; role?: string } | null {
     const decoded = jwt.verify(token, this.refreshSecret, {
       algorithms: ["HS256"],
     }) as jwt.JwtPayload;

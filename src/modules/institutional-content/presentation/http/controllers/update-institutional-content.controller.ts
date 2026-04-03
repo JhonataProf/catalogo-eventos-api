@@ -6,41 +6,40 @@ import { logger } from "@/core/config/logger";
 import { mapErrorToHttpResponse } from "@/core/http";
 
 export class UpdateInstitutionalContentController implements Controller {
-    constructor(private readonly usecase: UpdateInstitutionalContentUseCase){}
-    async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-        const correlationId = httpRequest.correlationId;
-        try {
-            const id = Number(httpRequest.pathParams?.id);
-            const body = httpRequest.body as UpdateInstitutionalContentDTO;
+  constructor(private readonly usecase: UpdateInstitutionalContentUseCase) {}
+  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const correlationId = httpRequest.correlationId;
+    try {
+      const id = Number(httpRequest.pathParams?.id);
+      const body = httpRequest.body as UpdateInstitutionalContentDTO;
 
-            const result = await this.usecase.execute(id, body);
-            if (!result) {
-                return mapErrorToHttpResponse(
-                    new AppError({
-                        code: "INSTITUTIONAL_CONTENT_NOT_FOUND",
-                        message: "Conteúdo institucional não encontrado",
-                        statusCode: 404,
-                        details: { id },
-                    }),
-                    correlationId,
-                );
-            }
+      const result = await this.usecase.execute(id, body);
+      if (!result) {
+        return mapErrorToHttpResponse(
+          new AppError({
+            code: "INSTITUTIONAL_CONTENT_NOT_FOUND",
+            message: "Conteúdo institucional não encontrado",
+            statusCode: 404,
+            details: { id },
+          }),
+          correlationId,
+        );
+      }
 
-            return {
-                statusCode: 200,
-                body: {
-                    data: result,
-                    links: {},
-                    meta: { correlationId, version: "1.0.0" },
-                },
-            };
-        } catch (error) {
-            logger.error("UpdateInstitutionalContentController: erro ao atualizar", {
-                correlationId,
-                error,
-            });
-            return mapErrorToHttpResponse(error, correlationId);
-        }
+      return {
+        statusCode: 200,
+        body: {
+          data: result,
+          links: {},
+          meta: { correlationId, version: "1.0.0" },
+        },
+      };
+    } catch (error) {
+      logger.error("UpdateInstitutionalContentController: erro ao atualizar", {
+        correlationId,
+        error,
+      });
+      return mapErrorToHttpResponse(error, correlationId);
     }
-    
+  }
 }

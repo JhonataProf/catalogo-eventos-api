@@ -34,9 +34,7 @@ export class SequelizeUserRepository
     }
 
     const offset = (params.page - 1) * params.limit;
-    const order: Order = [
-      [params.sortBy, params.sortDir.toUpperCase() as "ASC" | "DESC"],
-    ];
+    const order: Order = [[params.sortBy, params.sortDir.toUpperCase() as "ASC" | "DESC"]];
 
     const { rows, count } = await UserModel.findAndCountAll({
       where,
@@ -53,8 +51,10 @@ export class SequelizeUserRepository
     };
   }
 
-  findByTelefone(telefone: string): Promise<{ userId: number; name?: string; endereco?: string; telefone?: string; } | null> {
-    return UserModel.findOne({ where: { telefone } }).then(user => {
+  findByTelefone(
+    telefone: string,
+  ): Promise<{ userId: number; name?: string; endereco?: string; telefone?: string } | null> {
+    return UserModel.findOne({ where: { telefone } }).then((user) => {
       if (!user) return null;
       return {
         userId: user.id,
@@ -65,19 +65,22 @@ export class SequelizeUserRepository
     });
   }
   async create(user: UserEntity, t?: Transaction): Promise<UserEntity> {
-    const created = await UserModel.create({
-      name: user.name,
-      email: user.email,
-      password: user.password,
-      role: user.role,
-    }, { transaction: t });
+    const created = await UserModel.create(
+      {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        role: user.role,
+      },
+      { transaction: t },
+    );
 
     await UserModel.sync();
     return userModelToEntity(created);
   }
 
   async findById(id: number, t?: Transaction): Promise<UserEntity | null> {
-    const user = await UserModel.findByPk(id, { transaction: t }  );
+    const user = await UserModel.findByPk(id, { transaction: t });
     if (!user) return null;
 
     return userModelToEntity(user);
@@ -90,10 +93,7 @@ export class SequelizeUserRepository
     return userModelToEntity(user);
   }
 
-  async update(
-    id: number,
-    data: Partial<UserProps>,
-  ): Promise<UserEntity | null> {
+  async update(id: number, data: Partial<UserProps>): Promise<UserEntity | null> {
     const user = await UserModel.findByPk(id);
     if (!user) return null;
 

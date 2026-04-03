@@ -16,7 +16,7 @@ const normalizeSort = (by?: string, dir?: string) => {
 export class ListEventsUseCase {
   constructor(
     private readonly repo: ListEventsRepository,
-    private readonly logger: DomainLogger = new NoopDomainLogger()
+    private readonly logger: DomainLogger = new NoopDomainLogger(),
   ) {}
 
   async execute(input: ListEventsDTO): Promise<ListEventsResult> {

@@ -32,10 +32,7 @@ describe("ListTouristPointsController", () => {
     const useCase: Pick<ListTouristPointsUseCase, "execute"> = {
       execute: jest.fn(),
     };
-    const sut = new ListTouristPointsController(
-      useCase as ListTouristPointsUseCase,
-      audience,
-    );
+    const sut = new ListTouristPointsController(useCase as ListTouristPointsUseCase, audience);
     return { sut, useCase };
   };
 
@@ -68,9 +65,7 @@ describe("ListTouristPointsController", () => {
       correlationId: "lc-2",
     });
 
-    expect(useCase.execute).toHaveBeenCalledWith(
-      expect.objectContaining({ published: true }),
-    );
+    expect(useCase.execute).toHaveBeenCalledWith(expect.objectContaining({ published: true }));
   });
 
   it("lista pública inclui base path público nos links", async () => {
@@ -85,8 +80,6 @@ describe("ListTouristPointsController", () => {
     expect(res.statusCode).toBe(200);
     const body = res.body as { links: Record<string, { href: string }> };
     const hrefs = Object.values(body.links).map((l) => l.href);
-    expect(hrefs.some((h) => h.includes("/public/tourist-points"))).toBe(
-      true,
-    );
+    expect(hrefs.some((h) => h.includes("/public/tourist-points"))).toBe(true);
   });
 });

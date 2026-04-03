@@ -70,9 +70,7 @@ describe("CreateCityUseCase", () => {
   });
 
   it("lança AppError 409 se nome já existe", async () => {
-    findByName.mockResolvedValue(
-      new CityEntity({ ...createdProps(), id: 1 }),
-    );
+    findByName.mockResolvedValue(new CityEntity({ ...createdProps(), id: 1 }));
     await expect(sut.execute(dto)).rejects.toBeInstanceOf(AppError);
     expect(create).not.toHaveBeenCalled();
   });

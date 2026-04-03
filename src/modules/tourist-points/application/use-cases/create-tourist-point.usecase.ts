@@ -9,14 +9,9 @@ export class CreateTouristPointUseCase {
     private readonly images: PublicWebImageUploader,
   ) {}
 
-  async execute(
-    touristPointDTO: createTouristPointDTO,
-  ): Promise<TouristPointPersistedDTO> {
+  async execute(touristPointDTO: createTouristPointDTO): Promise<TouristPointPersistedDTO> {
     const { image, ...fields } = touristPointDTO;
-    const { url: imageUrl } = await this.images.uploadPublicWebImage(
-      image,
-      "tourist-points",
-    );
+    const { url: imageUrl } = await this.images.uploadPublicWebImage(image, "tourist-points");
 
     const input: TouristPointEntity = new TouristPointEntity({
       ...fields,

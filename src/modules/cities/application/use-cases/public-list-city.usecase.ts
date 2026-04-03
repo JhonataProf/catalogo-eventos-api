@@ -4,7 +4,7 @@ import { PublicListCityRepository } from "../../domain/repositories/public-list-
 export class PublicListCityUsecase {
   constructor(private readonly repo: PublicListCityRepository) {}
 
-  async execute(): Promise<CityEntity[]|null> {
-    return await this.repo.publicList()
+  async execute(): Promise<CityEntity[] | null> {
+    return await this.repo.publicList();
   }
 }

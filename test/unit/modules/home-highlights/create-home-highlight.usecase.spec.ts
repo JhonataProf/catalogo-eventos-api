@@ -1,7 +1,7 @@
 import { CreateHomeHighlightUseCase } from "@/modules/home-highlights/application/use-cases/create-home-highlight.usecase";
 import type { CreateHomeHighlightDTO } from "@/modules/home-highlights/application/dto";
 import { HomeHighlightEntity } from "@/modules/home-highlights/domain/entities/home-highlight.entity";
-import { CreateHomeHighlightRepository } from "@/modules/home-highlights/domain/repositories/create-home-highlight.reposiotry";
+import { CreateHomeHighlightRepository } from "@/modules/home-highlights/domain/repositories/create-home-highlight.repository";
 
 const tinyPngB64 =
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
@@ -42,10 +42,7 @@ describe("CreateHomeHighlightUseCase", () => {
     };
     const sut = new CreateHomeHighlightUseCase(repo, images as never);
     const result = await sut.execute(dto);
-    expect(images.uploadPublicWebImage).toHaveBeenCalledWith(
-      dto.image,
-      "home-highlights",
-    );
+    expect(images.uploadPublicWebImage).toHaveBeenCalledWith(dto.image, "home-highlights");
     expect(repo.create).toHaveBeenCalledWith({
       type: dto.type,
       referenceId: dto.referenceId,

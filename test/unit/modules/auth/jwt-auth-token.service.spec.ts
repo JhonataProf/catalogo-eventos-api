@@ -65,9 +65,7 @@ describe("JwtAuthTokenService", () => {
   });
 
   it("decodeRefreshToken propaga erro de verify (ex.: token expirado)", () => {
-    const { TokenExpiredError } = jest.requireActual<typeof import("jsonwebtoken")>(
-      "jsonwebtoken",
-    );
+    const { TokenExpiredError } = jest.requireActual<typeof import("jsonwebtoken")>("jsonwebtoken");
     (jwt.verify as jest.Mock).mockImplementation(() => {
       throw new TokenExpiredError("jwt expired", new Date());
     });

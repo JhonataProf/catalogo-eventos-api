@@ -31,8 +31,7 @@ export const createTouristPointSchema = z.object({
     })
     .min(3, "Nome deve ter pelo menos 3 caracteres"),
   description: z.string(),
-  category: z
-    .enum(TOURIST_POINT_CATEGORIES,{
+  category: z.enum(TOURIST_POINT_CATEGORIES, {
     error: (issue) => `Categoria ${String(issue.input)} é inválida`,
   }),
   address: z.string(),
@@ -49,10 +48,7 @@ export const createTouristPointSchema = z.object({
         return { message: "Horário é inválido" };
       },
     })
-    .regex(
-      /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/,
-      "Horário deve estar no formato HH:mm",
-    )
+    .regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/, "Horário deve estar no formato HH:mm")
     .min(3, "Horário deve ter pelo menos 3 caracteres"),
 
   image: webImageFileSchema,
@@ -120,10 +116,7 @@ export const updateTouristPointSchema = z.object({
         return { message: "Horário é inválido" };
       },
     })
-    .regex(
-      /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/,
-      "Horário deve estar no formato HH:mm",
-    )
+    .regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/, "Horário deve estar no formato HH:mm")
     .min(3, "Horário deve ter pelo menos 3 caracteres")
     .optional(),
 
@@ -145,8 +138,7 @@ export const listTouristPointsQuerySchema = z
     published: z.preprocess(
       (v) => {
         if (v === true || v === "true" || v === 1 || v === "1") return "true";
-        if (v === false || v === "false" || v === 0 || v === "0")
-          return "false";
+        if (v === false || v === "false" || v === 0 || v === "0") return "false";
         return v;
       },
       z.enum(["true", "false"]).optional(),
@@ -156,6 +148,4 @@ export const listTouristPointsQuerySchema = z
   })
   .strict();
 
-export type ListTouristPointsQueryDTO = z.infer<
-  typeof listTouristPointsQuerySchema
->;
+export type ListTouristPointsQueryDTO = z.infer<typeof listTouristPointsQuerySchema>;

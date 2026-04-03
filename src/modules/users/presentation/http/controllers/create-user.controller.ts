@@ -1,6 +1,6 @@
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { CreateUserUseCase } from "../../../application/use-cases/create-user.usecase";
-import { created, resource, ResourceBuilder } from "@/core/http/http-resource";
+import { created, ResourceBuilder } from "@/core/http/http-resource";
 import { userLinks } from "../user-hateoas";
 import { CreateUserDTO, UserViewModel } from "../../../application/dto";
 import { logger } from "@/core/config/logger";

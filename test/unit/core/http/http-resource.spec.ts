@@ -1,10 +1,4 @@
-import {
-  collection,
-  created,
-  noContent,
-  ok,
-  resource,
-} from "@/core/http/http-resource";
+import { collection, created, noContent, ok, resource } from "@/core/http/http-resource";
 
 describe("core/http/http-resource", () => {
   it("resource() deve montar Resource com data, links e meta", () => {
@@ -43,7 +37,7 @@ describe("core/http/http-resource", () => {
     const body = resource(
       { id: 1 },
       { self: { href: "/x", method: "GET" as const } },
-      { version: "1" }
+      { version: "1" },
     );
 
     const resp = ok(body);
@@ -56,7 +50,7 @@ describe("core/http/http-resource", () => {
     const body = resource(
       { id: 1 },
       { self: { href: "/x", method: "GET" as const } },
-      { version: "1" }
+      { version: "1" },
     );
 
     const resp = created(body);

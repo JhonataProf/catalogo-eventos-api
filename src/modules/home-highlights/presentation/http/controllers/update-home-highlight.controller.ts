@@ -8,36 +8,36 @@ import { toHomeHighlightHttpPayload } from "../mappers/home-highlight-response.m
 import { UpdateHomeHighlightDTO } from "@/modules/home-highlights/application/dto";
 
 export class UpdateHomeHighlightController implements Controller {
-    constructor(private readonly usecase: UpdateHomeHighlightUseCase) {}
-    async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-        const correlationId = httpRequest.correlationId;
-        try {
-            const id = Number(httpRequest.pathParams?.id);
-            const body = httpRequest.body as UpdateHomeHighlightDTO;
-            const result = await this.usecase.execute(id, body);
-            if (!result) {
-                return mapErrorToHttpResponse(
-                    new AppError({
-                        code: "HOME_HIGHLIGHT_NOT_FOUND",
-                        message: "Destaque não encontrado",
-                        statusCode: 404,
-                        details: { id },
-                    }),
-                    correlationId,
-                );
-            }
-            const payload = toHomeHighlightHttpPayload(result);
-            const resource = new ResourceBuilder(payload)
-                .addAllLinks(homeHighlightLinks(payload.id))
-                .addMeta({ correlationId, version: "1.0.0" })
-                .build();
-            return ok(resource);
-        } catch (error) {
-            logger.error("UpdateHomeHighlightController: erro ao atualizar", {
-                correlationId,
-                error,
-            });
-            return mapErrorToHttpResponse(error, correlationId);
-        }
+  constructor(private readonly usecase: UpdateHomeHighlightUseCase) {}
+  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const correlationId = httpRequest.correlationId;
+    try {
+      const id = Number(httpRequest.pathParams?.id);
+      const body = httpRequest.body as UpdateHomeHighlightDTO;
+      const result = await this.usecase.execute(id, body);
+      if (!result) {
+        return mapErrorToHttpResponse(
+          new AppError({
+            code: "HOME_HIGHLIGHT_NOT_FOUND",
+            message: "Destaque não encontrado",
+            statusCode: 404,
+            details: { id },
+          }),
+          correlationId,
+        );
+      }
+      const payload = toHomeHighlightHttpPayload(result);
+      const resource = new ResourceBuilder(payload)
+        .addAllLinks(homeHighlightLinks(payload.id))
+        .addMeta({ correlationId, version: "1.0.0" })
+        .build();
+      return ok(resource);
+    } catch (error) {
+      logger.error("UpdateHomeHighlightController: erro ao atualizar", {
+        correlationId,
+        error,
+      });
+      return mapErrorToHttpResponse(error, correlationId);
     }
+  }
 }

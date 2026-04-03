@@ -56,7 +56,7 @@ describe("UploadMediaController", () => {
         code: "MEDIA_INVALID_BASE64",
         message: "Arquivo inválido",
         statusCode: 400,
-      })
+      }),
     );
 
     const req = {
@@ -73,7 +73,7 @@ describe("UploadMediaController", () => {
           code: "MEDIA_INVALID_BASE64",
           message: "Arquivo inválido",
         }),
-      })
+      }),
     );
   });
 });

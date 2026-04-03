@@ -1,14 +1,6 @@
 import { SpecificationBuilder } from "@/core/domain/specification/specification-builder";
 import { Specification } from "@/core/domain/specification/specification";
-import {
-  and,
-  between,
-  eq,
-  inList,
-  like,
-  not,
-  or,
-} from "@/core/domain/specification/builders";
+import { and, between, eq, inList, like, not, or } from "@/core/domain/specification/builders";
 import {
   BetweenSpecification,
   EqSpecification,
@@ -47,12 +39,12 @@ describe("specification core", () => {
     expect(new LikeSpecification("n", "x").toSequelizeWhere()).toMatchObject({
       n: expect.objectContaining({}),
     });
-    expect(
-      new InSpecification("id", [1, 2]).toSequelizeWhere(),
-    ).toMatchObject({ id: expect.any(Object) });
-    expect(
-      new BetweenSpecification("d", 1, 2).toSequelizeWhere(),
-    ).toMatchObject({ d: expect.any(Object) });
+    expect(new InSpecification("id", [1, 2]).toSequelizeWhere()).toMatchObject({
+      id: expect.any(Object),
+    });
+    expect(new BetweenSpecification("d", 1, 2).toSequelizeWhere()).toMatchObject({
+      d: expect.any(Object),
+    });
   });
 
   it("composite and / or / not", () => {

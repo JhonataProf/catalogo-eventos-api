@@ -22,9 +22,8 @@ describe("UpdateHomeHighlightUseCase", () => {
       findById: jest.fn(async (id) => (id === 1 ? existing : null)),
     };
     const update = {
-      update: jest.fn(
-        async (id: number, entity: HomeHighlightEntity) =>
-          id === 1 ? entity : null,
+      update: jest.fn(async (id: number, entity: HomeHighlightEntity) =>
+        id === 1 ? entity : null,
       ),
     } as UpdateHomeHighlightRepository;
     const images = {

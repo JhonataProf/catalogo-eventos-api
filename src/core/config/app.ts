@@ -2,11 +2,9 @@
 import { setupErrorHandlers } from "@/core/http/middlewares";
 import express, { Application } from "express";
 import swaggerUi from "swagger-ui-express";
-import YAML from "yamljs";
 import { ENV } from "@/core/config/env";
 import { loadSwaggerDocument } from "./swagger";
 import setupMiddlewares from "@/core/config/middlewares";
-import { resolveRuntimePath } from "@/core/config/paths";
 import setupRoutes from "@/core/config/routes";
 import { runReadinessCheck } from "@/core/config/readiness";
 import { ensureCorrelationId } from "@/core/http/correlation";
@@ -39,9 +37,7 @@ export const createApp = (): Application => {
 
   // Health/readiness após correlation-id (meta e header x-correlation-id)
   app.get("/health", (req, res) => {
-    const correlationId = ensureCorrelationId(
-      (req as { correlationId?: string }).correlationId,
-    );
+    const correlationId = ensureCorrelationId((req as { correlationId?: string }).correlationId);
     res.status(200).json({
       status: "ok",
       uptimeSeconds: Math.round(process.uptime()),
@@ -50,9 +46,7 @@ export const createApp = (): Application => {
   });
 
   app.get("/ready", async (req, res) => {
-    const correlationId = ensureCorrelationId(
-      (req as { correlationId?: string }).correlationId,
-    );
+    const correlationId = ensureCorrelationId((req as { correlationId?: string }).correlationId);
     const result = await runReadinessCheck();
     if (result.ok) {
       res.status(200).json({

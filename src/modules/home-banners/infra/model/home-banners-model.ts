@@ -24,7 +24,7 @@ HomeBannerModel.init(
     ctaLabel: { type: DataTypes.STRING, allowNull: false },
     ctaUrl: { type: DataTypes.STRING, allowNull: false },
     active: { type: DataTypes.BOOLEAN, allowNull: false },
-    order: { type: DataTypes.INTEGER, allowNull: false } 
+    order: { type: DataTypes.INTEGER, allowNull: false },
   },
   {
     sequelize,

@@ -47,9 +47,7 @@ export class FindInstitutionalContentByIdController implements Controller {
         updatedAt: result.updatedAt,
       };
       const linkFn =
-        this.audience === "public"
-          ? institutionalContentPublicLinks
-          : institutionalContentLinks;
+        this.audience === "public" ? institutionalContentPublicLinks : institutionalContentLinks;
       const resource = new ResourceBuilder(data)
         .addAllLinks(linkFn(result.id))
         .addMeta({ correlationId, version: "1.0.0" })

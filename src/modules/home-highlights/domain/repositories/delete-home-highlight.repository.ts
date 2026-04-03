@@ -1,3 +1,3 @@
 export interface DeleteHomeHighlightRepository {
-    delete(id: number):Promise<boolean>
+  delete(id: number): Promise<boolean>;
 }

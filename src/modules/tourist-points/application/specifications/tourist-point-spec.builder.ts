@@ -1,19 +1,5 @@
 import { QuerySpecification } from "../../domain/specifications/query-specification";
-import {
-  eq,
-  like,
-  between,
-  touristPointCityIdInState,
-} from "../../domain/specifications/factories";
-
-type Params = {
-  nome?: string;
-  city?: string;
-  estado?: string;
-  ativo?: boolean;
-  precoMin?: number;
-  precoMax?: number;
-};
+import { eq, like, touristPointCityIdInState } from "../../domain/specifications/factories";
 
 export class TouristPointSpecificationBuilder {
   private specs: QuerySpecification[] = [];

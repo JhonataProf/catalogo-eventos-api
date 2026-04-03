@@ -90,9 +90,7 @@ describe("SequelizeSocialLinkRepository", () => {
 
   it("update retorna null quando link não existe", async () => {
     (SocialMediaLinksModel.findByPk as jest.Mock).mockResolvedValue(null);
-    expect(
-      await repo.update(9, new SocialLinkEntity({ ...row, id: 9 })),
-    ).toBeNull();
+    expect(await repo.update(9, new SocialLinkEntity({ ...row, id: 9 }))).toBeNull();
   });
 
   it("delete retorna resultado do destroy", async () => {

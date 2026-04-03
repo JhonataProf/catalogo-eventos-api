@@ -33,8 +33,7 @@ export class GetTouristPointByIdController implements Controller {
       const entity = await this.useCase.execute(id);
       const payload = toTouristPointHttpPayload(entity);
 
-      const linkFn =
-        this.audience === "public" ? touristPointPublicLinks : touristPointLinks;
+      const linkFn = this.audience === "public" ? touristPointPublicLinks : touristPointLinks;
       const resourceBuild = new ResourceBuilder(payload);
       const resource = resourceBuild
         .addAllLinks(linkFn(entity.id as number))

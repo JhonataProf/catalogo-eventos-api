@@ -68,8 +68,7 @@ export class PublicWebImageService implements PublicWebImageUploader {
     const processed = await this.processor.process(buffer, input.mimeType);
 
     const resolvedClass =
-      storageClass ??
-      (ENV.MEDIA_STORAGE === "s3" ? ENV.S3_STORAGE_CLASS : undefined);
+      storageClass ?? (ENV.MEDIA_STORAGE === "s3" ? ENV.S3_STORAGE_CLASS : undefined);
 
     const filename = input.filename?.trim() || defaultFilenameForMime(input.mimeType);
 

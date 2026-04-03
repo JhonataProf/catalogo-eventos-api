@@ -48,9 +48,7 @@ export class SequelizeInstitutionalContentRepository
 
     return this.toEntity(found);
   }
-  async create(
-    entity: InstitutionalContentEntity,
-  ): Promise<InstitutionalContentEntity | null> {
+  async create(entity: InstitutionalContentEntity): Promise<InstitutionalContentEntity | null> {
     const result = await InstitutionalContentModel.create({
       aboutTitle: entity.aboutTitle,
       aboutText: entity.aboutText,

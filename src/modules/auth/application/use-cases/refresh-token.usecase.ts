@@ -12,7 +12,7 @@ export class RefreshTokenUseCase {
   constructor(
     private readonly tokenService: AuthTokenService,
     private readonly findUserByIdRepo: FindUserByIdRepository,
-    private readonly logger: DomainLogger = new NoopDomainLogger()
+    private readonly logger: DomainLogger = new NoopDomainLogger(),
   ) {}
 
   async execute(refreshToken: string): Promise<RefreshTokenOutput> {

@@ -1,9 +1,7 @@
 import { SocialLinkEntity } from "../../domain/entities/social-link.entity";
 import SocialMediaLinksModel from "../model/social-links-model";
 
-export function socialLinkModelToEntity(
-  model: SocialMediaLinksModel,
-): SocialLinkEntity {
+export function socialLinkModelToEntity(model: SocialMediaLinksModel): SocialLinkEntity {
   return new SocialLinkEntity({
     id: model.id,
     platform: model.platform,

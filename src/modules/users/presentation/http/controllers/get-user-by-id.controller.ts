@@ -38,10 +38,7 @@ export class GetUserByIdController implements Controller {
       return ok(resource);
     } catch (error) {
       logger.error("GetUserByIdController: erro inesperado", {
-        error:
-          error instanceof Error
-            ? { message: error.message, stack: error.stack }
-            : error,
+        error: error instanceof Error ? { message: error.message, stack: error.stack } : error,
       });
 
       return mapErrorToHttpResponse(error, correlationId);

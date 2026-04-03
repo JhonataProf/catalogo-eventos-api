@@ -25,9 +25,7 @@ describe("core/config/env", () => {
     // env inválido: sem os JWT_* obrigatórios
     process.env = { NODE_ENV: "test" };
 
-    const exitSpy = jest
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as never);
+    const exitSpy = jest.spyOn(process, "exit").mockImplementation((() => undefined) as never);
     const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
     await import("../../../../src/core/config/env");
@@ -48,10 +46,8 @@ describe("core/config/env", () => {
       SWAGGER_ENABLED: "true",
 
       // SECURITY
-      JWT_SECRET:
-        "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
-      JWT_ACCESS_SECRET:
-        "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
+      JWT_SECRET: "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
+      JWT_ACCESS_SECRET: "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
       JWT_EXPIRES_IN: "15m",
       JWT_REFRESH_SECRET: "sua_chave_secreta_para_refresh_token",
       JWT_REFRESH_EXPIRES_IN: "7d",
@@ -76,9 +72,7 @@ describe("core/config/env", () => {
       S3_PUBLIC_BASE_URL: "https://your-s3-bucket-name.s3.amazonaws.com/",
     };
 
-    const exitSpy = jest
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as never);
+    const exitSpy = jest.spyOn(process, "exit").mockImplementation((() => undefined) as never);
 
     const { ENV } = await import("../../../../src/core/config/env");
 
@@ -97,10 +91,8 @@ describe("core/config/env", () => {
       PORT: "3000",
       API_VERSION: "v1",
       SWAGGER_ENABLED: "false",
-      JWT_SECRET:
-        "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
-      JWT_ACCESS_SECRET:
-        "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
+      JWT_SECRET: "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
+      JWT_ACCESS_SECRET: "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
       JWT_EXPIRES_IN: "15m",
       JWT_REFRESH_SECRET: "sua_chave_secreta_para_refresh_token",
       JWT_REFRESH_EXPIRES_IN: "7d",
@@ -116,9 +108,7 @@ describe("core/config/env", () => {
     };
     delete process.env.ADMIN_PASSWORD;
 
-    const exitSpy = jest
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as never);
+    const exitSpy = jest.spyOn(process, "exit").mockImplementation((() => undefined) as never);
     const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
     await import("../../../../src/core/config/env");
@@ -137,10 +127,8 @@ describe("core/config/env", () => {
       PORT: "3000",
       API_VERSION: "v1",
       SWAGGER_ENABLED: "false",
-      JWT_SECRET:
-        "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
-      JWT_ACCESS_SECRET:
-        "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
+      JWT_SECRET: "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
+      JWT_ACCESS_SECRET: "ffddb3759aca70db2ee91963cee26082a8bf46903e37baf5624962f5e9035170",
       JWT_EXPIRES_IN: "15m",
       JWT_REFRESH_SECRET: "sua_chave_secreta_para_refresh_token",
       JWT_REFRESH_EXPIRES_IN: "7d",
@@ -156,9 +144,7 @@ describe("core/config/env", () => {
     };
     delete process.env.ADMIN_EMAIL;
 
-    const exitSpy = jest
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as never);
+    const exitSpy = jest.spyOn(process, "exit").mockImplementation((() => undefined) as never);
     const errSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
     await import("../../../../src/core/config/env");

@@ -24,17 +24,11 @@ describe("home-highlights.schemas", () => {
   });
 
   it("rejeita tipo inválido e title curto", () => {
-    expect(
-      createHomeHighlightSchema.safeParse({ ...valid, type: "x" }).success,
-    ).toBe(false);
-    expect(
-      createHomeHighlightSchema.safeParse({ ...valid, title: "ab" }).success,
-    ).toBe(false);
+    expect(createHomeHighlightSchema.safeParse({ ...valid, type: "x" }).success).toBe(false);
+    expect(createHomeHighlightSchema.safeParse({ ...valid, title: "ab" }).success).toBe(false);
   });
 
   it("updateHomeHighlightSchema parcial", () => {
-    expect(updateHomeHighlightSchema.safeParse({ title: "Novo título" }).success).toBe(
-      true,
-    );
+    expect(updateHomeHighlightSchema.safeParse({ title: "Novo título" }).success).toBe(true);
   });
 });

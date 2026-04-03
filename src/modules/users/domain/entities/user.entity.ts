@@ -1,4 +1,4 @@
-import { UserRole, UserRoleEnumLiteral } from "../value-objects/user-role";
+import { UserRole } from "../value-objects/user-role";
 
 export interface UserProps {
   id?: number;

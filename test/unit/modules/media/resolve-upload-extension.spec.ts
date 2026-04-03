@@ -22,9 +22,7 @@ describe("resolveUploadExtension", () => {
   });
 
   it("aceita extensão com até 15 caracteres alfanuméricos", () => {
-    expect(resolveUploadExtension(`x.${"a".repeat(15)}`, "image/png")).toBe(
-      `.${"a".repeat(15)}`,
-    );
+    expect(resolveUploadExtension(`x.${"a".repeat(15)}`, "image/png")).toBe(`.${"a".repeat(15)}`);
   });
 
   it("mapeia MIME conhecidos e usa .bin como fallback", () => {
@@ -34,9 +32,7 @@ describe("resolveUploadExtension", () => {
     expect(resolveUploadExtension(undefined, "image/webp")).toBe(".webp");
     expect(resolveUploadExtension(undefined, "image/gif")).toBe(".gif");
     expect(resolveUploadExtension(undefined, "text/plain")).toBe(".txt");
-    expect(resolveUploadExtension(undefined, "application/octet-stream")).toBe(
-      ".bin",
-    );
+    expect(resolveUploadExtension(undefined, "application/octet-stream")).toBe(".bin");
   });
 
   it("normaliza espaços no MIME", () => {

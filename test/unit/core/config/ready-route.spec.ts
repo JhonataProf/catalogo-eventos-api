@@ -20,9 +20,7 @@ describe("GET /ready", () => {
   });
 
   it("retorna 503 quando authenticate falha", async () => {
-    jest
-      .spyOn(sequelize, "authenticate")
-      .mockRejectedValue(new Error("connection refused"));
+    jest.spyOn(sequelize, "authenticate").mockRejectedValue(new Error("connection refused"));
     const app = createApp();
     const res = await request(app).get("/ready");
     expect(res.status).toBe(503);

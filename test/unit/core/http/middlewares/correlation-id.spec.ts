@@ -25,10 +25,7 @@ describe("correlation-id middleware", () => {
     correlationIdMiddleware(req, res, next);
 
     expect(req.correlationId).toBeDefined();
-    expect(res.setHeader).toHaveBeenCalledWith(
-      "x-correlation-id",
-      req.correlationId
-    );
+    expect(res.setHeader).toHaveBeenCalledWith("x-correlation-id", req.correlationId);
     expect(next).toHaveBeenCalled();
   });
 

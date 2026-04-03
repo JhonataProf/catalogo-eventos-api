@@ -4,52 +4,68 @@ on:
   push:
     branches: [main, master, develop]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+
+    env:
+      JWT_SECRET: ffffffffffffffffffffffffffffffff
+      JWT_ACCESS_SECRET: ffffffffffffffffffffffffffffffff
+      JWT_REFRESH_SECRET: ffffffffffffffffffffffffffffffff
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Enable Corepack (Yarn)
+        run: corepack enable
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
+          cache: yarn
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Typecheck, lint e testes com cobertura
         env:
-          # env.ts exige JWT_*; não há .env no CI (gitignore). jest-ci-env.js também preenche quando CI=true.
-          JWT_SECRET: ffffffffffffffffffffffffffffffff
-          JWT_ACCESS_SECRET: ffffffffffffffffffffffffffffffff
-          JWT_REFRESH_SECRET: ffffffffffffffffffffffffffffffff
-        run: npm run check
+          HUSKY: "0"
+        run: yarn install --frozen-lockfile
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Prettier (check)
+        run: yarn format:check
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Testes com cobertura
+        run: yarn test:ci
 
       - name: Build e verificação do dist (entrypoint + Swagger)
-        env:
-          JWT_SECRET: ffffffffffffffffffffffffffffffff
-          JWT_ACCESS_SECRET: ffffffffffffffffffffffffffffffff
-          JWT_REFRESH_SECRET: ffffffffffffffffffffffffffffffff
-        run: npm run build && npm run verify:dist
+        run: yarn build && yarn verify:dist
 
       - name: Smoke HTTP — servidor sobe e /health responde
         env:
-          JWT_SECRET: ffffffffffffffffffffffffffffffff
-          JWT_ACCESS_SECRET: ffffffffffffffffffffffffffffffff
-          JWT_REFRESH_SECRET: ffffffffffffffffffffffffffffffff
           NODE_ENV: test
           SMOKE_PORT: "34581"
-        run: npm run smoke:http
+        run: yarn smoke:http
 
   database:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
 
     services:
       mysql:
@@ -70,14 +86,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Enable Corepack (Yarn)
+        run: corepack enable
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
+          cache: yarn
 
       - name: Install dependencies
-        run: npm ci
+        env:
+          HUSKY: "0"
+        run: yarn install --frozen-lockfile
 
       - name: Migrations e seeders contra MySQL
         env:
@@ -89,4 +110,4 @@ jobs:
           DB_PASSWORD: root
           ADMIN_EMAIL: admin@catalogo-eventos.com.br
           ADMIN_PASSWORD: ci_bootstrap_admin_password_not_for_prod
-        run: npm run db:bootstrap
+        run: yarn db:bootstrap

@@ -3,13 +3,9 @@ import { AppError } from "@/core/errors-app-error";
 
 describe("core/http/http-error-response", () => {
   it("errorResponse() deve montar payload padrão com statusCode, error e meta.correlationId", () => {
-    const resp = errorResponse(
-      400,
-      "VALIDATION_ERROR",
-      "Validation error",
-      "corr-123",
-      { field: "email" }
-    );
+    const resp = errorResponse(400, "VALIDATION_ERROR", "Validation error", "corr-123", {
+      field: "email",
+    });
 
     expect(resp.statusCode).toBe(400);
     expect(resp.body).toEqual({

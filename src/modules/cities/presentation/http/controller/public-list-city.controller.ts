@@ -2,7 +2,6 @@ import { logger } from "@/core/config/logger";
 import { mapErrorToHttpResponse, ok, CollectionResourceBuilder } from "@/core/http";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { PublicListCityUsecase } from "@/modules/cities/application/use-cases/public-list-city.usecase";
-import { CityEntity } from "@/modules/cities/domain/entities/city.entity";
 import { toCityHttpPayload } from "../mappers/city-response.mapper";
 import { publicCitiesCollectionLinks } from "../city-hateoas";
 
