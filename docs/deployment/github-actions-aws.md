@@ -82,6 +82,7 @@ Chaves IAM de longa duração no GitHub estão **descontinuadas** neste workflow
 ## Smoke e espera no ECS
 
 1. Configure **`SMOKE_BASE_URL`** (variable ou secret) com a mesma base que você usaria em `yarn smoke:alb`.  
+   O workflow **não** usa `secrets` em `if:` (limitação do GitHub Actions); a decisão de rodar smoke é feita num passo com `env`, que pode ler variable + secret com segurança.  
 2. Após um rollout bem-sucedido, o workflow:  
    - `aws ecs wait services-stable` (pode levar vários minutos).  
    - `node scripts/smoke-alb.cjs` (`/health` e, se não `SMOKE_SKIP_READY=true`, `/ready`).  

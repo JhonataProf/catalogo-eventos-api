@@ -132,6 +132,24 @@ jobs:
             echo "tag=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
           fi
 
+      # secrets/vars não podem ser usados em `if:`; calculamos aqui com env (permitido).
+      - name: Definir se roda smoke ALB após rollout
+        id: smoke_cfg
+        env:
+          URL_VAR: ${{ vars.SMOKE_BASE_URL }}
+          URL_SECRET: ${{ secrets.SMOKE_BASE_URL }}
+          SKIP_SMOKE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_smoke == true }}
+        run: |
+          if [ "$SKIP_SMOKE" = "true" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ -n "$URL_VAR" ] || [ -n "$URL_SECRET" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Configurar credenciais AWS (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -156,10 +174,7 @@ jobs:
           echo "ran=true" >> "$GITHUB_OUTPUT"
 
       - name: Aguardar serviço ECS estável
-        if: >
-          steps.rollout.outputs.ran == 'true'
-          && (vars.SMOKE_BASE_URL != '' || secrets.SMOKE_BASE_URL)
-          && (github.event_name != 'workflow_dispatch' || github.event.inputs.skip_smoke != true)
+        if: steps.rollout.outputs.ran == 'true' && steps.smoke_cfg.outputs.run == 'true'
         env:
           ECS_CLUSTER_NAME: ${{ secrets.ECS_CLUSTER_NAME }}
           ECS_SERVICE_NAME: ${{ secrets.ECS_SERVICE_NAME }}
@@ -170,10 +185,7 @@ jobs:
           --region "$AWS_REGION"
 
       - name: Smoke ALB (/health e /ready)
-        if: >
-          steps.rollout.outputs.ran == 'true'
-          && (vars.SMOKE_BASE_URL != '' || secrets.SMOKE_BASE_URL)
-          && (github.event_name != 'workflow_dispatch' || github.event.inputs.skip_smoke != true)
+        if: steps.rollout.outputs.ran == 'true' && steps.smoke_cfg.outputs.run == 'true'
         env:
           SMOKE_BASE_URL: ${{ vars.SMOKE_BASE_URL || secrets.SMOKE_BASE_URL }}
           SMOKE_SKIP_READY: ${{ vars.SMOKE_SKIP_READY }}
