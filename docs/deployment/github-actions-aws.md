@@ -74,6 +74,7 @@ Chaves IAM de longa duração no GitHub estão **descontinuadas** neste workflow
 ## Job Terraform plan
 
 - Só roda quando **Run workflow** marca **run_terraform_plan**.  
+- O workflow compara o input tanto como boolean quanto como string `'true'`, porque o GitHub às vezes entrega `type: boolean` como texto nas expressões — sem isso o job pode ser ignorado mesmo com a caixa marcada.  
 - Roda **em paralelo** com o job `deploy` (não bloqueia o push da imagem).  
 - Exige **backend S3** alinhado às variáveis `TF_STATE_BUCKET` / `TF_STATE_KEY` (e lock opcional).  
 - O secret **`TERRAFORM_TFVARS`** é gravado como `infra/aws/foundation/terraform.tfvars` só no runner (efêmero). Revise se não há segredos que devam ficar só no Terraform Cloud / vault.  
