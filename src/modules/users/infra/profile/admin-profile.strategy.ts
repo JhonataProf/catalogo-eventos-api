@@ -12,11 +12,14 @@ export class AdminProfileStrategy implements ProfileCreationStrategy {
   async createProfile({
     user,
     payload: _payload,
-    transaction
+    transaction,
   }: ProfileCreationContext): Promise<void> {
-    await Admin.create({
-      userId: user.id,
-      name: user.name,
-    }, { transaction });
+    await Admin.create(
+      {
+        userId: user.id,
+        name: user.name,
+      },
+      { transaction },
+    );
   }
 }

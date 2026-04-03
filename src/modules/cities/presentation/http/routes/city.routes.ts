@@ -3,10 +3,7 @@ import authMiddleware from "@/core/http/middlewares/auth-middleware";
 import authorizeRoles from "@/core/http/middlewares/authorize-roles";
 import { validateBody } from "@/core/http/middlewares/validate-body";
 import { Router } from "express-serve-static-core";
-import {
-  createCitySchema,
-  updateCitySchema,
-} from "../validators/city-schemas";
+import { createCitySchema, updateCitySchema } from "../validators/city-schemas";
 import {
   makeCreateCityController,
   makeDeleteCityController,
@@ -51,13 +48,7 @@ export function registerCityRoutes(router: Router): void {
     adaptRoute(makeDeleteCityController()),
   );
 
-  router.get(
-    "/public/cities/by-id/:id",
-    adaptRoute(makeFindCityByIdController("public")),
-  );
+  router.get("/public/cities/by-id/:id", adaptRoute(makeFindCityByIdController("public")));
   router.get("/public/cities", adaptRoute(makePublicListCityController()));
-  router.get(
-    "/public/cities/:slug",
-    adaptRoute(makeFindCityBySlugController()),
-  );
+  router.get("/public/cities/:slug", adaptRoute(makeFindCityBySlugController()));
 }

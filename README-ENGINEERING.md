@@ -166,6 +166,15 @@ Ao revisar qualquer endpoint, verificar:
 
 ---
 
+## Automação local e qualidade (referência)
+
+- `yarn run check`: typecheck, Prettier (`format:check`), ESLint em `src`, testes com cobertura (no Yarn 1, `yarn check` é comando nativo diferente).
+- `yarn format`: aplica Prettier em `src/**/*.ts` e `test/**/*.ts`.
+- Hooks Git (Husky): `pre-commit` roda `lint-staged` (ESLint + Prettier em arquivos staged em `src`; Prettier em `test`); `pre-push` roda `typecheck`. Com variável `CI` definida, os hooks não executam (evita atrito em pipelines).
+- CI no GitHub replica typecheck, format check, lint, testes, build e smoke; no `yarn install` usa `HUSKY=0` para não acoplar instalação de hooks ao runner. Lockfile único: **`yarn.lock`** (sem `package-lock.json`). Ajuste `.github/CODEOWNERS` ao time real.
+
+---
+
 ## Regra para o agente de IA
 
 Ao alterar qualquer endpoint neste projeto, o agente deve obrigatoriamente:

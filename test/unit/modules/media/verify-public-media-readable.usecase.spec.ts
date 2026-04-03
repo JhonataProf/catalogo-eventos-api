@@ -10,9 +10,7 @@ describe("VerifyPublicMediaReadableUseCase", () => {
         contentLength: 10,
       }),
     };
-    const sut = new VerifyPublicMediaReadableUseCase(
-      storage as MediaStorageService,
-    );
+    const sut = new VerifyPublicMediaReadableUseCase(storage as MediaStorageService);
     const out = await sut.execute("https://b.s3.amazonaws.com/public/x.png");
     expect(out).toEqual({
       url: "https://b.s3.amazonaws.com/public/x.png",
@@ -25,9 +23,7 @@ describe("VerifyPublicMediaReadableUseCase", () => {
     const storage: Pick<MediaStorageService, "headOwnedPublicUrl"> = {
       headOwnedPublicUrl: jest.fn().mockResolvedValue(null),
     };
-    const sut = new VerifyPublicMediaReadableUseCase(
-      storage as MediaStorageService,
-    );
+    const sut = new VerifyPublicMediaReadableUseCase(storage as MediaStorageService);
     await expect(sut.execute("https://x")).rejects.toBeInstanceOf(AppError);
     await expect(sut.execute("https://y")).rejects.toMatchObject({
       code: "MEDIA_NOT_READABLE",

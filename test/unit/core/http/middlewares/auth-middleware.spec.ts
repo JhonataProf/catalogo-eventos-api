@@ -37,9 +37,7 @@ describe("auth-middleware", () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         error: expect.objectContaining({ code: "UNAUTHORIZED" }),
-        links: expect.arrayContaining([
-          expect.objectContaining({ href: "/api/auth/login" }),
-        ]),
+        links: expect.arrayContaining([expect.objectContaining({ href: "/api/auth/login" })]),
       }),
     );
     expect(res.json.mock.calls[0][0].error?.token).toBeUndefined();
@@ -108,7 +106,7 @@ describe("auth-middleware", () => {
     expect(jwt.verify).toHaveBeenCalledWith(
       "valid-token",
       expect.any(String), // ✅ não fixa o secret
-      { algorithms: ["HS256"] }
+      { algorithms: ["HS256"] },
     );
 
     expect(req.user).toEqual({

@@ -5,9 +5,7 @@ import {
   SocialLinkByIdAudience,
 } from "../../controllers/find-social-link-by-id.controller";
 
-export function makeFindSocialLinkByIdController(
-  audience: SocialLinkByIdAudience = "admin",
-) {
+export function makeFindSocialLinkByIdController(audience: SocialLinkByIdAudience = "admin") {
   const repo = new SequelizeSocialLinkRepository();
   const useCase = new FindSocialLinkByIdUseCase(repo);
   return new FindSocialLinkByIdController(useCase, audience);

@@ -41,12 +41,7 @@ describe("LoginUseCase", () => {
       error: jest.fn(),
     };
 
-    const sut = new LoginUseCase(
-      findUserByEmailRepoMock,
-      encrypterMock,
-      tokenizerMock,
-      loggerMock
-    );
+    const sut = new LoginUseCase(findUserByEmailRepoMock, encrypterMock, tokenizerMock, loggerMock);
 
     return {
       sut,
@@ -58,8 +53,7 @@ describe("LoginUseCase", () => {
   };
 
   it("deve realizar login com sucesso e retornar tokens + user", async () => {
-    const { sut, findUserByEmailRepoMock, encrypterMock, tokenizerMock } =
-      makeSut();
+    const { sut, findUserByEmailRepoMock, encrypterMock, tokenizerMock } = makeSut();
 
     const input = {
       email: "user@example.com",
@@ -68,18 +62,11 @@ describe("LoginUseCase", () => {
 
     const result = await sut.execute(input);
 
-    expect(findUserByEmailRepoMock.findByEmail).toHaveBeenCalledWith(
-      "user@example.com"
-    );
-    expect(encrypterMock.compare).toHaveBeenCalledWith(
-      "plain-password",
-      "hashed-password"
-    );
+    expect(findUserByEmailRepoMock.findByEmail).toHaveBeenCalledWith("user@example.com");
+    expect(encrypterMock.compare).toHaveBeenCalledWith("plain-password", "hashed-password");
 
     // aqui assumo que você chama tokenizer.sign duas vezes (access + refresh)
-    expect(
-      (tokenizerMock.generateAccessToken as jest.Mock).mock.calls.length
-    ).toBeGreaterThan(0);
+    expect((tokenizerMock.generateAccessToken as jest.Mock).mock.calls.length).toBeGreaterThan(0);
 
     expect(result).toHaveProperty("accessToken");
     expect(result).toHaveProperty("refreshToken");
@@ -93,9 +80,7 @@ describe("LoginUseCase", () => {
   it("deve lançar AppError AUTH_USER_NOT_FOUND quando usuário não existir", async () => {
     const { sut, findUserByEmailRepoMock } = makeSut();
 
-    (findUserByEmailRepoMock.findByEmail as jest.Mock).mockResolvedValueOnce(
-      null
-    );
+    (findUserByEmailRepoMock.findByEmail as jest.Mock).mockResolvedValueOnce(null);
 
     const input = {
       email: "notfound@example.com",

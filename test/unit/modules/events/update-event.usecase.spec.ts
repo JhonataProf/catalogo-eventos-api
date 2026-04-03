@@ -46,21 +46,13 @@ describe("UpdateEventUseCase", () => {
     } as unknown as FindCityByIdUseCase;
     const images: PublicWebImageUploader = {
       uploadPublicWebImage: jest.fn(),
-      replacePublicWebImage: jest
-        .fn()
-        .mockResolvedValue({ url: "https://cdn/new.jpg" }),
+      replacePublicWebImage: jest.fn().mockResolvedValue({ url: "https://cdn/new.jpg" }),
     };
     const logger: DomainLogger = {
       info: jest.fn(),
       error: jest.fn(),
     };
-    const sut = new UpdateEventUseCase(
-      findByIdRepo,
-      updateRepo,
-      findCityById,
-      images,
-      logger,
-    );
+    const sut = new UpdateEventUseCase(findByIdRepo, updateRepo, findCityById, images, logger);
     return {
       sut,
       findByIdRepo,
@@ -100,11 +92,7 @@ describe("UpdateEventUseCase", () => {
 
     await sut.execute(3, { image });
 
-    expect(images.replacePublicWebImage).toHaveBeenCalledWith(
-      existing.imageUrl,
-      image,
-      "events",
-    );
+    expect(images.replacePublicWebImage).toHaveBeenCalledWith(existing.imageUrl, image, "events");
     expect(updateRepo.update).toHaveBeenCalledWith(
       3,
       expect.objectContaining({ imageUrl: "https://cdn/new.jpg" }),
@@ -125,12 +113,7 @@ describe("UpdateEventUseCase", () => {
       uploadPublicWebImage: jest.fn(),
       replacePublicWebImage: jest.fn(),
     };
-    const sut = new UpdateEventUseCase(
-      findByIdRepo,
-      updateRepo,
-      findCityById,
-      images,
-    );
+    const sut = new UpdateEventUseCase(findByIdRepo, updateRepo, findCityById, images);
 
     await expect(sut.execute(3, { name: "X" })).rejects.toMatchObject({
       code: "EVENT_UPDATE_FAILED",

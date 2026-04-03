@@ -24,7 +24,7 @@ export class CreateUserUseCase {
     private readonly findByEmailRepo: FindUserByEmailRepository,
     private readonly encrypter: Encrypter,
     private readonly profileStrategyFactory = new ProfileStrategyFactory(),
-    private readonly logger: DomainLogger = new NoopDomainLogger()
+    private readonly logger: DomainLogger = new NoopDomainLogger(),
   ) {}
 
   async execute(dto: CreateUserDTO): Promise<UserEntity> {
@@ -63,7 +63,7 @@ export class CreateUserUseCase {
       await strategy.createProfile({
         user: created,
         payload: dto,
-        transaction
+        transaction,
       });
 
       this.logger.info("Usuário + perfil criados com sucesso", {

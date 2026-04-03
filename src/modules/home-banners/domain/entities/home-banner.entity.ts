@@ -14,29 +14,29 @@ export interface HomeBannerProps {
 export class HomeBannerEntity {
   constructor(private readonly props: HomeBannerProps) {}
 
-  get id(){
-    return this.props.id
+  get id() {
+    return this.props.id;
   }
-  get title(){
-    return this.props.title
+  get title() {
+    return this.props.title;
   }
-  get subtitle(){
-    return this.props.subtitle
+  get subtitle() {
+    return this.props.subtitle;
   }
-  get imageUrl(){
-    return this.props.imageUrl
+  get imageUrl() {
+    return this.props.imageUrl;
   }
-  get ctaLabel(){
-    return this.props.ctaLabel
+  get ctaLabel() {
+    return this.props.ctaLabel;
   }
-  get ctaUrl(){
-    return this.props.ctaUrl
+  get ctaUrl() {
+    return this.props.ctaUrl;
   }
-  get active(){
-    return this.props.active
+  get active() {
+    return this.props.active;
   }
-  get order(){
-    return this.props.order
+  get order() {
+    return this.props.order;
   }
   get createdAt() {
     return this.props.createdAt;

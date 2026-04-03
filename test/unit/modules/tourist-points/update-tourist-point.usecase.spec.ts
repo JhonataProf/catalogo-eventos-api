@@ -45,9 +45,7 @@ describe("UpdateTouristPointUseCase", () => {
     const repository: UpdateTouristPointRepository = { update };
     const images: PublicWebImageUploader = {
       uploadPublicWebImage: jest.fn(),
-      replacePublicWebImage: jest
-        .fn()
-        .mockResolvedValue({ url: "https://cdn.example/new.png" }),
+      replacePublicWebImage: jest.fn().mockResolvedValue({ url: "https://cdn.example/new.png" }),
     };
     const sut = new UpdateTouristPointUseCase(findById, repository, images);
     return { sut, findById, update, images };

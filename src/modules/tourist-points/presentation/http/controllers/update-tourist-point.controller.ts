@@ -1,6 +1,6 @@
 import { logger } from "@/core/config/logger";
 import { mapErrorToHttpResponse } from "@/core/http/http-error-response";
-import { ok, resource, ResourceBuilder } from "@/core/http/http-resource";
+import { ok, ResourceBuilder } from "@/core/http/http-resource";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { UpdateTouristPointUseCase } from "../../../application/use-cases/update-tourist-point.usecase";
 import { touristPointLinks } from "../tourist-point-hateoas";
@@ -16,13 +16,10 @@ export class UpdateTouristPointController implements Controller {
       const updated = await this.useCase.execute(id, { ...req.body });
 
       if (!updated || !updated.id) {
-        logger.warn(
-          "UpdatePontoTuristicoController: entidade atualizada é nula",
-          {
-            correlationId,
-            route: "UpdatePontoTuristicoController",
-          },
-        );
+        logger.warn("UpdatePontoTuristicoController: entidade atualizada é nula", {
+          correlationId,
+          route: "UpdatePontoTuristicoController",
+        });
         return mapErrorToHttpResponse(
           new Error("Erro ao atualizar ponto turístico"),
           correlationId,

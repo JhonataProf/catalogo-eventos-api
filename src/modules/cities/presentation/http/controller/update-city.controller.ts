@@ -13,10 +13,7 @@ export class UpdateCityController implements Controller {
     const correlationId = request.correlationId;
     try {
       const cityId = Number(request.params?.id);
-      const updatedCity = await this.updateCityUseCase.execute(
-        cityId,
-        request.body,
-      );
+      const updatedCity = await this.updateCityUseCase.execute(cityId, request.body);
       if (!updatedCity) {
         return mapErrorToHttpResponse(
           new AppError({

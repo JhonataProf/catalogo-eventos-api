@@ -15,9 +15,7 @@ describe("DeleteUserUseCase", () => {
 
   const makeSut = () => {
     const findByIdRepoMock: FindUserByIdRepository = {
-      findById: jest.fn(async (id: number) =>
-        id === 1 ? makeExistingUser() : null
-      ),
+      findById: jest.fn(async (id: number) => (id === 1 ? makeExistingUser() : null)),
     };
 
     // ✅ mock da strategy factory
@@ -33,7 +31,11 @@ describe("DeleteUserUseCase", () => {
       delete: jest.fn(async (id: number) => id === 1),
     };
 
-    const sut = new DeleteUserUseCase(findByIdRepoMock, deleteRepoMock, profileStrategyFactoryMock as any);
+    const sut = new DeleteUserUseCase(
+      findByIdRepoMock,
+      deleteRepoMock,
+      profileStrategyFactoryMock as any,
+    );
 
     return { sut, findByIdRepoMock, deleteRepoMock, profileStrategyFactoryMock };
   };
@@ -55,7 +57,10 @@ describe("DeleteUserUseCase", () => {
     const result = await sut.execute(1);
 
     expect(profileStrategyFactoryMock.getStrategy).toHaveBeenCalledWith("Admin");
-    expect(profileStrategyFactoryMock.getStrategy().removeProfile).toHaveBeenCalledWith(1, expect.anything());
+    expect(profileStrategyFactoryMock.getStrategy().removeProfile).toHaveBeenCalledWith(
+      1,
+      expect.anything(),
+    );
     expect(deleteRepoMock.delete).toHaveBeenCalledWith(1, expect.anything());
     expect(result).toBe(true);
   });

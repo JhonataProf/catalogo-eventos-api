@@ -27,10 +27,7 @@ function errorHandler(err: unknown, req: Request, res: Response, _next: NextFunc
     path: req.path,
     method: req.method,
     correlationId,
-    error:
-      err instanceof Error
-        ? { name: err.name, message: err.message, stack: err.stack }
-        : err,
+    error: err instanceof Error ? { name: err.name, message: err.message, stack: err.stack } : err,
   });
 
   const httpResponse = mapErrorToHttpResponse(err, correlationId);

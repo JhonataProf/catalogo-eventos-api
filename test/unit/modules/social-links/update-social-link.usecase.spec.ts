@@ -20,9 +20,7 @@ describe("UpdateSocialLinkUseCase", () => {
       findById: jest.fn(async (id: number) => (id === 1 ? existing : null)),
     };
     const update: UpdateSocialLinkRepository = {
-      update: jest.fn(async (id, entity) =>
-        id === 1 ? entity : null,
-      ),
+      update: jest.fn(async (id, entity) => (id === 1 ? entity : null)),
     };
     const sut = new UpdateSocialLinkUseCase(findById, update);
     return { sut, findById, update };

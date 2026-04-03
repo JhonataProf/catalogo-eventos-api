@@ -35,10 +35,7 @@ export class CreateCityUseCase {
 
     try {
       const { image, ...fields } = dto;
-      const { url: imageUrl } = await this.images.uploadPublicWebImage(
-        image,
-        "cities",
-      );
+      const { url: imageUrl } = await this.images.uploadPublicWebImage(image, "cities");
 
       const city = new CityEntity({
         id: 0,
@@ -47,10 +44,7 @@ export class CreateCityUseCase {
         published: dto.published,
       });
 
-      const created = await this.createCityRepository.create(
-        city,
-        transaction,
-      );
+      const created = await this.createCityRepository.create(city, transaction);
 
       await transaction.commit();
 

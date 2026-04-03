@@ -121,4 +121,4 @@ Na raiz do repositório (após `aws configure` e Docker):
 - `./scripts/ecr-build-push.sh` — exige `AWS_REGION`, `ECR_REPOSITORY_URL` (output `ecr_repository_url`).
 - `./scripts/ecs-force-new-deployment.sh` — exige `AWS_REGION`, `ECS_CLUSTER_NAME`, `ECS_SERVICE_NAME` (outputs homônimos).
 
-Smoke no ALB: `SMOKE_BASE_URL=$(terraform output -raw alb_public_base_url) npm run smoke:alb` — ver `docs/deployment/phase3-ecs-publish.md`.
+Smoke no ALB: `SMOKE_BASE_URL=$(terraform output -raw alb_public_base_url) yarn smoke:alb` — ver `docs/deployment/phase3-ecs-publish.md`.

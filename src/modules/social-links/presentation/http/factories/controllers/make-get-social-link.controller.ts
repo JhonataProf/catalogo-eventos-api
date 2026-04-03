@@ -5,9 +5,7 @@ import {
   SocialLinkListAudience,
 } from "../../controllers/get-social-link.controller";
 
-export function makeGetSocialLinkController(
-  audience: SocialLinkListAudience = "admin",
-) {
+export function makeGetSocialLinkController(audience: SocialLinkListAudience = "admin") {
   const repo = new SequelizeSocialLinkRepository();
   const useCase = new GetSocialLinkUseCase(repo);
   return new GetSocialLinkController(useCase, audience);

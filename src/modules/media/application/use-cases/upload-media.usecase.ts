@@ -74,9 +74,7 @@ export class UploadMediaUseCase {
       isRasterImageMime(dto.file.mimeType) &&
       dto.visibility === "public"
     ) {
-      buffer = Buffer.from(
-        await this.imageProcessor.process(buffer, dto.file.mimeType),
-      );
+      buffer = Buffer.from(await this.imageProcessor.process(buffer, dto.file.mimeType));
     }
 
     const saved = await this.storage.save({
@@ -85,8 +83,7 @@ export class UploadMediaUseCase {
       buffer,
       folder: dto.folder,
       visibility: dto.visibility,
-      storageClass:
-        ENV.MEDIA_STORAGE === "s3" ? ENV.S3_STORAGE_CLASS : undefined,
+      storageClass: ENV.MEDIA_STORAGE === "s3" ? ENV.S3_STORAGE_CLASS : undefined,
     });
 
     this.logger.info("UploadMediaUseCase: done", {

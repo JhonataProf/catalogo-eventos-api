@@ -8,9 +8,7 @@ describe("TouristPointSpecificationBuilder", () => {
   });
 
   it("withName aplica LIKE no campo name", () => {
-    const spec = new TouristPointSpecificationBuilder()
-      .withName("Museu")
-      .build();
+    const spec = new TouristPointSpecificationBuilder().withName("Museu").build();
     expect(spec).not.toBeNull();
     const where = spec!.toWhere() as Record<string, unknown>;
     expect(where).toEqual({
@@ -19,35 +17,29 @@ describe("TouristPointSpecificationBuilder", () => {
   });
 
   it("withCity aplica igualdade", () => {
-    const spec = new TouristPointSpecificationBuilder()
-      .withCity("campo-grande")
-      .build();
+    const spec = new TouristPointSpecificationBuilder().withCity("campo-grande").build();
     expect(spec!.toWhere()).toEqual({ citySlug: "campo-grande" });
   });
 
   it("withState aplica filtro de cidade pelo estado", () => {
     const spec = new TouristPointSpecificationBuilder().withState("MS").build();
-    expect(spec!.toWhere()).toEqual({"cityId": { [Op.in]: {"val": "(SELECT id FROM `cities` WHERE state = 'MS')"}}});
+    expect(spec!.toWhere()).toEqual({
+      cityId: { [Op.in]: { val: "(SELECT id FROM `cities` WHERE state = 'MS')" } },
+    });
   });
 
   it("withPublished false inclui filtro published", () => {
-    const spec = new TouristPointSpecificationBuilder()
-      .withPublished(false)
-      .build();
+    const spec = new TouristPointSpecificationBuilder().withPublished(false).build();
     expect(spec!.toWhere()).toEqual({ published: false });
   });
 
   it("withPublished true inclui filtro", () => {
-    const spec = new TouristPointSpecificationBuilder()
-      .withPublished(true)
-      .build();
+    const spec = new TouristPointSpecificationBuilder().withPublished(true).build();
     expect(spec!.toWhere()).toEqual({ published: true });
   });
 
   it("withPublished undefined não adiciona spec", () => {
-    const spec = new TouristPointSpecificationBuilder()
-      .withPublished(undefined)
-      .build();
+    const spec = new TouristPointSpecificationBuilder().withPublished(undefined).build();
     expect(spec).toBeNull();
   });
 

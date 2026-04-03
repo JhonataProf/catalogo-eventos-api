@@ -13,7 +13,7 @@ describe("core/adapters/express-route-adapter", () => {
       handle: jest.fn(async (_req: HttpRequest): Promise<HttpResponse> => {
         return {
           statusCode: 201,
-          body: { ok: true }
+          body: { ok: true },
         };
       }),
     };
@@ -42,8 +42,8 @@ describe("core/adapters/express-route-adapter", () => {
     expect(controller.handle).toHaveBeenCalledTimes(1);
 
     // status + body
-    expect((res.status as jest.Mock)).toHaveBeenCalledWith(201);
-    expect((res.json as jest.Mock)).toHaveBeenCalledWith({ ok: true });
+    expect(res.status as jest.Mock).toHaveBeenCalledWith(201);
+    expect(res.json as jest.Mock).toHaveBeenCalledWith({ ok: true });
 
     // não deveria ter chamado next em sucesso
     expect(next).not.toHaveBeenCalled();
@@ -76,7 +76,7 @@ describe("core/adapters/express-route-adapter", () => {
     await handler(req, res);
 
     expect(controller.handle).toHaveBeenCalledTimes(1);
-    expect((res.status as jest.Mock)).toHaveBeenCalledWith(200);
+    expect(res.status as jest.Mock).toHaveBeenCalledWith(200);
   });
 
   it("erro não tratado retorna envelope padrão com correlationId", async () => {
@@ -104,8 +104,8 @@ describe("core/adapters/express-route-adapter", () => {
     const handler = adaptRoute(controller);
     await handler(req, res);
 
-    expect((res.status as jest.Mock)).toHaveBeenCalledWith(500);
-    expect((res.json as jest.Mock)).toHaveBeenCalledWith(
+    expect(res.status as jest.Mock).toHaveBeenCalledWith(500);
+    expect(res.json as jest.Mock).toHaveBeenCalledWith(
       expect.objectContaining({
         error: expect.objectContaining({
           code: "INTERNAL_SERVER_ERROR",

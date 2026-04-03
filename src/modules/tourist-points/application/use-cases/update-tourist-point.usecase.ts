@@ -12,10 +12,7 @@ export class UpdateTouristPointUseCase {
     private readonly images: PublicWebImageUploader,
   ) {}
 
-  async execute(
-    id: number,
-    input: updateTouristPointDTO,
-  ): Promise<TouristPointPersistedDTO> {
+  async execute(id: number, input: updateTouristPointDTO): Promise<TouristPointPersistedDTO> {
     const existing = await this.findById.findById(id);
     if (!existing) {
       throw new AppError({

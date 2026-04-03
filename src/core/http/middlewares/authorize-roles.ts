@@ -20,9 +20,7 @@ export default function authorizeRoles(roles: string[]) {
         requiredRoles: [...allowed],
       });
 
-      const correlationId = ensureCorrelationId(
-        (req as { correlationId?: string }).correlationId,
-      );
+      const correlationId = ensureCorrelationId((req as { correlationId?: string }).correlationId);
       return res.status(403).json({
         error: {
           code: "FORBIDDEN",

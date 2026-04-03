@@ -10,10 +10,7 @@ import {
   makeGetSocialLinkController,
   makeUpdateSocialLinkController,
 } from "../factories/controllers";
-import {
-  createSocialLinkSchema,
-  updateSocialLinkSchema,
-} from "../validators/social-link.schemas";
+import { createSocialLinkSchema, updateSocialLinkSchema } from "../validators/social-link.schemas";
 
 export function registerSocialLinkRoutes(router: Router): void {
   router.get(
@@ -53,12 +50,6 @@ export function registerSocialLinkRoutes(router: Router): void {
     adaptRoute(makeDeleteSocialLinkController()),
   );
 
-  router.get(
-    "/public/social-links",
-    adaptRoute(makeGetSocialLinkController("public")),
-  );
-  router.get(
-    "/public/social-links/:id",
-    adaptRoute(makeFindSocialLinkByIdController("public")),
-  );
+  router.get("/public/social-links", adaptRoute(makeGetSocialLinkController("public")));
+  router.get("/public/social-links/:id", adaptRoute(makeFindSocialLinkByIdController("public")));
 }

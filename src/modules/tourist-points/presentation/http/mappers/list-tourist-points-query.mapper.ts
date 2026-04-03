@@ -1,9 +1,7 @@
 import type { ListTouristPointsUseCase } from "../../../application/use-cases/list-tourist-points.usecase";
 import type { ListTouristPointsQueryDTO } from "../validators/tourist-point-schemas";
 
-type ListTouristPointsInput = Parameters<
-  ListTouristPointsUseCase["execute"]
->[0];
+type ListTouristPointsInput = Parameters<ListTouristPointsUseCase["execute"]>[0];
 
 export function toListTouristPointsUseCaseInput(
   query: ListTouristPointsQueryDTO,
@@ -14,12 +12,7 @@ export function toListTouristPointsUseCaseInput(
     name: query.name,
     city: query.city,
     state: query.state,
-    published:
-      query.published === "true"
-        ? true
-        : query.published === "false"
-          ? false
-          : undefined,
+    published: query.published === "true" ? true : query.published === "false" ? false : undefined,
     sortBy: query.sortBy,
     sortDir: query.sortDir,
   };

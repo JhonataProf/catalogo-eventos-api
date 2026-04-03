@@ -1,4 +1,3 @@
-import { AppError } from "@/core/errors-app-error";
 import { DomainLogger, NoopDomainLogger } from "@/core/logger/domain-logger";
 import type { PublicWebImageUploader } from "@/modules/media/domain/ports/public-web-image.uploader";
 import { EventEntity } from "../../domain/entities/event.entity";
@@ -24,10 +23,7 @@ export class CreateEventUseCase {
     await this.findCityById.execute(dto.cityId);
 
     const { image, ...fields } = dto;
-    const { url: imageUrl } = await this.images.uploadPublicWebImage(
-      image,
-      "events",
-    );
+    const { url: imageUrl } = await this.images.uploadPublicWebImage(image, "events");
 
     const entity = new EventEntity({
       id: 0,

@@ -39,9 +39,7 @@ describe("CreateTouristPointUseCase", () => {
     const create = jest.fn().mockResolvedValue(persisted);
     const repo: CreateTouristPointRepository = { create };
     const images: PublicWebImageUploader = {
-      uploadPublicWebImage: jest
-        .fn()
-        .mockResolvedValue({ url: "https://cdn.example/t.png" }),
+      uploadPublicWebImage: jest.fn().mockResolvedValue({ url: "https://cdn.example/t.png" }),
       replacePublicWebImage: jest.fn(),
     };
     const sut = new CreateTouristPointUseCase(repo, images);
@@ -53,10 +51,7 @@ describe("CreateTouristPointUseCase", () => {
 
     const out = await sut.execute(dto);
 
-    expect(images.uploadPublicWebImage).toHaveBeenCalledWith(
-      dto.image,
-      "tourist-points",
-    );
+    expect(images.uploadPublicWebImage).toHaveBeenCalledWith(dto.image, "tourist-points");
     expect(create).toHaveBeenCalledTimes(1);
     const arg = create.mock.calls[0]![0] as TouristPointEntity;
     expect(arg.imageUrl).toBe("https://cdn.example/t.png");

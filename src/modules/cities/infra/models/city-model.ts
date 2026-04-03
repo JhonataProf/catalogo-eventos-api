@@ -1,5 +1,4 @@
 import sequelize from "@/core/database";
-import TouristPointModel from "@/modules/tourist-points/infra/model/tourist-point-model";
 import { DataTypes, Model } from "sequelize";
 
 export class CityModel extends Model {

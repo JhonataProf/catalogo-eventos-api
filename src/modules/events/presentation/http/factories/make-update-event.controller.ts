@@ -11,11 +11,6 @@ export function makeUpdateEventController() {
   const cidadeRepo = new SequelizeCityRepository();
   const usecaseFindCidadeById = new FindCityByIdUseCase(cidadeRepo);
   const images = getPublicWebImageUploader();
-  const useCase = new UpdateEventUseCase(
-    repo,
-    repo,
-    usecaseFindCidadeById,
-    images,
-  );
+  const useCase = new UpdateEventUseCase(repo, repo, usecaseFindCidadeById, images);
   return new UpdateEventController(useCase);
 }

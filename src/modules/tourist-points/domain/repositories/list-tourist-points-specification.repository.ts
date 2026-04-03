@@ -1,4 +1,3 @@
-
 import { QuerySpecification } from "../specifications/query-specification";
 
 export interface ListTouristPointsSpecificationRepository {

@@ -7,16 +7,13 @@ import { DomainLogger } from "@/core/logger/domain-logger";
 let mediaStorageMode: "local" | "s3" = "local";
 
 jest.mock("@/core/config/env", () => ({
-  ENV: new Proxy(
-    {} as { MEDIA_STORAGE: string; S3_STORAGE_CLASS: string },
-    {
-      get(_, prop: string) {
-        if (prop === "MEDIA_STORAGE") return mediaStorageMode;
-        if (prop === "S3_STORAGE_CLASS") return "STANDARD_IA";
-        return undefined;
-      },
+  ENV: new Proxy({} as { MEDIA_STORAGE: string; S3_STORAGE_CLASS: string }, {
+    get(_, prop: string) {
+      if (prop === "MEDIA_STORAGE") return mediaStorageMode;
+      if (prop === "S3_STORAGE_CLASS") return "STANDARD_IA";
+      return undefined;
     },
-  ),
+  }),
 }));
 
 describe("PublicWebImageService", () => {
@@ -60,10 +57,7 @@ describe("PublicWebImageService", () => {
       "/events/",
     );
 
-    expect(processor.process).toHaveBeenCalledWith(
-      expect.any(Buffer),
-      "image/png",
-    );
+    expect(processor.process).toHaveBeenCalledWith(expect.any(Buffer), "image/png");
     expect(storage.save).toHaveBeenCalledWith(
       expect.objectContaining({
         filename: "x.png",
@@ -87,14 +81,9 @@ describe("PublicWebImageService", () => {
       mimeType: "image/webp",
     });
 
-    await sut.uploadPublicWebImage(
-      { base64: tinyPngB64, mimeType: "image/webp" },
-      "banners",
-    );
+    await sut.uploadPublicWebImage({ base64: tinyPngB64, mimeType: "image/webp" }, "banners");
 
-    expect(storage.save).toHaveBeenCalledWith(
-      expect.objectContaining({ filename: "upload.webp" }),
-    );
+    expect(storage.save).toHaveBeenCalledWith(expect.objectContaining({ filename: "upload.webp" }));
   });
 
   it("usa upload.jpg como nome padrão para MIME raster não mapeado", async () => {
@@ -107,14 +96,9 @@ describe("PublicWebImageService", () => {
       mimeType: "image/jpeg",
     });
 
-    await sut.uploadPublicWebImage(
-      { base64: tinyPngB64, mimeType: "image/tiff" },
-      "x",
-    );
+    await sut.uploadPublicWebImage({ base64: tinyPngB64, mimeType: "image/tiff" }, "x");
 
-    expect(storage.save).toHaveBeenCalledWith(
-      expect.objectContaining({ filename: "upload.jpg" }),
-    );
+    expect(storage.save).toHaveBeenCalledWith(expect.objectContaining({ filename: "upload.jpg" }));
   });
 
   it("com MEDIA_STORAGE s3, repassa S3_STORAGE_CLASS quando storageClass omitido", async () => {
@@ -128,10 +112,7 @@ describe("PublicWebImageService", () => {
       mimeType: "image/jpeg",
     });
 
-    await sut.uploadPublicWebImage(
-      { base64: tinyPngB64, mimeType: "image/jpeg" },
-      "x",
-    );
+    await sut.uploadPublicWebImage({ base64: tinyPngB64, mimeType: "image/jpeg" }, "x");
 
     expect(storage.save).toHaveBeenCalledWith(
       expect.objectContaining({ storageClass: "STANDARD_IA" }),
@@ -161,15 +142,10 @@ describe("PublicWebImageService", () => {
   });
 
   it("lança MEDIA_INVALID_BASE64 quando buffer decodificado vazio", async () => {
-    jest.spyOn(base64, "decodeBase64PayloadToBuffer").mockReturnValue(
-      Buffer.alloc(0),
-    );
+    jest.spyOn(base64, "decodeBase64PayloadToBuffer").mockReturnValue(Buffer.alloc(0));
     const { sut } = makeSut();
     await expect(
-      sut.uploadPublicWebImage(
-        { base64: "AAAA", mimeType: "image/png" },
-        "f",
-      ),
+      sut.uploadPublicWebImage({ base64: "AAAA", mimeType: "image/png" }, "f"),
     ).rejects.toMatchObject({
       code: "MEDIA_INVALID_BASE64",
       statusCode: 400,
@@ -213,10 +189,7 @@ describe("PublicWebImageService", () => {
     });
 
     await expect(
-      sut.uploadPublicWebImage(
-        { base64: tinyPngB64, mimeType: "image/png" },
-        "f",
-      ),
+      sut.uploadPublicWebImage({ base64: tinyPngB64, mimeType: "image/png" }, "f"),
     ).rejects.toMatchObject({
       code: "MEDIA_PUBLIC_URL_MISSING",
       statusCode: 500,
@@ -239,9 +212,7 @@ describe("PublicWebImageService", () => {
       "folder",
     );
 
-    expect(storage.deleteIfOwnedPublicUrl).toHaveBeenCalledWith(
-      "https://cdn/old.png",
-    );
+    expect(storage.deleteIfOwnedPublicUrl).toHaveBeenCalledWith("https://cdn/old.png");
     expect(url).toEqual({ url: "https://cdn/new.png" });
   });
 
@@ -274,10 +245,7 @@ describe("PublicWebImageService", () => {
       mimeType: "image/png",
     });
 
-    await sut.uploadPublicWebImage(
-      { base64: tinyPngB64, mimeType: "image/png" },
-      "banners",
-    );
+    await sut.uploadPublicWebImage({ base64: tinyPngB64, mimeType: "image/png" }, "banners");
 
     expect(logger.info).toHaveBeenCalledWith(
       "PublicWebImageService: uploaded",

@@ -26,25 +26,18 @@ describe("tourist-point-schemas", () => {
   });
 
   it("createTouristPointSchema rejeita nome curto e horário inválido", () => {
+    expect(createTouristPointSchema.safeParse({ ...validCreate, name: "ab" }).success).toBe(false);
     expect(
-      createTouristPointSchema.safeParse({ ...validCreate, name: "ab" })
-        .success,
+      createTouristPointSchema.safeParse({ ...validCreate, openingHours: "25:00" }).success,
     ).toBe(false);
-    expect(
-      createTouristPointSchema.safeParse({ ...validCreate, openingHours: "25:00" })
-        .success,
-    ).toBe(false);
-    expect(
-      createTouristPointSchema.safeParse({ ...validCreate, category: "x" })
-        .success,
-    ).toBe(false);
+    expect(createTouristPointSchema.safeParse({ ...validCreate, category: "x" }).success).toBe(
+      false,
+    );
   });
 
   it("updateTouristPointSchema aceita vazio e parcial", () => {
     expect(updateTouristPointSchema.safeParse({}).success).toBe(true);
-    expect(
-      updateTouristPointSchema.safeParse({ name: "Novo nome" }).success,
-    ).toBe(true);
+    expect(updateTouristPointSchema.safeParse({ name: "Novo nome" }).success).toBe(true);
   });
 
   it("createTouristPointSchema rejeita base64 curto e mime inválido", () => {
@@ -63,12 +56,8 @@ describe("tourist-point-schemas", () => {
   });
 
   it("updateTouristPointSchema rejeita nome curto e horário inválido quando presentes", () => {
-    expect(
-      updateTouristPointSchema.safeParse({ name: "ab" }).success,
-    ).toBe(false);
-    expect(
-      updateTouristPointSchema.safeParse({ openingHours: "9:00" }).success,
-    ).toBe(false);
+    expect(updateTouristPointSchema.safeParse({ name: "ab" }).success).toBe(false);
+    expect(updateTouristPointSchema.safeParse({ openingHours: "9:00" }).success).toBe(false);
   });
 });
 
@@ -81,9 +70,7 @@ describe("listTouristPointsQuerySchema", () => {
   });
 
   it("rejeita chave extra (.strict)", () => {
-    expect(() =>
-      listTouristPointsQuerySchema.parse({ page: "1", foo: "1" }),
-    ).toThrow();
+    expect(() => listTouristPointsQuerySchema.parse({ page: "1", foo: "1" })).toThrow();
   });
 
   it("rejeita limit acima de 50 e page < 1", () => {
@@ -112,8 +99,6 @@ describe("listTouristPointsQuerySchema", () => {
   });
 
   it("rejeita sortBy inválido", () => {
-    expect(() =>
-      listTouristPointsQuerySchema.parse({ sortBy: "invalid" }),
-    ).toThrow();
+    expect(() => listTouristPointsQuerySchema.parse({ sortBy: "invalid" })).toThrow();
   });
 });

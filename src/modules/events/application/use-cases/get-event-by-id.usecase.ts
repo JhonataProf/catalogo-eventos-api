@@ -6,7 +6,7 @@ import { FindEventByIdRepository } from "../../domain/repositories/find-event-by
 export class GetEventByIdUseCase {
   constructor(
     private readonly findByIdRepo: FindEventByIdRepository,
-    private readonly logger: DomainLogger = new NoopDomainLogger()
+    private readonly logger: DomainLogger = new NoopDomainLogger(),
   ) {}
 
   async execute(id: number): Promise<EventEntity> {

@@ -15,10 +15,7 @@ export class CreateHomeHighlightController implements Controller {
       const body = httpRequest.body as CreateHomeHighlightDTO;
       const result = await this.usecase.execute(body);
       if (!result) {
-        return mapErrorToHttpResponse(
-          new Error("Falha ao criar destaque"),
-          correlationId,
-        );
+        return mapErrorToHttpResponse(new Error("Falha ao criar destaque"), correlationId);
       }
       const payload = toHomeHighlightHttpPayload(result);
       const resource = new ResourceBuilder(payload)

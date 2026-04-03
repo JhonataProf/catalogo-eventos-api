@@ -45,7 +45,7 @@ describe("UploadMediaUseCase", () => {
         mimeType: "text/plain",
         folder: "users/10",
         visibility: "private",
-      })
+      }),
     );
 
     expect(result).toEqual(
@@ -54,7 +54,7 @@ describe("UploadMediaUseCase", () => {
         mimeType: "text/plain",
         path: "local://users/10/a.txt",
         size: 5,
-      })
+      }),
     );
   });
 
@@ -100,10 +100,10 @@ describe("UploadMediaUseCase", () => {
 
     const responseError = new AppError({
       code: "MEDIA_INVALID_BASE64",
-        message: "Arquivo vazio ou base64 inválido",
-        statusCode: 400,
+      message: "Arquivo vazio ou base64 inválido",
+      statusCode: 400,
     });
-    
+
     await expect(sut.execute(dto)).rejects.toMatchObject<AppError>(responseError);
   });
 });

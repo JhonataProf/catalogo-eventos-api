@@ -1,9 +1,5 @@
 export interface AuthTokenService {
-  generateAccessToken(payload: {
-    sub: string;
-    email: string;
-    role: string;
-  }): string;
+  generateAccessToken(payload: { sub: string; email: string; role: string }): string;
 
   generateRefreshToken(payload: { sub: string }): string;
 

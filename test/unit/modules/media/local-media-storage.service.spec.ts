@@ -44,7 +44,7 @@ describe("LocalMediaStorageService", () => {
     // arquivo salvo
     expect(writeBufferFile).toHaveBeenCalledWith(
       path.join("/tmp/uploads/public", "users/10", "uuid-1-uuid-1-uuid-1-uuid-1.png"),
-      buffer
+      buffer,
     );
 
     // retorno

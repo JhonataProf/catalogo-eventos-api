@@ -15,11 +15,7 @@ import { UpdateUserController } from "../controllers/update-user.controller";
 const userRepo = new SequelizeUserRepository();
 const encrypter = new BcryptAdapter(12);
 
-const createUserUseCase = new CreateUserUseCase(
-  userRepo,
-  userRepo,
-  encrypter,
-);
+const createUserUseCase = new CreateUserUseCase(userRepo, userRepo, encrypter);
 const listUsersUseCase = new ListUsersUseCase(userRepo);
 const getUserByIdUseCase = new GetUserByIdUseCase(userRepo);
 const updateUserUseCase = new UpdateUserUseCase(userRepo, userRepo, encrypter);

@@ -53,8 +53,5 @@ export function registerEventRoutes(router: Router) {
     validateQuery(listEventsQuerySchema),
     adaptRoute(makeListEventsController("public")),
   );
-  router.get(
-    "/public/events/:id",
-    adaptRoute(makeGetEventByIdController()),
-  );
+  router.get("/public/events/:id", adaptRoute(makeGetEventByIdController()));
 }

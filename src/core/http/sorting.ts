@@ -9,7 +9,7 @@ export type SortParams<TField extends string> = {
 export function normalizeSort<TField extends string>(
   params: SortParams<TField>,
   allowed: readonly TField[],
-  defaults: { sortBy: TField; sortDir: SortDirection }
+  defaults: { sortBy: TField; sortDir: SortDirection },
 ) {
   const sortByRaw = params.sortBy;
   const sortDirRaw = String(params.sortDir ?? defaults.sortDir).toUpperCase();

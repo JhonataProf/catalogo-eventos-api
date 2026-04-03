@@ -13,11 +13,6 @@ export function makeCreateEventController() {
   const cityRepo = new SequelizeCityRepository();
   const cityUseCase = new FindCityByIdUseCase(cityRepo);
   const images = getPublicWebImageUploader();
-  const usecase = new CreateEventUseCase(
-    eventRepo,
-    cityUseCase,
-    images,
-    new NoopDomainLogger(),
-  );
+  const usecase = new CreateEventUseCase(eventRepo, cityUseCase, images, new NoopDomainLogger());
   return new CreateEventController(usecase);
 }

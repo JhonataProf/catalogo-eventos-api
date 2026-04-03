@@ -1,9 +1,7 @@
 import { Op, WhereOptions } from "sequelize";
 import { QuerySpecification } from "./query-specification";
 
-export abstract class AbstractQuerySpecification
-  implements QuerySpecification
-{
+export abstract class AbstractQuerySpecification implements QuerySpecification {
   abstract toWhere(): WhereOptions;
 
   and(other: QuerySpecification): QuerySpecification {
@@ -22,7 +20,7 @@ export abstract class AbstractQuerySpecification
 class AndSpecification extends AbstractQuerySpecification {
   constructor(
     private readonly left: QuerySpecification,
-    private readonly right: QuerySpecification
+    private readonly right: QuerySpecification,
   ) {
     super();
   }
@@ -35,7 +33,7 @@ class AndSpecification extends AbstractQuerySpecification {
 class OrSpecification extends AbstractQuerySpecification {
   constructor(
     private readonly left: QuerySpecification,
-    private readonly right: QuerySpecification
+    private readonly right: QuerySpecification,
   ) {
     super();
   }

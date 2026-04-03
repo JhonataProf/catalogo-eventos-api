@@ -1,7 +1,4 @@
-import {
-  HomeBannerEntity,
-  HomeBannerProps,
-} from "../../domain/entities/home-banner.entity";
+import { HomeBannerEntity, HomeBannerProps } from "../../domain/entities/home-banner.entity";
 import {
   CreateHomeBannerRepository,
   DeleteHomeBannerRepository,
@@ -19,9 +16,7 @@ export class SequelizeHomeBannerRepository
     GetHomeBannerRepository,
     UpdateHomeBannerRepository
 {
-  async create(
-    homeBanner: Omit<HomeBannerProps, "id">,
-  ): Promise<HomeBannerEntity | null> {
+  async create(homeBanner: Omit<HomeBannerProps, "id">): Promise<HomeBannerEntity | null> {
     const result = await HomeBannerModel.create({ ...homeBanner });
 
     return new HomeBannerEntity({
@@ -76,12 +71,9 @@ export class SequelizeHomeBannerRepository
         }),
     );
   }
-  async update(
-    id: number,
-    homeBanner: Partial<HomeBannerProps>,
-  ): Promise<HomeBannerEntity | null> {
-    const found = await HomeBannerModel.findByPk(id)
-    if(!found) return null
+  async update(id: number, homeBanner: Partial<HomeBannerProps>): Promise<HomeBannerEntity | null> {
+    const found = await HomeBannerModel.findByPk(id);
+    if (!found) return null;
     const result = await found.update({
       title: homeBanner.title ?? found.title,
       subtitle: homeBanner.subtitle ?? found.subtitle,
@@ -90,7 +82,7 @@ export class SequelizeHomeBannerRepository
       ctaUrl: homeBanner.ctaUrl ?? found.ctaUrl,
       active: homeBanner.active ?? found.active,
       order: homeBanner.order ?? found.order,
-    })
+    });
 
     return new HomeBannerEntity({
       id: result.id,

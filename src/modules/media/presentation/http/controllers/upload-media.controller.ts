@@ -29,7 +29,7 @@ export class UploadMediaController implements Controller {
           url: result.url,
         },
         mediaLinks(),
-        { correlationId }
+        { correlationId },
       );
 
       return ok(resp);

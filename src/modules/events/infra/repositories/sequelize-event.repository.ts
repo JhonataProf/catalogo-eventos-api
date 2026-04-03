@@ -111,22 +111,19 @@ export class SequelizeEventRepository
     const sortByRaw = query.sort?.by;
     const sortDirRaw = query.sort?.dir;
 
-    const sortBy = ALLOWED_SORT_FIELDS.has(String(sortByRaw))
-      ? String(sortByRaw)
-      : "createdAt";
+    const sortBy = ALLOWED_SORT_FIELDS.has(String(sortByRaw)) ? String(sortByRaw) : "createdAt";
 
-    const sortDir = (
-      String(sortDirRaw ?? "desc").toLowerCase() === "asc" ? "asc" : "desc"
-    ) as "asc" | "desc";
+    const sortDir = (String(sortDirRaw ?? "desc").toLowerCase() === "asc" ? "asc" : "desc") as
+      | "asc"
+      | "desc";
 
     const filters = query.filters ?? {};
-    const cityId =
-      filters.cityId !== undefined ? Number(filters.cityId) : undefined;
+    const cityId = filters.cityId !== undefined ? Number(filters.cityId) : undefined;
 
     const builder = new SpecificationBuilder<typeof filters>()
       .add((p) => (p.name ? like("name", p.name) : null))
       .add((p) => (p.category ? eq("category", p.category) : null))
-      .add((p) => (typeof cityId === "number" ? eq("cityId", cityId) : null));
+      .add((_p) => (typeof cityId === "number" ? eq("cityId", cityId) : null));
 
     const spec = builder.build({ ...filters, cityId });
 

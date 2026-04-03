@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Fase 2 — smoke test: conexão mysql2 + CREATE/INSERT/SELECT/DROP em tabela temporária.
- * Uso: configure DB_* (e DB_SSL*) no .env, depois: npm run verify:aurora-db
+ * Uso: configure DB_* (e DB_SSL*) no .env, depois: yarn verify:aurora-db
  */
 "use strict";
 

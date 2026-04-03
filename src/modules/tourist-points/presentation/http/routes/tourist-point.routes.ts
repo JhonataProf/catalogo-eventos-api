@@ -58,8 +58,5 @@ export function registerTouristPointsRoutes(router: Router) {
     validateQuery(listTouristPointsQuerySchema),
     adaptRoute(makeListTouristPointsController("public")),
   );
-  router.get(
-    "/public/tourist-points/:id",
-    adaptRoute(makeGetTouristPointByIdController("public")),
-  );
+  router.get("/public/tourist-points/:id", adaptRoute(makeGetTouristPointByIdController("public")));
 }

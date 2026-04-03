@@ -38,7 +38,12 @@ Admin.init(
   {
     sequelize,
     modelName: "admins",
-  }
+  },
 );
-Admin.belongsTo(User, { foreignKey: "userId", as: "user", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Admin.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 export default Admin;

@@ -40,9 +40,6 @@ describe("AdminProfileStrategy", () => {
       payload: {},
       transaction: tx,
     });
-    expect(Admin.create).toHaveBeenCalledWith(
-      { userId: 9, name: "Admin" },
-      { transaction: tx },
-    );
+    expect(Admin.create).toHaveBeenCalledWith({ userId: 9, name: "Admin" }, { transaction: tx });
   });
 });

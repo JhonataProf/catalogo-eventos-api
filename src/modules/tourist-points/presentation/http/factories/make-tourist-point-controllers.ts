@@ -20,19 +20,13 @@ export function makeCreateTouristPointController(): Controller {
 export function makeListTouristPointsController(
   audience: "admin" | "public" = "admin",
 ): Controller {
-  return new ListTouristPointsController(
-    makeListTouristPointsUseCase(),
-    audience,
-  );
+  return new ListTouristPointsController(makeListTouristPointsUseCase(), audience);
 }
 
 export function makeGetTouristPointByIdController(
   audience: "admin" | "public" = "admin",
 ): Controller {
-  return new GetTouristPointByIdController(
-    makeGetTouristPointByIdUseCase(),
-    audience,
-  );
+  return new GetTouristPointByIdController(makeGetTouristPointByIdUseCase(), audience);
 }
 
 export function makeUpdateTouristPointController(): Controller {

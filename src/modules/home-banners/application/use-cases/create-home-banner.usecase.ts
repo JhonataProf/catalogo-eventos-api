@@ -12,10 +12,7 @@ export class CreateHomeBannerUseCase {
   ) {}
   async execute(homeBanner: CreateHomeBannerDTO) {
     const { image, ...rest } = homeBanner;
-    const { url: imageUrl } = await this.images.uploadPublicWebImage(
-      image,
-      "home-banners",
-    );
+    const { url: imageUrl } = await this.images.uploadPublicWebImage(image, "home-banners");
 
     const entity: Omit<HomeBannerProps, "id"> = {
       ...rest,

@@ -59,8 +59,8 @@ export class S3MediaStorageService implements MediaStorageService {
 
     const isPublic = input.visibility === "public";
 
-    const storageClass = (input.storageClass ?? this.cfg.defaultStorageClass) as
-      PutObjectCommandInput["StorageClass"];
+    const storageClass = (input.storageClass ??
+      this.cfg.defaultStorageClass) as PutObjectCommandInput["StorageClass"];
 
     const objCommand: PutObjectCommandInput = {
       Bucket: this.cfg.bucket,
@@ -73,9 +73,7 @@ export class S3MediaStorageService implements MediaStorageService {
 
     await this.client.send(new PutObjectCommand(objCommand));
 
-    const url = isPublic
-      ? `${this.normalizeBaseUrl()}/${key}`
-      : undefined;
+    const url = isPublic ? `${this.normalizeBaseUrl()}/${key}` : undefined;
 
     return {
       path: `s3://${this.cfg.bucket}/${key}`,
@@ -93,9 +91,7 @@ export class S3MediaStorageService implements MediaStorageService {
     const key = trimmed.slice(base.length).replace(/^\//, "");
     if (!key) return;
 
-    await this.client.send(
-      new DeleteObjectCommand({ Bucket: this.cfg.bucket, Key: key }),
-    );
+    await this.client.send(new DeleteObjectCommand({ Bucket: this.cfg.bucket, Key: key }));
   }
 
   async headOwnedPublicUrl(url: string): Promise<MediaHeadResult | null> {
@@ -115,8 +111,7 @@ export class S3MediaStorageService implements MediaStorageService {
         contentLength: Number(out.ContentLength ?? 0),
       };
     } catch (err: unknown) {
-      const status = (err as { $metadata?: { httpStatusCode?: number } })
-        .$metadata?.httpStatusCode;
+      const status = (err as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode;
       if (status === 404) return null;
       throw err;
     }

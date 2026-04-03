@@ -19,7 +19,7 @@ export const errorResponse = (
   code: string,
   message: string,
   correlationId?: string,
-  details?: unknown
+  details?: unknown,
 ): HttpResponse<ErrorBody> => ({
   statusCode,
   body: {
@@ -30,17 +30,11 @@ export const errorResponse = (
 
 export const mapErrorToHttpResponse = (
   error: unknown,
-  correlationId?: string
+  correlationId?: string,
 ): HttpResponse<ErrorBody> => {
   const cid = ensureCorrelationId(correlationId);
   if (error instanceof AppError) {
-    return errorResponse(
-      error.statusCode,
-      error.code,
-      error.message,
-      cid,
-      error.details
-    );
+    return errorResponse(error.statusCode, error.code, error.message, cid, error.details);
   }
 
   // fallback genérico
@@ -48,6 +42,6 @@ export const mapErrorToHttpResponse = (
     500,
     "INTERNAL_SERVER_ERROR",
     "Ocorreu um erro inesperado. Tente novamente mais tarde.",
-    cid
+    cid,
   );
 };

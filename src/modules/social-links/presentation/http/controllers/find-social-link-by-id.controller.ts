@@ -3,10 +3,7 @@ import { AppError } from "@/core/errors-app-error";
 import { mapErrorToHttpResponse, ok, ResourceBuilder } from "@/core/http";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { FindSocialLinkByIdUseCase } from "@/modules/social-links/application/use-cases/find-social-link-by-id.usecase";
-import {
-  socialLinkAdminLinks,
-  socialLinkPublicLinks,
-} from "../social-link-hateoas";
+import { socialLinkAdminLinks, socialLinkPublicLinks } from "../social-link-hateoas";
 
 export type SocialLinkByIdAudience = "admin" | "public";
 
@@ -45,8 +42,7 @@ export class FindSocialLinkByIdController implements Controller {
         updatedAt: socialLink.updatedAt,
       };
 
-      const linkFn =
-        this.audience === "public" ? socialLinkPublicLinks : socialLinkAdminLinks;
+      const linkFn = this.audience === "public" ? socialLinkPublicLinks : socialLinkAdminLinks;
       const resource = new ResourceBuilder(data)
         .addAllLinks(linkFn(socialLink.id))
         .addMeta({ correlationId, version: "1.0.0" })

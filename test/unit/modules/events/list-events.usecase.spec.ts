@@ -59,8 +59,6 @@ describe("ListEventsUseCase", () => {
 
   it("usa defaults quando page/limit inválidos", async () => {
     await sut.execute({ page: -1, limit: 0 });
-    expect(list).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 1, limit: 10 }),
-    );
+    expect(list).toHaveBeenCalledWith(expect.objectContaining({ page: 1, limit: 10 }));
   });
 });

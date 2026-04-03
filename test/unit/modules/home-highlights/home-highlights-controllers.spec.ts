@@ -27,17 +27,11 @@ describe("CreateHomeHighlightController", () => {
 
   it("201, falha quando use case retorna null e erro", async () => {
     execute.mockResolvedValue(row);
-    expect((await sut.handle({ correlationId: "c", body: {} })).statusCode).toBe(
-      201,
-    );
+    expect((await sut.handle({ correlationId: "c", body: {} })).statusCode).toBe(201);
     execute.mockResolvedValue(null);
-    expect(
-      (await sut.handle({ correlationId: "c", body: {} })).statusCode,
-    ).not.toBe(201);
+    expect((await sut.handle({ correlationId: "c", body: {} })).statusCode).not.toBe(201);
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", body: {} })).statusCode,
-    ).not.toBe(201);
+    expect((await sut.handle({ correlationId: "c", body: {} })).statusCode).not.toBe(201);
   });
 });
 
@@ -59,20 +53,17 @@ describe("FindHomeHighlightByIdController", () => {
 
   it("200, 404 e erro", async () => {
     execute.mockResolvedValue(row);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).toBe(
+      200,
+    );
     execute.mockResolvedValue(null);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).toBe(404);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).toBe(
+      404,
+    );
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).not.toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).not.toBe(
+      200,
+    );
   });
 });
 
@@ -120,19 +111,16 @@ describe("DeleteHomeHighlightController", () => {
 
   it("200, 404 e erro", async () => {
     execute.mockResolvedValue(true);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).toBe(
+      200,
+    );
     execute.mockResolvedValue(false);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).toBe(404);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).toBe(
+      404,
+    );
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).not.toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).not.toBe(
+      200,
+    );
   });
 });

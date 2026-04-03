@@ -67,13 +67,13 @@ function defaultWalkDir(root: string, opts: WalkOptions, acc: string[] = []): st
 
 export async function initializeDatabaseAndServer(
   sequelize: Sequelize,
-  deps: InitializeDbDeps = {}
+  deps: InitializeDbDeps = {},
 ) {
   const env = deps.env ?? ENV;
   const log = deps.log ?? logger;
   const resolvePath = deps.resolveRuntimePath ?? resolveRuntimePath;
   const importer = deps.importer ?? defaultImportModule;
-  const walkDir = deps.walkDir ?? ((root, opts) => defaultWalkDir(root, opts));
+  const _walkDir = deps.walkDir ?? ((root, opts) => defaultWalkDir(root, opts));
   const glob = deps.glob ?? fg;
 
   if (!env.UPDATE_MODEL) {
@@ -91,9 +91,7 @@ export async function initializeDatabaseAndServer(
 
     // ✅ preferível: glob direto no padrão do módulo
     // pega APENAS models dentro de infra/model
-    const patterns = exts.map(
-      (ext) => `**/infra/model/**/*-model${ext}`
-    );
+    const patterns = exts.map((ext) => `**/infra/model/**/*-model${ext}`);
 
     const modelFullPaths = await glob(patterns, {
       cwd: modulesDir,

@@ -12,12 +12,7 @@ export function makeLoginController(): Controller {
   const userRepo = new SequelizeUserRepository();
   const tokenService = new JwtAuthTokenService();
   const encrypter = new BcryptAdapter(12);
-  const loginUseCase = new LoginUseCase(
-    userRepo,
-    encrypter,
-    tokenService,
-    logger,
-  );
+  const loginUseCase = new LoginUseCase(userRepo, encrypter, tokenService, logger);
   return new LoginController(loginUseCase);
 }
 

@@ -12,4 +12,3 @@ export class UpdateInstitutionalContentUseCase {
     return this.repo.update(id, patch);
   }
 }
-

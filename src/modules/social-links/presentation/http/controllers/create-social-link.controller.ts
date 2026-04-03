@@ -26,10 +26,7 @@ export class CreateSocialLinkController implements Controller {
 
       const createdSocialLink = await this.useCase.execute(entity);
       if (!createdSocialLink) {
-        return mapErrorToHttpResponse(
-          new Error("Falha ao criar social link"),
-          correlationId,
-        );
+        return mapErrorToHttpResponse(new Error("Falha ao criar social link"), correlationId);
       }
       const data = {
         id: createdSocialLink.id,

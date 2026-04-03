@@ -1,11 +1,5 @@
 // src/modules/events/domain/value-objects/event-category.ts
-export const EVENT_CATEGORIES = [
-  "show",
-  "esporte",
-  "feira",
-  "teatro",
-  "gastronomia",
-] as const;
+export const EVENT_CATEGORIES = ["show", "esporte", "feira", "teatro", "gastronomia"] as const;
 
 export type EventCategory = (typeof EVENT_CATEGORIES)[number];
 

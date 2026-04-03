@@ -1,9 +1,5 @@
 import { logger } from "@/core/config/logger";
-import {
-  CollectionResourceBuilder,
-  mapErrorToHttpResponse,
-  ok,
-} from "@/core/http";
+import { CollectionResourceBuilder, mapErrorToHttpResponse, ok } from "@/core/http";
 import { Controller, HttpRequest, HttpResponse } from "@/core/protocols";
 import { ListCityUseCase } from "@/modules/cities/application/use-cases";
 import { CityEntity } from "@/modules/cities/domain/entities/city.entity";

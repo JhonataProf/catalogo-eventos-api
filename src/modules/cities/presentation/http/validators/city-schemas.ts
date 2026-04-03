@@ -16,7 +16,8 @@ export const createCitySchema = z.object({
     })
     .min(3, "Nome deve ter pelo menos 3 caracteres"),
 
-  slug: z.string({
+  slug: z
+    .string({
       error: (issue) => {
         if (issue.code === "invalid_type" && issue.expected === "string") {
           return { message: "Slug deve ser uma string" };
@@ -77,7 +78,8 @@ export const updateCitySchema = z.object({
     .min(3, "Nome deve ter pelo menos 3 caracteres")
     .optional(),
 
-  slug: z.string({
+  slug: z
+    .string({
       error: (issue) => {
         if (issue.code === "invalid_type" && issue.expected === "string") {
           return { message: "Slug deve ser uma string" };
@@ -88,7 +90,8 @@ export const updateCitySchema = z.object({
         return { message: "slug é inválido" };
       },
     })
-    .min(3, "slug deve ter pelo menos 3 caracteres").optional(),
+    .min(3, "slug deve ter pelo menos 3 caracteres")
+    .optional(),
 
   state: z
     .string({
@@ -102,7 +105,8 @@ export const updateCitySchema = z.object({
         return { message: "UF é inválida" };
       },
     })
-    .length(2, "UF deve ter exatamente 2 caracteres").optional(),
+    .length(2, "UF deve ter exatamente 2 caracteres")
+    .optional(),
 
   summary: z.string().min(3, "Resumo deve ter no mínimo 3 caracteres").optional(),
 

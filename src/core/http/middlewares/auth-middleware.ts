@@ -22,7 +22,7 @@ export interface AuthenticatedRequest extends Request {
 export default function authMiddleware(
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const authHeader = req.headers.authorization ?? "";
@@ -34,9 +34,7 @@ export default function authMiddleware(
         method: req.method,
       });
 
-      const correlationId = ensureCorrelationId(
-        (req as { correlationId?: string }).correlationId,
-      );
+      const correlationId = ensureCorrelationId((req as { correlationId?: string }).correlationId);
       return res.status(401).json({
         error: {
           code: "UNAUTHORIZED",
@@ -50,9 +48,7 @@ export default function authMiddleware(
     const secret = ENV.JWT_ACCESS_SECRET;
     if (!secret) {
       logger.error("JWT_ACCESS_SECRET is not configured");
-      const correlationId = ensureCorrelationId(
-        (req as { correlationId?: string }).correlationId,
-      );
+      const correlationId = ensureCorrelationId((req as { correlationId?: string }).correlationId);
       return res.status(500).json({
         error: {
           code: "INTERNAL_ERROR",
@@ -77,13 +73,10 @@ export default function authMiddleware(
     logger.warn("JWT verification failed", {
       path: req.path,
       method: req.method,
-      error:
-        err instanceof Error ? { message: err.message, name: err.name } : err,
+      error: err instanceof Error ? { message: err.message, name: err.name } : err,
     });
 
-    const correlationId = ensureCorrelationId(
-      (req as { correlationId?: string }).correlationId,
-    );
+    const correlationId = ensureCorrelationId((req as { correlationId?: string }).correlationId);
     return res.status(401).json({
       error: {
         code: "UNAUTHORIZED",

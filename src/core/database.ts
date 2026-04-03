@@ -9,10 +9,7 @@ const isTest = ENV.NODE_ENV === "test";
 
 function buildMysqlOptions(): Options {
   const caPath = ENV.DB_SSL_CA_PATH?.trim();
-  const useMysql2RdsProfile =
-    ENV.DB_SSL &&
-    ENV.DB_DIALECT === "mysql" &&
-    !caPath;
+  const useMysql2RdsProfile = ENV.DB_SSL && ENV.DB_DIALECT === "mysql" && !caPath;
 
   const dialectOptions: Options["dialectOptions"] = ENV.DB_SSL
     ? useMysql2RdsProfile
@@ -26,9 +23,7 @@ function buildMysqlOptions(): Options {
             ...(caPath
               ? {
                   ca: fs.readFileSync(
-                    path.isAbsolute(caPath)
-                      ? caPath
-                      : path.resolve(process.cwd(), caPath),
+                    path.isAbsolute(caPath) ? caPath : path.resolve(process.cwd(), caPath),
                     "utf8",
                   ),
                 }
@@ -41,8 +36,7 @@ function buildMysqlOptions(): Options {
     host: ENV.DB_HOST,
     port: ENV.DB_PORT,
     dialect: ENV.DB_DIALECT as Dialect,
-    logging:
-      ENV.NODE_ENV === "development" ? (msg) => logger.database(msg) : false,
+    logging: ENV.NODE_ENV === "development" ? (msg) => logger.database(msg) : false,
     pool: {
       max: ENV.DB_POOL_MAX,
       min: ENV.DB_POOL_MIN,
@@ -59,12 +53,7 @@ const sequelize = isTest
       storage: ":memory:",
       logging: false,
     })
-  : new Sequelize(
-      ENV.DB_DATABASE,
-      ENV.DB_USERNAME,
-      ENV.DB_PASSWORD,
-      buildMysqlOptions(),
-    );
+  : new Sequelize(ENV.DB_DATABASE, ENV.DB_USERNAME, ENV.DB_PASSWORD, buildMysqlOptions());
 
 logger.info("Sequelize instance created", {
   dialect: isTest ? "sqlite" : ENV.DB_DIALECT,

@@ -5,7 +5,7 @@ import { FindUserByEmailRepository } from "@/modules/users/domain/repositories/f
 import { UserEntity } from "@/modules/users/domain/entities/user.entity";
 import { Encrypter } from "@/core/interfaces";
 import { AppError } from "@/core/errors-app-error";
-import { DomainLogger } from "@/core/logger/domain-logger";  // ✅ ajuste para o novo caminho (core)
+import { DomainLogger } from "@/core/logger/domain-logger"; // ✅ ajuste para o novo caminho (core)
 
 describe("CreateUserUseCase", () => {
   const makeSut = () => {
@@ -58,7 +58,7 @@ describe("CreateUserUseCase", () => {
       findByEmailRepoMock,
       encrypterMock,
       profileStrategyFactoryMock as any,
-      loggerMock
+      loggerMock,
     );
 
     return {
@@ -110,7 +110,7 @@ describe("CreateUserUseCase", () => {
       expect.objectContaining({
         user: expect.any(UserEntity),
         payload: input,
-      })
+      }),
     );
 
     // ✅ commit chamado no sucesso
@@ -123,12 +123,12 @@ describe("CreateUserUseCase", () => {
     // ✅ logs corretos (mensagens reais do usecase)
     expect(loggerMock.info).toHaveBeenCalledWith(
       "Iniciando CreateUserUseCase",
-      expect.objectContaining({ email: "fulano@example.com", role: "Admin" })
+      expect.objectContaining({ email: "fulano@example.com", role: "Admin" }),
     );
 
     expect(loggerMock.info).toHaveBeenCalledWith(
       "Usuário + perfil criados com sucesso",
-      expect.objectContaining({ userId: 1, email: "fulano@example.com", role: "Admin" })
+      expect.objectContaining({ userId: 1, email: "fulano@example.com", role: "Admin" }),
     );
   });
 
@@ -142,7 +142,7 @@ describe("CreateUserUseCase", () => {
         email: "exists@example.com",
         password: "hash",
         role: "Admin",
-      })
+      }),
     );
 
     const input = {
@@ -166,7 +166,7 @@ describe("CreateUserUseCase", () => {
     // ✅ log esperado: só o "Iniciando..." (não existe "Email já está em uso" no use case)
     expect(loggerMock.info).toHaveBeenCalledWith(
       "Iniciando CreateUserUseCase",
-      expect.objectContaining({ email: "exists@example.com", role: "Admin" })
+      expect.objectContaining({ email: "exists@example.com", role: "Admin" }),
     );
   });
 });

@@ -18,9 +18,7 @@ describe("RefreshTokenController", () => {
       correlationId: "cid",
     });
     expect(r.statusCode).toBe(200);
-    expect((r.body as { data: { accessToken: string } }).data.accessToken).toBe(
-      "new-access",
-    );
+    expect((r.body as { data: { accessToken: string } }).data.accessToken).toBe("new-access");
   });
 
   it("erro do use case vira resposta HTTP mapeada", async () => {

@@ -10,10 +10,7 @@ export class UpdateSocialLinkUseCase {
     private readonly updateRepo: UpdateSocialLinkRepository,
   ) {}
 
-  async execute(
-    id: number,
-    input: UpdateSocialLinkDTO,
-  ): Promise<SocialLinkEntity | null> {
+  async execute(id: number, input: UpdateSocialLinkDTO): Promise<SocialLinkEntity | null> {
     const existing = await this.findByIdRepo.findById(id);
 
     if (!existing) {

@@ -6,10 +6,10 @@ export class DeleteEventUseCase {
   constructor(
     private readonly findByIdRepo: FindEventByIdRepository,
     private readonly deleteRepo: DeleteEventRepository,
-    private readonly logger: DomainLogger = new NoopDomainLogger()
+    private readonly logger: DomainLogger = new NoopDomainLogger(),
   ) {}
 
-  async execute({id}: {id: number}): Promise<boolean> {
+  async execute({ id }: { id: number }): Promise<boolean> {
     const existing = await this.findByIdRepo.findById(id);
     if (!existing) return false;
 

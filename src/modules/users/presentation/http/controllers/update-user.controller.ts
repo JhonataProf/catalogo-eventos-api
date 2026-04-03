@@ -51,10 +51,7 @@ export class UpdateUserController implements Controller {
     } catch (error) {
       logger.error("UpdateUserController: erro inesperado", {
         correlationId,
-        error:
-          error instanceof Error
-            ? { message: error.message, stack: error.stack }
-            : error,
+        error: error instanceof Error ? { message: error.message, stack: error.stack } : error,
       });
 
       return mapErrorToHttpResponse(error, correlationId);

@@ -7,11 +7,7 @@ import { NextFunction, Request, Response } from "express";
  * isso cobre desvios e mantém política explícita na app.
  * Health checks do ALB costumam não enviar X-Forwarded-Proto — não redireciona.
  */
-export function forceHttpsRedirect(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export function forceHttpsRedirect(req: Request, res: Response, next: NextFunction): void {
   if (!ENV.FORCE_HTTPS_REDIRECT) {
     next();
     return;

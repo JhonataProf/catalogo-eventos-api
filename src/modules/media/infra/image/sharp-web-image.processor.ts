@@ -14,12 +14,10 @@ export class SharpWebImageProcessor implements WebImageProcessor {
   async process(buffer: Buffer, sourceMimeType: string): Promise<Buffer> {
     const mime = sourceMimeType.trim().toLowerCase();
 
-    const pipeline = sharp(buffer)
-      .rotate()
-      .resize(this.cfg.maxWidth, this.cfg.maxHeight, {
-        fit: "inside",
-        withoutEnlargement: true,
-      });
+    const pipeline = sharp(buffer).rotate().resize(this.cfg.maxWidth, this.cfg.maxHeight, {
+      fit: "inside",
+      withoutEnlargement: true,
+    });
 
     if (mime === "image/png") {
       return pipeline.png({ compressionLevel: 9 }).toBuffer();
@@ -34,8 +32,6 @@ export class SharpWebImageProcessor implements WebImageProcessor {
     }
 
     // image/jpeg, image/jpg e demais raster tratados como JPEG
-    return pipeline
-      .jpeg({ quality: this.cfg.lossyQuality, mozjpeg: true })
-      .toBuffer();
+    return pipeline.jpeg({ quality: this.cfg.lossyQuality, mozjpeg: true }).toBuffer();
   }
 }

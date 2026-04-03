@@ -1,9 +1,5 @@
 // src/core/domain/specification/builders.ts
-import {
-  AndSpecification,
-  OrSpecification,
-  NotSpecification,
-} from "./composite.specification";
+import { AndSpecification, OrSpecification, NotSpecification } from "./composite.specification";
 import {
   EqSpecification,
   LikeSpecification,

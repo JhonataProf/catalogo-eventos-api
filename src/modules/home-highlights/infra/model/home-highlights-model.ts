@@ -1,7 +1,7 @@
 // src/modules/events/infra/model/event-model.ts
 import sequelize from "@/core/database";
 import { DataTypes, Model } from "sequelize";
-import { HomeHighlightCategory } from '../../domain/value-objects/home-highlight-categories'
+import { HomeHighlightCategory } from "../../domain/value-objects/home-highlight-categories";
 class HomeHighLightsModel extends Model {
   id!: number;
   type!: HomeHighlightCategory;

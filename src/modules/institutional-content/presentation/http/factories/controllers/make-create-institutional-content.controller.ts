@@ -3,7 +3,7 @@ import { SequelizeInstitutionalContentRepository } from "@/modules/institutional
 import { CreateInstitutionalContentController } from "../../controllers/create-institutional-content.controller";
 
 export function makeCreateInstitutionalContentController() {
-    const repo = new SequelizeInstitutionalContentRepository()
-    const usecase = new CreateInstitutionalContentUseCase(repo)
-    return new CreateInstitutionalContentController(usecase)
+  const repo = new SequelizeInstitutionalContentRepository();
+  const usecase = new CreateInstitutionalContentUseCase(repo);
+  return new CreateInstitutionalContentController(usecase);
 }

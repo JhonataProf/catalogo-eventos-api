@@ -61,13 +61,11 @@ describe("GetEventByIdController", () => {
 
   it("200 e erro", async () => {
     execute.mockResolvedValue(entity);
-    expect(
-      (await sut.handle({ correlationId: "c", params: { id: "7" } })).statusCode,
-    ).toBe(200);
+    expect((await sut.handle({ correlationId: "c", params: { id: "7" } })).statusCode).toBe(200);
     execute.mockRejectedValue(new Error("nf"));
-    expect(
-      (await sut.handle({ correlationId: "c", params: { id: "7" } })).statusCode,
-    ).not.toBe(200);
+    expect((await sut.handle({ correlationId: "c", params: { id: "7" } })).statusCode).not.toBe(
+      200,
+    );
   });
 });
 
@@ -77,13 +75,11 @@ describe("DeleteEventController", () => {
 
   it("204 e erro", async () => {
     execute.mockResolvedValue(undefined);
-    expect(
-      (await sut.handle({ correlationId: "c", params: { id: "7" } })).statusCode,
-    ).toBe(204);
+    expect((await sut.handle({ correlationId: "c", params: { id: "7" } })).statusCode).toBe(204);
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", params: { id: "7" } })).statusCode,
-    ).not.toBe(204);
+    expect((await sut.handle({ correlationId: "c", params: { id: "7" } })).statusCode).not.toBe(
+      204,
+    );
   });
 });
 

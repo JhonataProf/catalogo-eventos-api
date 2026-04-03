@@ -1,8 +1,5 @@
 import { Transaction } from "sequelize";
-import {
-  TouristPointEntity,
-  TouristPointProps,
-} from "../../domain/entities/tourist-point.entity";
+import { TouristPointEntity, TouristPointProps } from "../../domain/entities/tourist-point.entity";
 import {
   CreateTouristPointRepository,
   DeleteTouristPointRepository,
@@ -41,10 +38,7 @@ export class SequelizeTouristPointRepository
     });
   }
 
-  async create(
-    data: TouristPointEntity,
-    t?: Transaction,
-  ): Promise<TouristPointEntity> {
+  async create(data: TouristPointEntity, t?: Transaction): Promise<TouristPointEntity> {
     const created = await TouristPointModel.create(
       {
         cityId: data.cityId,

@@ -30,7 +30,7 @@ InstitutionalContentModel.init(
     vision: { type: DataTypes.STRING, allowNull: false },
     valuesJson: { type: DataTypes.JSON, allowNull: false },
     createdAt: { type: DataTypes.DATE, allowNull: false },
-    updatedAt: { type: DataTypes.DATE, allowNull: true }
+    updatedAt: { type: DataTypes.DATE, allowNull: true },
   },
   {
     sequelize,

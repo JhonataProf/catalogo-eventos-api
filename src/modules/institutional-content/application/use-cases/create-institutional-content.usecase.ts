@@ -4,9 +4,7 @@ import { CreateInstitutionalContentRepository } from "../../domain/repositories/
 export class CreateInstitutionalContentUseCase {
   constructor(private readonly repo: CreateInstitutionalContentRepository) {}
 
-  async execute(
-    entity: InstitutionalContentEntity,
-  ): Promise<InstitutionalContentEntity | null> {
+  async execute(entity: InstitutionalContentEntity): Promise<InstitutionalContentEntity | null> {
     return this.repo.create(entity);
   }
 }

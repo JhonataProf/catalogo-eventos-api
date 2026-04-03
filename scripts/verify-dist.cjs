@@ -1,5 +1,5 @@
 /**
- * Valida artefatos esperados após `npm run build` (Fase 1 — deploy Fargate / release).
+ * Valida artefatos esperados após `yarn build` (Fase 1 — deploy Fargate / release).
  */
 const fs = require("node:fs");
 const path = require("node:path");

@@ -10,11 +10,11 @@ export interface EventProps {
   category: EventCategory;
   startDate: Date;
   endDate: Date;
-  formattedDate: string; 
-  location: string; 
+  formattedDate: string;
+  location: string;
   imageUrl: string;
-  featured: boolean; 
-  published: boolean; 
+  featured: boolean;
+  published: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -59,7 +59,7 @@ export class EventEntity {
     return this.props.featured;
   }
   get published() {
-    return this.props.published
+    return this.props.published;
   }
   get createdAt() {
     return this.props.createdAt;

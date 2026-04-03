@@ -19,9 +19,7 @@ describe("ListTouristPointsUseCase", () => {
   });
 
   const makeSut = () => {
-    const listSpec = jest
-      .fn()
-      .mockResolvedValue({ rows: [row], count: 25 }) as jest.MockedFunction<
+    const listSpec = jest.fn().mockResolvedValue({ rows: [row], count: 25 }) as jest.MockedFunction<
       ListTouristPointsSpecificationRepository["listSpec"]
     >;
     const repo = { listSpec } as ListTouristPointsSpecificationRepository;
@@ -77,8 +75,6 @@ describe("ListTouristPointsUseCase", () => {
 
     await sut.execute({ limit: 999 });
 
-    expect(listSpec).toHaveBeenCalledWith(
-      expect.objectContaining({ limit: 50 }),
-    );
+    expect(listSpec).toHaveBeenCalledWith(expect.objectContaining({ limit: 50 }));
   });
 });

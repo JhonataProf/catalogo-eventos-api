@@ -19,8 +19,7 @@ export class VerifyPublicMediaReadableUseCase {
     if (!meta) {
       throw new AppError({
         code: "MEDIA_NOT_READABLE",
-        message:
-          "URL inválida, não pertence ao storage configurado ou objeto inexistente",
+        message: "URL inválida, não pertence ao storage configurado ou objeto inexistente",
         statusCode: 404,
       });
     }

@@ -2,7 +2,7 @@
  * Smoke HTTP para CI/CD: sobe o processo real (ts-node + server.ts) e valida GET /health.
  * Não substitui testes unitários de rota; exercita listen + stack Express como em runtime.
  *
- * Uso: npm run smoke:http
+ * Uso: yarn smoke:http
  * Env opcional: SMOKE_PORT (default 34581), JWT_* (default alinhado ao jest-ci-env.js).
  * Pós-deploy (CD): curl -fsS "$BASE_URL/health" e "$BASE_URL/ready".
  * Env: SMOKE_SKIP_READY=true pula GET /ready (ex.: ambiente sem DB no smoke).

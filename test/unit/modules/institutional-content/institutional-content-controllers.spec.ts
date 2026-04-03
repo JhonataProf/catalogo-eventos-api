@@ -27,7 +27,7 @@ const makeEntity = (id: number) =>
     ...instBody,
     createdAt: new Date(),
     updatedAt: new Date(),
-});
+  });
 
 const persisted = { id: 1, ...instBody, createdAt: new Date(), updatedAt: new Date() };
 
@@ -37,13 +37,9 @@ describe("CreateInstitutionalContentController", () => {
 
   it("201 e erro", async () => {
     execute.mockResolvedValue(persisted);
-    expect(
-      (await sut.handle({ correlationId: "c", body: instBody })).statusCode,
-    ).toBe(201);
+    expect((await sut.handle({ correlationId: "c", body: instBody })).statusCode).toBe(201);
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", body: instBody })).statusCode,
-    ).not.toBe(201);
+    expect((await sut.handle({ correlationId: "c", body: instBody })).statusCode).not.toBe(201);
   });
 });
 
@@ -68,31 +64,21 @@ describe("FindInstitutionalContentByIdController", () => {
   it("200 admin e público, 404 e erro", async () => {
     const ent = makeEntity(2);
     execute.mockResolvedValue(ent);
-    const sutAdmin = new FindInstitutionalContentByIdController(
-      { execute } as never,
-      "admin",
-    );
-    const sutPublic = new FindInstitutionalContentByIdController(
-      { execute } as never,
-      "public",
-    );
+    const sutAdmin = new FindInstitutionalContentByIdController({ execute } as never, "admin");
+    const sutPublic = new FindInstitutionalContentByIdController({ execute } as never, "public");
     expect(
-      (await sutAdmin.handle({ correlationId: "c", pathParams: { id: "2" } }))
-        .statusCode,
+      (await sutAdmin.handle({ correlationId: "c", pathParams: { id: "2" } })).statusCode,
     ).toBe(200);
     expect(
-      (await sutPublic.handle({ correlationId: "c", pathParams: { id: "2" } }))
-        .statusCode,
+      (await sutPublic.handle({ correlationId: "c", pathParams: { id: "2" } })).statusCode,
     ).toBe(200);
     execute.mockResolvedValue(null);
     expect(
-      (await sutAdmin.handle({ correlationId: "c", pathParams: { id: "2" } }))
-        .statusCode,
+      (await sutAdmin.handle({ correlationId: "c", pathParams: { id: "2" } })).statusCode,
     ).toBe(404);
     execute.mockRejectedValue(new Error("x"));
     expect(
-      (await sutAdmin.handle({ correlationId: "c", pathParams: { id: "2" } }))
-        .statusCode,
+      (await sutAdmin.handle({ correlationId: "c", pathParams: { id: "2" } })).statusCode,
     ).not.toBe(200);
   });
 });
@@ -141,19 +127,16 @@ describe("DeleteInstitutionalContentController", () => {
 
   it("200, 404 e erro", async () => {
     execute.mockResolvedValue(true);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).toBe(
+      200,
+    );
     execute.mockResolvedValue(false);
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).toBe(404);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).toBe(
+      404,
+    );
     execute.mockRejectedValue(new Error("x"));
-    expect(
-      (await sut.handle({ correlationId: "c", pathParams: { id: "1" } }))
-        .statusCode,
-    ).not.toBe(200);
+    expect((await sut.handle({ correlationId: "c", pathParams: { id: "1" } })).statusCode).not.toBe(
+      200,
+    );
   });
 });

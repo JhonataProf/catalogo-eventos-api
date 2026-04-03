@@ -31,14 +31,8 @@ const useCaseResult = {
 
 describe("ListEventsController", () => {
   const execute = jest.fn();
-  const adminSut = new ListEventsController(
-    { execute } as unknown as ListEventsUseCase,
-    "admin",
-  );
-  const publicSut = new ListEventsController(
-    { execute } as unknown as ListEventsUseCase,
-    "public",
-  );
+  const adminSut = new ListEventsController({ execute } as unknown as ListEventsUseCase, "admin");
+  const publicSut = new ListEventsController({ execute } as unknown as ListEventsUseCase, "public");
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -67,9 +61,7 @@ describe("ListEventsController", () => {
       correlationId: "c",
       query: { category: "invalid_cat" },
     });
-    expect(execute).toHaveBeenCalledWith(
-      expect.objectContaining({ category: undefined }),
-    );
+    expect(execute).toHaveBeenCalledWith(expect.objectContaining({ category: undefined }));
   });
 
   it("200 público usa links públicos", async () => {

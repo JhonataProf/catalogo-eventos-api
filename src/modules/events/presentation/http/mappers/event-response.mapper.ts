@@ -1,7 +1,4 @@
-import {
-  EventEntity,
-  type EventProps,
-} from "@/modules/events/domain/entities/event.entity";
+import { EventEntity, type EventProps } from "@/modules/events/domain/entities/event.entity";
 
 function eventPropsOf(source: EventEntity | EventProps): EventProps {
   return source instanceof EventEntity ? source.props : source;

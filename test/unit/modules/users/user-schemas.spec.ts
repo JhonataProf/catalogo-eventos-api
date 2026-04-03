@@ -31,9 +31,7 @@ describe("user-schemas", () => {
     });
 
     it("rejeita email inválido", () => {
-      expect(() =>
-        updateUserSchema.parse({ email: "nao-e-email" }),
-      ).toThrow();
+      expect(() => updateUserSchema.parse({ email: "nao-e-email" })).toThrow();
     });
 
     it("rejeita senha curta", () => {
@@ -41,15 +39,11 @@ describe("user-schemas", () => {
     });
 
     it("rejeita senha quando não é string", () => {
-      expect(() =>
-        updateUserSchema.parse({ password: 123456 as unknown as string }),
-      ).toThrow();
+      expect(() => updateUserSchema.parse({ password: 123456 as unknown as string })).toThrow();
     });
 
     it("rejeita role inválida", () => {
-      expect(() =>
-        updateUserSchema.parse({ role: "SuperAdmin" as "Admin" }),
-      ).toThrow();
+      expect(() => updateUserSchema.parse({ role: "SuperAdmin" as "Admin" })).toThrow();
     });
 
     it("aceita role Admin", () => {
@@ -69,9 +63,7 @@ describe("user-schemas", () => {
     });
 
     it("rejeita chaves não listadas (.strict)", () => {
-      expect(() =>
-        listUsersQuerySchema.parse({ page: "1", foo: "bar" }),
-      ).toThrow();
+      expect(() => listUsersQuerySchema.parse({ page: "1", foo: "bar" })).toThrow();
     });
 
     it("rejeita page menor que 1", () => {

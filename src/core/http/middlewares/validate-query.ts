@@ -16,9 +16,7 @@ export const validateQuery =
     try {
       const parsedQuery = schema.parse(req.query);
 
-      (
-        req as RequestWithValidatedQuery<Record<string, unknown>>
-      ).validatedQuery = parsedQuery;
+      (req as RequestWithValidatedQuery<Record<string, unknown>>).validatedQuery = parsedQuery;
 
       next();
     } catch (error) {
