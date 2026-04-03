@@ -41,7 +41,11 @@ concurrency:
 jobs:
   terraform-plan:
     name: Terraform plan (foundation)
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_terraform_plan == true
+    # Inputs boolean podem chegar como string 'true'/'false' em event.inputs.
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      && (github.event.inputs.run_terraform_plan == true
+          || github.event.inputs.run_terraform_plan == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -138,7 +142,7 @@ jobs:
         env:
           URL_VAR: ${{ vars.SMOKE_BASE_URL }}
           URL_SECRET: ${{ secrets.SMOKE_BASE_URL }}
-          SKIP_SMOKE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_smoke == true }}
+          SKIP_SMOKE: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.skip_smoke == true || github.event.inputs.skip_smoke == 'true') }}
         run: |
           if [ "$SKIP_SMOKE" = "true" ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"
@@ -165,7 +169,10 @@ jobs:
 
       - name: Forçar nova implantação no ECS
         id: rollout
-        if: github.event_name != 'workflow_dispatch' || github.event.inputs.skip_ecs_rollout != true
+        if: >-
+          github.event_name != 'workflow_dispatch'
+          || (github.event.inputs.skip_ecs_rollout != true
+              && github.event.inputs.skip_ecs_rollout != 'true')
         env:
           ECS_CLUSTER_NAME: ${{ secrets.ECS_CLUSTER_NAME }}
           ECS_SERVICE_NAME: ${{ secrets.ECS_SERVICE_NAME }}
